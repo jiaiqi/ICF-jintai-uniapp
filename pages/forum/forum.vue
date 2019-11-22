@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content" :mode="mode" :dotsStyles="dotsStyles">
+    <uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content"  mode="long" :dotsStyles="dotsStyles">
       <swiper class="swiper-box" @change="change" :autoplay="true" style="height: 470upx;">
         <swiper-item v-for="(item, index) in selectList[0].resDatas" :key="index">
           <view class="swiper-item"><image :src="item" mode="aspectFill" style="width: 100%;height: 470upx;"></image></view>
@@ -10,9 +10,9 @@
     <view class="px_list">
       <view class="list_title">
         <view class="title_left">社区论坛</view>
-        <view class="title_right" @tap="toAdd(selectList[1])"><button class="title_btn">安排</button></view>
+        <view class="title_right" @tap="toAdd(selectList[1])"><button class="title_btn">发帖</button></view>
       </view>
-      <view class="loadAnimation" v-if="selectList[1].resDatas.length <= 1">
+      <view class="loadAnimation" v-if="selectList[1].resDatas.length <= 1&&showAnimation">
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
@@ -26,31 +26,32 @@
           </view>
         </view>
       </transition>
-   <!--   <view class="list_bottom" v-if="selectList[1].resDatas.length >= 4">
+     <view class="list_bottom" v-if="selectList[1].resDatas.length >= 3">
         <image src="../../static/img/moreList.png" style="width: 40upx;height: 40upx;"></image>
-        <view class="bottom_right" @tap="toMore('pxap')">更多</view>
-      </view> -->
+        <view class="bottom_right" @tap="toMore('sqlt')">更多</view>
+      </view>
     </view>
     <view class="px_list">
       <view class="list_title">
         <view class="title_left">社区献策</view>
-        <!-- <view class="title_right"><button class="title_btn">安排</button></view> -->
+        <view class="title_right"><button class="title_btn">献策</button></view>
       </view>
-      <view class="loadAnimation" v-if="selectList[2].resDatas.length < 1">
+      <view class="loadAnimation" v-if="selectList[2].resDatas.length < 1&&showAnimation">
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
       </view>
       <transition name="slide-fade">
-        <view class="" v-if="selectList[2].resDatas.length >= 1">
-          <view class="list_content">
-            <!-- <transition-group name="list"> -->
+        <view class="" v-if="!showAnimation">
+          <view class="list_content" v-if="selectList[2].resDatas.length >= 1">
             <view class="list_item" v-for="(item, index) in selectList[2].resDatas" :key="index" @tap="toDetail(item)">
               <text class="item_text">{{ item.opinion_title }}</text>
               <text class="item_date">{{ item.create_time.slice(0, 10) }}</text>
             </view>
-            <!-- </transition-group> -->
+          </view>
+          <view class="no-data">
+            暂无数据...
           </view>
        <!--   <view class="list_bottom" v-if="selectList[2].resDatas.length > 4">
             <image src="../../static/img/moreList.png" style="width: 40upx;height: 40upx;"></image>
@@ -70,7 +71,7 @@ export default {
   data() {
     return {
       picUrlList: [],
-      mode: 'long',
+      showAnimation:true,
       dotsStyles: {
         border: 'rgba(255,255,255,.7)',
         selectedBorder: 'rgba(255,255,255,.5)',
@@ -111,6 +112,7 @@ export default {
     },
     change(e) {
       // console.log(e)
+  this.current = e.detail.current;
     },
     toDetail(item) {
       uni.navigateTo({
@@ -184,6 +186,7 @@ export default {
       };
       this.$http.post(url, req).then(res => {
         this.selectList[1].resDatas = res.data.data;
+if(res.data.data){        this.showAnimation = false}
         console.log(this.selectList[1].resDatas);
       });
     },
@@ -201,6 +204,7 @@ export default {
         rownumber: 4
       };
       this.$http.post(url, req).then(res => {
+   if(res.data.data){        this.showAnimation = false}
         this.selectList[2].resDatas = res.data.data;
       });
     }
@@ -216,6 +220,13 @@ export default {
 <style lang="scss" scoped>
 .content {
   // background-color: #fff;
+}
+.no-data{
+  width: 100%;
+  height: 100upx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 swiper-item {
   .swiper-item {

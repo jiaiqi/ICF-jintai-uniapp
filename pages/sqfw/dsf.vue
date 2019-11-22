@@ -44,18 +44,17 @@
 				],
 				idx:0,
 				list:[
-					{'name':'出入境查询','image':'../../static/img/fwimg/zj.png','url':'https://s.nia.gov.cn/mps/main.html'},
 					{'name':'高考成绩查询','image':'../../static/img/fwimg/gk.png','url':'http://m.gaokao.com/'},
 					{'name':'医疗','image':'../../static/img/fwimg/yy.png','url':'https://m.chashebao.com/yiliao/'},
-					{'name':'婚姻登记查询','image':'../../static/img/fwimg/hy.png','url':'http://fm.mca.gov.cn/marry/login.jsp'},
+					{'name':'爱心救助','image':'../../static/img/fwimg/hy.png','url':'http://www.4000011520.com/'},
 					{'name':'失业','image':'../../static/img/fwimg/sy.png','url':'http://jyjc.mohrss.gov.cn/'},
 					{'name':'天气预报','image':'../../static/img/fwimg/tt.png','url':'https://m.tianqi.com/'},
 					{'name':'意外','image':'../../static/img/fwimg/yw.png','url':'http://m.sbcxw.cc/gongshang/'},
-				
+				{'name':'出入境查询','image':'../../static/img/fwimg/zj.png','url':'https://s.nia.gov.cn'},
 				],
 				listssion:[
 					{'name':'移动','image':'../../static/img/fwimg/yd.png','url':'http://touch.10086.cn/'},
-					{'name':'电信','image':'../../static/img/fwimg/dy.png','url':'http://wapzt.189.cn/page/index.html?cmpid=jt-baidu-q4'},
+					{'name':'电信','image':'../../static/img/fwimg/dy.png','url':'http://www.189.cn/fj_np/'},
 					{'name':'联通','image':'../../static/img/fwimg/lt.png','url':'https://m.10010.com'},
 				]
 			}

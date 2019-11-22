@@ -25,15 +25,24 @@
         <view class="list_content" v-if="listData.length > 0 &&(title=='党建培训'||title=='学习心得')">
           <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
             <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
-            <!-- <view class="item_title">{{ item.pxbt }}</view> -->
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
           </view>
         </view>
-        <view class="list_content" v-if="listData.length > 0&&(title=='便民信息'||title=='数字城管'||title=='创投项目')" >
+        <view class="list_content" v-if="listData.length > 0&&(title=='便民信息'||title=='数字城管')" >
           <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
             <view class="item_title" v-if="item.title">{{ item.title }}</view>
-             <view class="item_title" v-if="item.xmxx_name">{{ item.xmxx_name }}</view>
-            <!-- <view class="item_title">{{ item.pxbt }}</view> -->
+            <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+          </view>
+        </view>
+        <view class="list_content" v-if="listData.length > 0&&title=='创投项目'" >
+          <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
+            <view class="item_title" v-if="item.xmxx_name">{{ item.xmxx_name }}</view>
+            <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+          </view>
+        </view>
+        <view class="list_content" v-if="listData.length > 0&&title=='社区论坛'" >
+          <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
+            <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
           </view>
         </view>
@@ -189,6 +198,9 @@ export default {
     }else if (options.to === 'szcg') { // 数字城管
       this.getBmList('srvzhsq_bmfw_ssp_select');
       this.title = '数字城管';
+    }else if (options.to === 'sqlt') { // 社区论坛
+      this.getBmList('srvzhsq_forum_note_select');
+      this.title = '社区论坛';
     }
     uni.setNavigationBarTitle({
     	title: this.title
@@ -248,6 +260,7 @@ export default {
       align-items: center;
       justify-content: space-between;
       .item_title {
+        max-width: 70%;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;

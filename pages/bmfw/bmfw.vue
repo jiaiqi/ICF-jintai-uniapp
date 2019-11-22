@@ -8,7 +8,7 @@
       </div>
       <div class="to_more">
         <image src="../../static/img/moreList.png" style="width: 40upx;height: 40upx;"></image>
-        <text class="text" @click="toMore('bmxx')">更多</text></div>
+        <text class="text" @click="toMore('bmxx')" v-if="newsList.length>=5">更多</text></div>
     </div>
     <div class="news_list">
       <div class="news_title">人口管理</div>

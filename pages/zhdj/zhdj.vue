@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<uni-swiper-dot :info="picUrlList" :current="current" field="content" :mode="mode" class="aaa">
+		<uni-swiper-dot :info="picUrlList" :current="current" field="content" mode="long" class="aaa" :dotsStyles="dotsStyles">
 			<swiper class="swiper-box" @change="change" :autoplay="true" style="height: 470upx;">
 				<swiper-item v-for="(item, index) in picUrlList" :key="index">
 					<view class="swiper-item"><image :src="item" mode="aspectFill" style="width: 100%;height: 470upx;"></image></view>
@@ -22,6 +22,12 @@ export default {
 			picUrlList: [],
 			current: 0,
 			mode: 'long',
+      dotsStyles: {
+      	border: 'rgba(255,255,255,.7)',
+      	selectedBorder: 'rgba(255,255,255,.5)',
+      	backgroundColor: 'rgba(255,255,255,.5)',
+      	selectedBackgroundColor: 'rgba(255,255,255,.8)'
+      },
 			shortcutMenu: [
 				{ image: '../../static/img/djhd.png', text: '党建活动' },
 				{ image: '../../static/img/gsgg.png', text: '公告公示' },

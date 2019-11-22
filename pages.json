@@ -52,7 +52,6 @@
       "style": {
         // "navigationBarTitleText": "智慧党建",
       }
-
     }, {
       "path": "pages/djpx/djpx",
       "style": {
@@ -75,7 +74,6 @@
       "style": {
         "navigationBarTitleText": "志愿者与社会组织"
       }
-
     },
     {
       "path": "pages/sqfw/sqfw",
@@ -83,7 +81,6 @@
         "navigationBarTitleText": "社区服务",
         "navigationBarBackgroundColor": "#FB6A6A"
       }
-
     },
     {
       "path": "pages/sqfw/dsf",
@@ -99,7 +96,6 @@
         "navigationBarTitleText": "第三方服务",
         "navigationBarBackgroundColor": "#FB6A6A"
       }
-
     },
     {
       "path": "pages/sqfw/sqxq",
@@ -107,7 +103,6 @@
         "navigationBarTitleText": "社区详情",
         "navigationBarBackgroundColor": "#FB6A6A"
       }
-
     },
     {
       "path": "pages/sqfw/sqdh",
@@ -119,7 +114,8 @@
       "path": "pages/sqfw/sqjs",
       "style": {
         "navigationBarTitleText": "社区介绍",
-        "navigationBarBackgroundColor": "#FB6A6A"
+        "navigationBarBackgroundColor": "#FB6A6A",
+        "enablePullDownRefresh": true
       }
     },
     {

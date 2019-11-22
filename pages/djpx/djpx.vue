@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content" :mode="mode" :dotsStyles="dotsStyles">
+		<uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content" mode="long" :dotsStyles="dotsStyles">
 			<swiper class="swiper-box" @change="change" :autoplay="true" style="height: 470upx;">
 				<swiper-item v-for="(item, index) in selectList[0].resDatas" :key="index">
 					<view class="swiper-item"><image :src="item" mode="aspectFill" style="width: 100%;height: 470upx;"></image></view>
@@ -111,6 +111,7 @@ export default {
 		},
 		change(e) {
 			// console.log(e)
+      this.current = e.detail.current;
 		},
 		toDetail(item) {
 			uni.navigateTo({

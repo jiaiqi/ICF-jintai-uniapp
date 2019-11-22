@@ -28,6 +28,7 @@
 <style>
 	.content{
 		width: 100%;
+		overflow-x: hidden;
 	}
 	.frame{
 		width: calc(100% + 20px);;

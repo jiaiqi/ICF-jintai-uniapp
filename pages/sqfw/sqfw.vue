@@ -47,6 +47,7 @@ export default {
 		width: 100%;
 		background: #FFFFFF !important;
 		height: 100%;
+		overflow-y: hidden;
 		}
 
 	.image-banner{
