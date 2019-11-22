@@ -1,0 +1,21 @@
+{
+  "name": "bxsysUniApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dcloudio/uni-ui": "0.0.7",
+    "color-picker": "0.0.1",
+    "mescroll-uni": "^1.0.1",
+    "mpvue-picker": "^2.1.6"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.2"
+  }
+}

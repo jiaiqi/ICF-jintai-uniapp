@@ -1,0 +1,49 @@
+$white:#fff !default;
+$blue:#4977E7 !default;
+$red:red !default !default;
+$yellow:#FF9C06 !default;
+$green:#11AE11 !default;
+$gray:#EDEEF6 !default;
+$c999:#999 !default;
+$c666:#666 !default;
+$c333:#333 !default;
+$c000:#000 !default;
+
+/* 颜色生成 */
+$color-list:(
+  white:($white),
+  blue:($blue),
+  red:($red),
+  yellow:($yellow),
+  green:($green),
+  gray:($gray),
+  666:($c666),
+  999:($c999),
+  333:($c333),
+  000:($c000),
+);
+@each $label,$value in $color-list {
+  .color-#{$label}{
+    color:#{$value};
+  };
+  .bc-#{$label}{
+    background-color: #{$value};
+    border: 1px $value solid;
+  }
+};
+
+*{
+	font-family: 微软雅黑;
+}
+html, body, uni-page, uni-page-body {
+  width: 750upx;
+  height: 100%;
+  font-size: 32upx;
+  color: #333;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.fr{
+	float: right;
+};
+

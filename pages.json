@@ -1,0 +1,206 @@
+{
+  "pages": [ //pages数组中第一项表示应用启动页,
+    {
+      "path": "pages/home/home",
+      "style": {
+        "navigationBarTitleText": "首页"
+      }
+    }, {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    }, {
+      "path": "pages/user/user",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    }, {
+      "path": "pages/navs/navs",
+      "style": {
+        "navigationBarTitleText": "全部功能"
+      }
+    }, {
+      "path": "pages/proc/proc-list/proc-list",
+      "style": {}
+    }, {
+      "path": "pages/normal/list/list",
+      "style": {
+        // "enablePullDownRefresh":true,
+        // "onReachBottomDistance":20
+      }
+    }, {
+      "path": "pages/normal/detail/detail",
+      "style": {
+        "onReachBottomDistance": 100, // 页面上拉触底事件触发时距页面底部距离, 默认 50
+        "app-plus": {
+          "bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消)
+        }
+      }
+    }, {
+      "path": "pages/message/message",
+      "style": {
+        "navigationBarTitleText": "消息"
+      }
+    }, {
+      "path": "pages/contact/contact",
+      "style": {
+        "navigationBarTitleText": "通讯录"
+      }
+    }, {
+      "path": "pages/zhdj/zhdj",
+      "style": {
+        // "navigationBarTitleText": "智慧党建",
+      }
+
+    }, {
+      "path": "pages/djpx/djpx",
+      "style": {
+        "navigationBarTitleText": "党建培训",
+        "app-plus": {
+          "titleNView": {
+            // "type": "transparent",
+            // "buttons": [{
+            // 		"type": "share"
+            // 	},
+            // 	{
+            // 		"type": "favorite"
+            // 	}
+            // ]
+          }
+        }
+      }
+    }, {
+      "path": "pages/shzz/zzhome",
+      "style": {
+        "navigationBarTitleText": "志愿者与社会组织"
+      }
+
+    },
+    {
+      "path": "pages/sqfw/sqfw",
+      "style": {
+        "navigationBarTitleText": "社区服务",
+        "navigationBarBackgroundColor": "#FB6A6A"
+      }
+
+    },
+    {
+      "path": "pages/sqfw/dsf",
+      "style": {
+        "navigationBarTitleText": "服务",
+        "navigationBarBackgroundColor": "#FB6A6A"
+      }
+
+    },
+    {
+      "path": "pages/sqfw/dsftwo",
+      "style": {
+        "navigationBarTitleText": "第三方服务",
+        "navigationBarBackgroundColor": "#FB6A6A"
+      }
+
+    },
+    {
+      "path": "pages/sqfw/sqxq",
+      "style": {
+        "navigationBarTitleText": "社区详情",
+        "navigationBarBackgroundColor": "#FB6A6A"
+      }
+
+    },
+    {
+      "path": "pages/sqfw/sqdh",
+      "style": {
+        "navigationBarBackgroundColor": "#FB6A6A"
+      }
+    },
+    {
+      "path": "pages/sqfw/sqjs",
+      "style": {
+        "navigationBarTitleText": "社区介绍",
+        "navigationBarBackgroundColor": "#FB6A6A"
+      }
+    },
+    {
+      "path": "pages/shzz/fromtext",
+      "style": {
+        "navigationBarTitleText": "志愿者组织详情"
+      }
+
+    },
+    {
+      "path": "pages/normal/add/add",
+      "style": {}
+    }, {
+      "path": "pages/bmfw/bmfw",
+      "style": {
+        "navigationBarTitleText": "便民服务"
+      }
+    },
+    {
+      "path": "pages/bmfw/selectInfo/selectInfo",
+      "style": {
+        "navigationBarTitleText": "居民信息查询"
+      }
+    },
+    {
+      "path": "pages/bmfw/peopleInfo/peopleInfo",
+      "style": {}
+    }, {
+      "path": "pages/bmfw/ctxm/ctxm",
+      "style": {}
+    }, {
+      "path": "pages/forum/forum",
+      "style": {
+        "navigationBarTitleText": "社区论坛"
+      }
+    }, {
+      "path": "pages/forum/add",
+      "style": {
+        "navigationBarTitleText": "发帖"
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#7a7e83",
+    "selectedColor": "#E51C23",
+    "backgroundColor": "#ffffff",
+    "list": [{
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "static/img/home.png",
+        "selectedIconPath": "static/img/home_active.png"
+      }, {
+        "pagePath": "pages/message/message",
+        "text": "消息",
+        "iconPath": "static/img/msg.png",
+        "selectedIconPath": "static/img/msg_active.png"
+      }, {
+        "pagePath": "pages/contact/contact",
+        "text": "通讯录",
+        "iconPath": "static/img/contact.png",
+        "selectedIconPath": "static/img/contact_active.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的",
+        "iconPath": "static/img/user.png",
+        "selectedIconPath": "static/img/user_active.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#E51C23",
+    "backgroundColor": "#fbf9fe"
+  },
+  "condition": { //模式配置，仅开发期间生效
+    "current": 0, //当前激活的模式(list 的索引项)
+    "list": [{
+      "name": "", //模式名称
+      "path": "", //启动页面，必选
+      "query": "" //启动参数，在页面的onLoad函数里面得到
+    }]
+  }
+}

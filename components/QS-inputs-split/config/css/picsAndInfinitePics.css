@@ -1,0 +1,28 @@
+/* pcis 与 infinitepics csss配置 */
+
+/* 图片与图片预选框 */
+.picsBox {	
+	height: 120rpx;
+	width: 120rpx;
+}
+
+/* pics类型的小标题 */
+.picsItemTitle{
+	font-size: 25rpx;
+}
+
+/* 必填标志样式 */
+.requiredSign{
+	color: #F1505C;
+}
+/* 排序选择模式的选中框 */
+.sortSelection{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 40rpx;
+	width: 40rpx;
+	border-radius: 50%;
+	transition: background-color .3s;
+	font-size: 22rpx;
+}
