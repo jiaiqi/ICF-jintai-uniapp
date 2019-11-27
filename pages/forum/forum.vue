@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content"  mode="long" :dotsStyles="dotsStyles">
+    <uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content" mode="long" :dotsStyles="dotsStyles">
       <swiper class="swiper-box" @change="change" :autoplay="true" style="height: 470upx;">
         <swiper-item v-for="(item, index) in selectList[0].resDatas" :key="index">
           <view class="swiper-item"><image :src="item" mode="aspectFill" style="width: 100%;height: 470upx;"></image></view>
@@ -12,7 +12,7 @@
         <view class="title_left">社区论坛</view>
         <view class="title_right" @tap="toAdd(selectList[1])"><button class="title_btn">发帖</button></view>
       </view>
-      <view class="loadAnimation" v-if="selectList[1].resDatas.length <= 1&&showAnimation">
+      <view class="loadAnimation" v-if="selectList[1].resDatas.length <= 1 && showAnimation">
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
@@ -20,13 +20,13 @@
       </view>
       <transition name="slide-fade">
         <view class="list_content" v-if="selectList[1].resDatas.length > 0">
-          <view class="list_item" v-for="item in selectList[1].resDatas" :key="item.pxno" @tap="toDetail(item)">
+          <view class="list_item" v-for="(item,index) in selectList[1].resDatas" :key="index" @tap="toForumDetail(item)">
             <view class="item_title">{{ item.note_title }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
           </view>
         </view>
       </transition>
-     <view class="list_bottom" v-if="selectList[1].resDatas.length >= 3">
+      <view class="list_bottom" v-if="selectList[1].resDatas.length >= 3">
         <image src="../../static/img/moreList.png" style="width: 40upx;height: 40upx;"></image>
         <view class="bottom_right" @tap="toMore('sqlt')">更多</view>
       </view>
@@ -34,9 +34,9 @@
     <view class="px_list">
       <view class="list_title">
         <view class="title_left">社区献策</view>
-        <view class="title_right"><button class="title_btn">献策</button></view>
+        <view class="title_right" @tap="toAdd(selectList[2])"><button class="title_btn">献策</button></view>
       </view>
-      <view class="loadAnimation" v-if="selectList[2].resDatas.length < 1&&showAnimation">
+      <view class="loadAnimation" v-if="selectList[2].resDatas.length < 1 && showAnimation">
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
@@ -50,13 +50,11 @@
               <text class="item_date">{{ item.create_time.slice(0, 10) }}</text>
             </view>
           </view>
-          <view class="no-data">
-            暂无数据...
-          </view>
-       <!--   <view class="list_bottom" v-if="selectList[2].resDatas.length > 4">
+          <view class="no-data" v-if="!selectList[2].resDatas">暂无数据...</view>
+            <view class="list_bottom" v-if="selectList[2].resDatas.length >= 4">
             <image src="../../static/img/moreList.png" style="width: 40upx;height: 40upx;"></image>
-            <view class="bottom_right" @tap="toMore('xxxd')">更多</view>
-          </view> -->
+            <view class="bottom_right" @tap="toMore('sqxc')">更多</view>
+          </view>
         </view>
       </transition>
     </view>
@@ -71,7 +69,7 @@ export default {
   data() {
     return {
       picUrlList: [],
-      showAnimation:true,
+      showAnimation: true,
       dotsStyles: {
         border: 'rgba(255,255,255,.7)',
         selectedBorder: 'rgba(255,255,255,.5)',
@@ -82,21 +80,24 @@ export default {
       selectList: [
         {
           serviceName: 'srvzhsq_djhdjl_djhd_select', // 党建活动查询
-          title: '',
+          title: '党建活动',
           appType: 'zhdj',
           pageType: 'add',
           resDatas: []
         },
         {
-          serviceName: 'srvzhsq_forum_note_select', // 社区发帖列表
-          title: '',
+          serviceName: 'srvzhsq_forum_note_add', // 社区发帖列表
+          selectServiceName:'srvzhsq_forum_note_select',
+          title: '社区发帖',
           appType: 'sqfw',
           pageType: 'select',
           resDatas: []
         },
         {
-          serviceName: 'srvzhsq_forum_opinion_select', // 社区献策
-          title: '',
+          serviceName: 'srvzhsq_forum_opinion_add', // 社区献策
+          selectServiceName:"srvzhsq_forum_opinion_select",
+          addServiceName:'srvzhsq_forum_opinion_add',
+          title: '社区献策',
           appType: 'sqfw',
           pageType: 'select',
           resDatas: []
@@ -106,17 +107,30 @@ export default {
   },
   methods: {
     toAdd(e) {
-      uni.navigateTo({
-        url: './add'
-      });
+      if(e.serviceName==='srvzhsq_forum_note_add'){
+        uni.navigateTo({
+          url: './add?query='+encodeURIComponent(JSON.stringify(e))
+        });
+      }else if(e.serviceName==='srvzhsq_forum_opinion_add'){
+        uni.navigateTo({
+          url: '../normal/add/add?query='+encodeURIComponent(JSON.stringify(e))
+        });
+      }
+    
     },
     change(e) {
       // console.log(e)
-  this.current = e.detail.current;
+      this.current = e.detail.current;
     },
     toDetail(item) {
       uni.navigateTo({
         url: '../normal/detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
+      });
+    },
+    toForumDetail(item){
+      console.log(JSON.stringify(item))
+      uni.navigateTo({
+        url: './detail?query=' + encodeURIComponent(JSON.stringify(item))
       });
     },
     toMore(to) {
@@ -146,7 +160,7 @@ export default {
         // picUrlList.map(item => {
         let path = 'http://39.98.203.134:8081/file/download?filePath=';
         let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
-        picUrlList.map((pic,i) =>{
+        picUrlList.map((pic, i) => {
           let req = {
             colNames: ['*'],
             condition: [
@@ -161,40 +175,42 @@ export default {
             serviceName: 'srvfile_attachment_select'
           };
           this.$http.post(url, req).then(res => {
-            this.selectList[0].resDatas.push(path +  res.data.data[0].fileurl);
+            this.selectList[0].resDatas.push(path + res.data.data[0].fileurl);
             // res.data.data.map(item => {
             //   this.selectList[0].resDatas.push(path + item.fileurl);
-              console.log(res.data.data[0].fileurl)
+            console.log(res.data.data[0].fileurl);
             // });
           });
-        })
+        });
         // });
       });
     },
     // 查询论坛帖子列表
     getPxList() {
-      let url = this.$api.select + '/' + this.selectList[1].appType + '/select/' + this.selectList[1].serviceName;
+      let url = this.$api.select + '/' + this.selectList[1].appType + '/select/' + this.selectList[1].selectServiceName;
       let req = {};
-      req.serviceName = this.selectList[1].serviceName;
+      req.serviceName = this.selectList[1].selectServiceName;
       req.colNames = ['*'];
       req.condition = [];
       req.order = [];
-      req.proc_data_type = 'myall';
+      // req.proc_data_type = 'myall';
       req['page'] = {
         pageNo: 1,
         rownumber: 4
       };
       this.$http.post(url, req).then(res => {
         this.selectList[1].resDatas = res.data.data;
-if(res.data.data){        this.showAnimation = false}
+        if (res.data.data) {
+          this.showAnimation = false;
+        }
         console.log(this.selectList[1].resDatas);
       });
     },
     // 查询社区献策列表
     getXdList() {
-      let url = this.$api.select + '/' + this.selectList[2].appType + '/select/' + this.selectList[2].serviceName;
+      let url = this.$api.select + '/' + this.selectList[2].appType + '/select/' + this.selectList[2].selectServiceName;
       let req = {};
-      req.serviceName = this.selectList[2].serviceName;
+      req.serviceName = this.selectList[2].selectServiceName;
       req.colNames = ['*'];
       req.condition = [];
       req.order = [];
@@ -204,7 +220,9 @@ if(res.data.data){        this.showAnimation = false}
         rownumber: 4
       };
       this.$http.post(url, req).then(res => {
-   if(res.data.data){        this.showAnimation = false}
+        if (res.data.data) {
+          this.showAnimation = false;
+        }
         this.selectList[2].resDatas = res.data.data;
       });
     }
@@ -221,7 +239,7 @@ if(res.data.data){        this.showAnimation = false}
 .content {
   // background-color: #fff;
 }
-.no-data{
+.no-data {
   width: 100%;
   height: 100upx;
   display: flex;

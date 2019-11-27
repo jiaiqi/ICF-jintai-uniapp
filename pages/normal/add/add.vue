@@ -41,25 +41,49 @@ export default {
   onLoad: function(option) {
     let query = JSON.parse(option.query);
     this.getCols(query);
-    console.log('query',query)
+    console.log('query', query);
   },
   methods: {
     async getCols(query) {
       let self = this;
       // self.type = self.query.type
-      self.query.cols = await self.getColData(query.serviceName, query.pageType, 'add', this.$api.select + '/' + query.appType + '/select/srvsys_service_columnex_v2_select');
-      uni.setNavigationBarTitle({
-        title: self.query.cols.service_view_name
-      });
-      console.log(self.query.cols);
-      self.query.serviceName = query.serviceName;
-      self.pageBtns = self.query.cols.formButton;
-      self.pageBtns = self.pageBtns.filter(item => {
-        if (item.permission === true) {
-          return item;
-        }
-      });
-      this.showChild = true;
+      if (query.serviceName === 'srvzhsq_forum_opinion_add') {
+        console.log(query);
+        let url = this.$api.select + '/sqfw/select/srvsys_service_columnex_v2_select ';
+        let req = {
+          serviceName: 'srvsys_service_columnex_v2_select',
+          colNames: ['*'],
+          condition: [{ colName: 'service_name', value: 'srvzhsq_forum_opinion_add', ruleType: 'eq' }, { colName: 'use_type', value: 'add', ruleType: 'eq' }],
+          order: [{ colName: 'seq', orderType: 'asc' }]
+        };
+        this.$http.post(url, req).then(res => {
+          if (res.data.data) {
+            let cols = res.data.data.srv_cols;
+            self.query.cols =  res.data.data;
+            console.log(cols)
+            self.pageBtns =  res.data.data.formButton.filter(item=>item.permission === true);
+            self.query.serviceName = query.serviceName;
+            uni.setNavigationBarTitle({
+              title: self.query.cols.service_view_name
+            });
+            this.showChild = true;
+          }
+        });
+      } else {
+        self.query.cols = await self.getColData(query.serviceName, query.pageType, 'add', this.$api.select + '/' + query.appType + '/select/srvsys_service_columnex_v2_select');
+        uni.setNavigationBarTitle({
+          title: self.query.cols.service_view_name
+        });
+        console.log(self.query.cols);
+        self.query.serviceName = query.serviceName;
+        self.pageBtns = self.query.cols.formButton;
+        self.pageBtns = self.pageBtns.filter(item => {
+          if (item.permission === true) {
+            return item;
+          }
+        });
+        this.showChild = true;
+      }
     },
     submitForm() {
       let self = this;
@@ -92,7 +116,6 @@ export default {
       console.log(a);
     },
     async submint(nData) {
-     
       let self = this;
       let params = [
         {
@@ -101,7 +124,7 @@ export default {
           condition: [],
           data: []
         }
-      ]; 
+      ];
       if (this.query.type === 'add') {
         // eslint-disable-next-line
         let data = [];
@@ -116,19 +139,19 @@ export default {
         params[0].data.push(a);
         console.log(params[0].data);
         let url = self.$api.add + '/zhdj/operate/srvzhsq_pxap_add';
-        let formData = this.$refs.iForms.returnFields()
-        if(formData.data){
-          console.log("formdata:",formData)
-          formData = formData.data[0]
+        let formData = this.$refs.iForms.returnFields();
+        if (formData.data) {
+          console.log('formdata:', formData);
+          formData = formData.data[0];
         }
-        if(formData.service_name){
-          params[0].serviceName = formData.service_name 
-          url = self.$api.add +"/sqfw/operate/"+formData.service_name 
+        if (formData.service_name) {
+          params[0].serviceName = formData.service_name;
+          url = self.$api.add + '/sqfw/operate/' + formData.service_name;
         }
-        console.log('params:',params)
+        console.log('params:', params);
         const response = await self.$http.post(url, params); // 新增
 
-        if (response.data.state === 'SUCCESS'&&params[0].serviceName=='srvzhsq_pxap_add') {
+        if (response.data.state === 'SUCCESS' && params[0].serviceName == 'srvzhsq_pxap_add') {
           uni.showToast({
             title: response.data.resultMessage
           });

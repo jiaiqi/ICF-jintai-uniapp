@@ -22,7 +22,7 @@
         <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
       </view>
       <transition name="slide-fade">
-        <view class="list_content" v-if="listData.length > 0 &&(title=='党建培训'||title=='学习心得')">
+        <view class="list_content" v-if="listData.length > 0 &&(title=='党建培训'||title=='学习心得'||title==='培训安排')">
           <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
             <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
@@ -41,14 +41,43 @@
           </view>
         </view>
         <view class="list_content" v-if="listData.length > 0&&title=='社区论坛'" >
-          <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
+          <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toForumDetail(item)">
             <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
           </view>
         </view>
+        <view class="list_content" v-if="listData.length > 0&&title=='社区献策'" >
+          <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
+            <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
+            <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+          </view>
+        </view>
+		
+		<view class="list_content" v-if="listData.length > 0&&title=='公告公示'" >
+		  <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
+		    <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
+		    <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+		  </view>
+		</view>
+		
+		<view class="list_content" v-if="listData.length > 0&&title=='党建活动记录'" >
+		  <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
+		    <view class="item_title" v-if="item.hdbt">{{ item.hdbt }}</view>
+		    <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+		  </view>
+		</view>
+		
+		
+		<view class="list_content" v-if="listData.length > 0&&title=='社区活动'" >
+		  <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
+		    <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
+		    <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+		  </view>
+		</view>
+		
       </transition>
       <view>{{ loadText }}</view>
-      <view class="list_bottom">
+      <view class="list_bottom" v-if="listData&&listData.length>=14">
         <button class="btn" @click="previousPage()" :disabled="currentPage <= 1">上一页</button>
         <button class="btn" @click="nextPage()">下一页</button>
       </view>
@@ -142,7 +171,7 @@ export default {
       // 获取便民信息列表
       let url = this.$api.select + '/' + 'sqfw' + '/select/' + serviceName;
       let req = { serviceName:serviceName, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 10 }, order: [] };
-      if(serviceName === 'srvzhsq_bmfw_ssp_select'){
+      if(serviceName === 'srvzhsq_bmfw_ssp_select'||serviceName === 'srvzhsq_forum_opinion_select'){
         req.proc_data_type = 'myall';
       }
       this.$http.post(url, req).then(res => {
@@ -160,6 +189,17 @@ export default {
         url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
       });
     },
+    toForumDetail(item){
+      console.log(JSON.stringify(item))
+      uni.navigateTo({
+        url: '../../forum/detail?query=' + encodeURIComponent(JSON.stringify(item))
+      });
+    },
+	detaile(item){
+		uni.navigateTo({
+			url:'../../sqfw/sqxq?query='+ encodeURIComponent((JSON.stringify(item)).replace(/%/g, '%25'))
+		})
+	},
     nextPage() {
       this.currentPage++;
       if (this.title === '学习心得') {
@@ -179,9 +219,44 @@ export default {
           this.getBmList('srvzhsq_bmfw_infomation_select')
         }
       }
-    }
+    },
+	getHmLists(serviceName){
+		let url = this.$api.select + '/' + 'zhdj' + '/select/' + serviceName;
+		let req = { serviceName:serviceName, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 14}, order: [] };
+		this.$http.post(url, req).then(res => {
+		  if (res.data.data.length > 0) {
+		    this.listData = res.data.data;
+		  } else {
+		    return;
+		  }
+		});
+	}, 
+	getDmLists(serviceName){
+		let url = this.$api.select + '/' + 'zhdj' + '/select/' + serviceName;
+		let req = { serviceName:serviceName, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 14}, order: [] };
+		this.$http.post(url, req).then(res => {
+		  if (res.data.data.length > 0) {
+		    this.listData = res.data.data;
+		    console.error( this.listData)
+		  } else {
+		    return;
+		  }
+		});
+	},
+	getWmLists(serviceName){
+		let url = this.$api.select + '/' + 'sqfw' + '/select/' + serviceName;
+		let req = { serviceName:serviceName, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 14}, order: [] };
+		this.$http.post(url, req).then(res => {
+		  if (res.data.data.length > 0) {
+		    this.listData = res.data.data;
+		    console.error( this.listData)
+		  } else {
+		    return;
+		  }
+		});
+	}
   },
-  onLoad(options) {
+  onLoad(options) {    
     console.log(options);
     if (options.to == 'xxxd') {
       this.getXdList();
@@ -201,9 +276,21 @@ export default {
     }else if (options.to === 'sqlt') { // 社区论坛
       this.getBmList('srvzhsq_forum_note_select');
       this.title = '社区论坛';
-    }
-    uni.setNavigationBarTitle({
-    	title: this.title
+    }else if (options.to === 'sqxc') { // 社区论坛
+      this.getBmList('srvzhsq_forum_opinion_select');
+      this.title = '社区献策';
+    }else if(options.to === 'gggg'){  //公告公示
+		this.getHmLists('srvzhsq_gsgg_select');
+		this.title = '公告公示';
+	}else if(options.to === 'djjl'){  //公告公示D
+		this.getDmLists('srvzhsq_djhdjl_djhd_select');
+		this.title = '党建活动记录';
+	}else if(options.to === 'sqhd'){  //公告公示D
+		this.getWmLists('srvzhsq_activity_record_select');
+		this.title = '社区活动';
+	}
+    uni.setNavigationBarTitle({    
+    	title: this.title,
     });
     
   }

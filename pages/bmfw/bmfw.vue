@@ -15,8 +15,8 @@
       <div class="model_box">
         <div class="function_model" @click="toSelectPage(0)">常住信息查询</div>
         <div class="function_model" @click="toSelectPage(1)">暂住信息查询</div>
-        <div class="function_model" @click="toAdd(selectList[0],0)">常住人口登记</div>
-        <div class="function_model" @click="toAdd(selectList[1],1)">暂住人口登记</div>
+        <!-- <div class="function_model" @click="toAdd(selectList[0],0)">常住人口登记</div> -->
+        <!-- <div class="function_model" @click="toAdd(selectList[1],1)">暂住人口登记</div> -->
       </div>
     </div>
     <div class="news_list">
@@ -52,13 +52,13 @@ export default {
       	},
         {
         	serviceName: 'srvzhsq_bmfw_permit_select', // 常驻信息查询
-        	title: '',
+        	title: '常驻信息查询',
         	appType: 'sqfw',
         	pageType: 'list',
         	resDatas: []
         },{
       		serviceName: 'srvzhsq_bmfw_temppermit_select', // 暂住信息查询
-      		title: '',
+      		title: '暂住信息查询',
       		appType: 'sqfw',
       		pageType: 'list',
       		resDatas: []

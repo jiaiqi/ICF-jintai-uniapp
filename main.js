@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App'
-
+import '@/common/uni.css'
 import api from '@/common/api.js' // 导入api清单
 import common from '@/common/common.js' // 公共方法
 import flyio from '@/common/wx.js' // 引入flyio 微信小程序使用

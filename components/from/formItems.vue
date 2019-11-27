@@ -30,6 +30,11 @@
             <QSPickerCustom ref="nationPicker" name="formName" variableName="custom" title="选择民族:" v-model="Fileddatas.column" @change="changePicker" />
           </div>
         </view>
+		<view v-else-if="Fileddatas.bx_col_type === 'fk' && Fileddatas.col_type ==='bxzhsq_zyz_zuzhi'">
+		  <div class="mpvue-picer">
+		    <QSPickerCustom ref="nationPickerZ" name="formName" variableName="custom" title="选择组织:" v-model="Fileddatas.column" @change="changePicker" />
+		  </div>
+		</view>
         <textarea
           v-if="Fileddatas.col_type === 'MultilineText'"
           placeholder="请输入内容"

@@ -191,7 +191,6 @@ uni-textarea:focus,input:focus{
 .uni-textarea-textarea,uni-textarea{
 	width: calc(100% - 110upx);
 	min-height:50upx;
-	padding: 15upx 25upx!important;
 }
 /* 新增表单样式结束 */
 .uni-input {

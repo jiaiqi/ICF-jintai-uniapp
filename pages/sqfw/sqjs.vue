@@ -194,7 +194,7 @@
 		
 		
 		
-		<view v-else class="" v-for="(item,index) in listhome" :key="index" >
+		<view v-else class="" v-for="(item,index) in listhome" :key="index"  >
 			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
 			<view class="content-box">
 				<image class="imageHotel" src="../../static/img/hotels.png" mode="">
@@ -202,16 +202,16 @@
 				</image>
 				<view class="listtext">
 					<view class="testline" style="display: flex;">
-						<text style="display: block;font-weight: 600;font-size: 16px;">{{item.sqname}}</text> 
+						<text style="display: block;font-weight: 600;font-size: 16px;" @click="navxq(item.id)">{{item.sqname}}</text> 
 						 <view class="listcenter" style="display: flex">
 							<image src="../../static/img/ditu.png" mode="" class="calls"  @click="open(0)"></image>
 						 </view>
 					</view>
-					<view class="testline" style="display: flex;font-size: 15px;color: #666;">
+					<view class="testline" style="display: flex;font-size: 15px;color: #666;" @click="navxq(item.id)">
 							<image class="mapwz" src="../../static/img/wz.png" mode="" ></image>
 							<text style="vertical-align:middle;" class="textline">{{item.sqaddress}}</text>
 					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;">
+					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;"  @click="navxq(item.id)">
 						<view class="textFlex textFlexborder">
 						  <text v-if="item.sqfamily>800&&item.sqspace>1200" class="backcolor">优质小区</text>
 						  <text v-if="item.sqfamily>800" class="mapborder">面积大</text>
@@ -262,7 +262,7 @@
 		methods:{
 			getdata(index){
 				
-				let url = "http://39.98.203.134:8081/sqfw/select/srvzhsq_information_select?srvzhsq_information_select"
+				let url = this.$api.select + "/sqfw/select/srvzhsq_information_select?srvzhsq_information_select"
 				let req = {};
 				req.serviceName = 'srvzhsq_information_select';
 				req.colNames = ['*'];
@@ -328,28 +328,12 @@
 			  plus.runtime.openWeb(this.url, function(res) {
 			    console.log(res);
 			  });
+			},
+			navxq(id){
+				uni.navigateTo({
+					url: './sqxqjs?id='+id,
+				});
 			}
-			// navxq(e,index,phone,dress){
-			// 	console.log(e,index)
-			// 	uni.setStorage({
-			// 		key:'name',
-			// 	   data:{
-			// 		   'sqname':e,
-			// 		   'num':index,
-			// 		   'phone':phone,
-			// 		   'dress':dress
-			// 	   },
-			// 	    success: function () {
-			// 	        console.log('success');
-			// 	    }
-			// 	});
-			// 	uni.navigateTo({
-			// 		url: './sqxq',
-			// 		success: res => {},
-			// 		fail: () => {},
-			// 		complete: () => {}
-			// 	});
-			// }
 		},
 		onLoad(){
 			this.getdata(0)

@@ -21,7 +21,7 @@ export default {
 		return{
 				lists:[
 					{"img":"../../static/img/js.png","name":"社区介绍","english":'Community introduce',"url":"./sqjs"},
-					{"img":"../../static/img/hd.png","name":"社区活动","english":'community activity ',"url":"./sqjs"},
+					{"img":"../../static/img/hd.png","name":"社区活动","english":'community activity ','url':'../zhdj/gggs?serve=srvzhsq_activity_record_select'},
 					{"img":"../../static/img/lt.png","name":"社区论坛","english":'community forum',"url":"./sqjs"},
 					{"img":"../../static/img/fws.png","name":"第三方服务","english":'OTT services',"url":"./dsf"},
 				]

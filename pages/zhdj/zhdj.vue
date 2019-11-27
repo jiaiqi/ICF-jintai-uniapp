@@ -29,12 +29,12 @@ export default {
       	selectedBackgroundColor: 'rgba(255,255,255,.8)'
       },
 			shortcutMenu: [
-				{ image: '../../static/img/djhd.png', text: '党建活动' },
-				{ image: '../../static/img/gsgg.png', text: '公告公示' },
+				{ image: '../../static/img/djhd.png', text: '党建活动' ,'url':'./gggs?serve=srvzhsq_djhdjl_djhd_select'},
+				{ image: '../../static/img/gsgg.png', text: '公告公示','url':'./gggs?serve=srvzhsq_gsgg_select' },
 				{ image: '../../static/img/jypx.png', text: '党建培训', url: '../djpx/djpx' },
 				{ image: '../../static/img/dyfw.png', text: '党员服务' },
-				{ image: '../../static/img/shzz.png', text: '党组织' },
-				{ image: '../../static/img/rctd.png', text: '人才天地' },
+				{ image: '../../static/img/shzz.png', text: '党组织' ,'url':'./dzz'},
+				{ image: '../../static/img/rctd.png', text: '人才天地' ,'url':'./rctd'},
 				{ image: '../../static/img/sqlt.png', text: '党建论坛' }
 			]
 		};

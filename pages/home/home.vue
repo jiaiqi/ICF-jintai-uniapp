@@ -56,6 +56,13 @@ export default {
 				{ image: '../../static/img/shzz.png', text: '社会组织', url: '../shzz/zzhome' },
 				{ image: '../../static/img/zyfw.png', text: '志愿服务', url: null },
 				{ image: '../../static/img/sqlt.png', text: '社区论坛', url: '../forum/forum' }
+        // { image: '../../static/img/appicon/zh.png', text: '智慧党建', url: '../zhdj/zhdj' },
+        // { image: '../../static/img/appicon/sq.png', text: '社区服务', url: '../sqfw/sqfw' },
+        // { image: '../../static/img/appicon/gg.png', text: '公共服务', url: null },
+        // { image: '../../static/img/appicon/bm.png', text: '便民服务', url: '../bmfw/bmfw' },
+        // { image: '../../static/img/appicon/sh.png', text: '社会组织', url: '../shzz/zzhome' },
+        // { image: '../../static/img/appicon/zy.png', text: '志愿服务', url: null },
+        // { image: '../../static/img/appicon/lt.png', text: '社区论坛', url: '../forum/forum' }
 			],
 			modals: [],
 			menus: []

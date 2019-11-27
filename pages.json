@@ -52,7 +52,14 @@
       "style": {
         // "navigationBarTitleText": "智慧党建",
       }
-    }, {
+    },
+    {
+      "path": "pages/zhdj/gggs",
+      "style": {
+      }
+
+    },
+    {
       "path": "pages/djpx/djpx",
       "style": {
         "navigationBarTitleText": "党建培训",
@@ -100,14 +107,31 @@
     {
       "path": "pages/sqfw/sqxq",
       "style": {
-        "navigationBarTitleText": "社区详情",
-        "navigationBarBackgroundColor": "#FB6A6A"
+        "navigationBarTitleText": "公告详情"
       }
     },
+	{
+	  "path": "pages/zhdj/ggcontent",
+	  "style": {
+	    "navigationBarTitleText": "党组织机构详情"
+	  }
+	},
+    {
+      "path": "pages/zhdj/dzz",
+      "style": {
+        "navigationBarTitleText": "党组织"  
+      }
+    },
+	{
+	  "path": "pages/zhdj/rctd",
+	  "style": {
+	    "navigationBarTitleText": "人才天地"  
+	  }
+	},
     {
       "path": "pages/sqfw/sqdh",
       "style": {
-        "navigationBarBackgroundColor": "#FB6A6A"
+        "navigationBarBackgroundColor": "#FB6A6A"     
       }
     },
     {
@@ -118,6 +142,20 @@
         "enablePullDownRefresh": true
       }
     },
+{
+      "path": "pages/shzz/fromitens",
+      "style": {
+        "navigationBarTitleText": "加入组织"
+       
+      }
+    },
+	{
+	  "path": "pages/sqfw/sqxqjs",
+	  "style": {
+	    "navigationBarTitleText": "社区详情",
+		 "navigationBarBackgroundColor": "#FB6A6A"
+	  }
+	},
     {
       "path": "pages/shzz/fromtext",
       "style": {
@@ -144,8 +182,10 @@
       "path": "pages/bmfw/peopleInfo/peopleInfo",
       "style": {}
     }, {
-      "path": "pages/bmfw/ctxm/ctxm",
-      "style": {}
+      "path": "pages/bmfw/ctxm/ctxm", //创投项目
+      "style": {
+        "navigationBarTitleText": "创投项目"
+      }
     }, {
       "path": "pages/forum/forum",
       "style": {
@@ -156,8 +196,15 @@
       "style": {
         "navigationBarTitleText": "发帖"
       }
+    }, {
+      "path": "pages/ggfw/ggfw",
+      "style": {}
     }
-  ],
+      ,{
+            "path" : "pages/forum/detail",
+            "style" : {}
+        }
+    ],
   "tabBar": {
     "color": "#7a7e83",
     "selectedColor": "#E51C23",

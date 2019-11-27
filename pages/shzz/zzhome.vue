@@ -86,7 +86,7 @@
 				<text>{{bordermore?'更多>>':'收起<<'}}</text>
 			</view>
 		</view> -->
-		<button class="btnBottm" type="primary"  @tap="join(selectList[2])"  size="default">新增</button>
+		<button class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">新增组织</button>
 	</view>
 	
 	
@@ -126,20 +126,6 @@ export default {
 			],
 			listhome:[],
 			listhomeall:[],
-			arr:{
-				zhi:[
-					{"se":"嘀咕嘀咕郭德纲","s2":"未审批"},
-					{"se":"嘀咕嘀咕郭德纲","s2":"已审批"},
-					{"se":"嘀咕嘀咕郭德纲","s2":"未审批"},
-					{"se":"嘀咕嘀咕郭德纲","s2":"已审批"},
-				],
-				she:[
-					{"1":"嘀咕嘀咕郭德纲","2":"未审批"},
-					{"1":"嘀咕嘀咕郭德纲","2":"已审批"},
-					{"1":"嘀咕嘀咕郭德纲","2":"未审批"},
-					{"1":"嘀咕嘀咕郭德纲","2":"已审批"},
-				]
-			}
 		}
 	},
 	methods:{
@@ -193,7 +179,7 @@ export default {
 		});
 	},
 	getdata(){
-		let url = "http://39.98.203.134:8081/sqfw/select/srvzhsq_zyz_zuzhi_select?srvzhsq_zyz_zuzhi_select"
+		let url = this.$api.select +"/sqfw/select/srvzhsq_zyz_zuzhi_select?srvzhsq_zyz_zuzhi_select"
 		let req = {};
 		req.serviceName = 'srvzhsq_zyz_zuzhi_select';
 		req.colNames = ['*'];
@@ -210,7 +196,7 @@ export default {
 		})
 	},
 	getdataall(){
-		let url = "http://39.98.203.134:8081/sqfw/select/srvzhsq_social_organizie_select?srvzhsq_social_organizie_select"
+		let url = this.$api.select +"/sqfw/select/srvzhsq_social_organizie_select?srvzhsq_social_organizie_select"
 		let req = {};
 		req.serviceName = 'srvzhsq_social_organizie_select';
 		req.colNames = ['*'];
@@ -227,11 +213,14 @@ export default {
 		})
 	},
 },
-mounted(){
-	this.getdata()
-	this.getdataall()
-}
-}
+	mounted(){
+		this.getdata()
+		this.getdataall()
+	},
+	onLoad(){
+			
+		}
+	}
 
 </script>
 
@@ -298,7 +287,7 @@ mounted(){
 	.btnBottm{
 		width: 92% ;
 		background:#E51C23 ;
-		margin: 20upx auto;
+		margin: 0  auto  60upx;
 	}
 	.colortext{
 		color: green;
