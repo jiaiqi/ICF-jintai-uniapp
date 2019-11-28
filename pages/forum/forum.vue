@@ -20,7 +20,7 @@
       </view>
       <transition name="slide-fade">
         <view class="list_content" v-if="selectList[1].resDatas.length > 0">
-          <view class="list_item" v-for="(item,index) in selectList[1].resDatas" :key="index" @tap="toForumDetail(item)">
+          <view class="list_item" v-for="item in selectList[1].resDatas" :key="item.id" @tap="toForumDetail(item)">
             <view class="item_title">{{ item.note_title }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
           </view>
@@ -130,7 +130,8 @@ export default {
     toForumDetail(item){
       console.log(JSON.stringify(item))
       uni.navigateTo({
-        url: './detail?query=' + encodeURIComponent(JSON.stringify(item))
+        // url: 'detail?query=' + encodeURIComponent(JSON.stringify(item))
+        url: 'detail?no=' + item.note_no
       });
     },
     toMore(to) {

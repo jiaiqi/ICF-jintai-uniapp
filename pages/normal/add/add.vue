@@ -120,7 +120,6 @@ export default {
       let params = [
         {
           serviceName: 'srvzhsq_pxap_add',
-          queryMethod: 'add',
           condition: [],
           data: []
         }

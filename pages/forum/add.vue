@@ -10,6 +10,13 @@
         <div class="mpvue-picer"><QSPickerCustom ref="nationPicker" name="formName" title="分类" variableName="custom" v-model="classify" @change="changePicker" /></div>
       </div>
     </view>
+    
+  <!--  <view class="forumClassBox">
+      <div class="class_box_title">
+        <image src="../../static/img/class.png" mode="" class="icon"></image>
+        <div class="mpvue-picer"><QSPickerCustom ref="columnPicker" name="formName" title="栏目" variableName="custom" v-model="noteColumn" @change="changePicker" /></div>
+      </div>
+    </view> -->
     <view class="forumContentBox">
       <image src="../../static/img/words.png" mode="" class="icon"></image>
       <view class="editbox">
@@ -53,11 +60,14 @@ export default {
   data() {
     return {
       appNo: 'sqfw',
-      classify: {},
+      classify: {}, // 类型
+      noteColumn:{}, // 栏目
       paddingBottom: 20,
       pageTitle: '',
       a: [11213, 12],
       selectList: [], //类型下拉选项
+      noteColumns:[], //栏目下拉选项
+      
       imageList: [],
       imgPathList: [],
       textareaVal: '',
@@ -207,21 +217,32 @@ export default {
       this.$http.post(url, req).then(res => {
         if (res.data.data) {
           let cols = res.data.data.srv_cols;
-          let colArr = [];
+          let colArr = []; // 类型
+          let columnArr = []; // 栏目
+          /* TODO 查找论坛栏目列表 */ 
+          
           let selectList = [];
           cols.map(item => {
             if (item.label === '类型') {
               console.log(item);
               colArr = colArr.concat(item.option_list_v2);
             }
+            if(item.columns==="note_column"){
+              console.log(item);
+              columnArr = columnArr.concat(item.option_list_v2)
+            }
           });
           colArr.map(item => {
             selectList.push(item.label);
           });
+          columnArr.map(item => {
+            columnArr.push(item.label);
+          });
           this.selectList = colArr;
+          this.noteColumns = columnArr
           // let nationArr = ["学术","政治","军事"];
           setTimeout(() => {
-            this.setPickerData(selectList);
+            this.setPickerData(selectList,columnArr);
           }, 500);
         }
       });
@@ -293,13 +314,15 @@ export default {
     changePicker(e) {
       console.log(e);
     },
-    setPickerData(nationArr) {
+    setPickerData(nationArr,columnArr) {
       const data1 = [nationArr];
-      this.setPickerDataFc('nationPicker', data1);
+      const data2 = [columnArr]
+      this.setPickerDataFc(data1,data2);
     },
-    setPickerDataFc(name, data) {
+    setPickerDataFc(data1, data2) {
       console.log('准备 调用setData', this.$refs);
-      this.$refs['nationPicker'].setData(data);
+      this.$refs['nationPicker'].setData(data1);
+      this.$refs['columnPicker'].setData(data2);
     }
   },
   onLoad(option) {

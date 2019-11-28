@@ -15,7 +15,15 @@
       "style": {
         "navigationBarTitleText": "我的"
       }
-    }, {
+    },
+    {
+      "path": "pages/user/person",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationBarBackgroundColor":"#e52d27"
+      }
+    },
+    {
       "path": "pages/navs/navs",
       "style": {
         "navigationBarTitleText": "全部功能"
@@ -55,8 +63,7 @@
     },
     {
       "path": "pages/zhdj/gggs",
-      "style": {
-      }
+      "style": {}
 
     },
     {
@@ -110,28 +117,28 @@
         "navigationBarTitleText": "公告详情"
       }
     },
-	{
-	  "path": "pages/zhdj/ggcontent",
-	  "style": {
-	    "navigationBarTitleText": "党组织机构详情"
-	  }
-	},
+    {
+      "path": "pages/zhdj/ggcontent",
+      "style": {
+        "navigationBarTitleText": "党组织机构详情"
+      }
+    },
     {
       "path": "pages/zhdj/dzz",
       "style": {
-        "navigationBarTitleText": "党组织"  
+        "navigationBarTitleText": "党组织"
       }
     },
-	{
-	  "path": "pages/zhdj/rctd",
-	  "style": {
-	    "navigationBarTitleText": "人才天地"  
-	  }
-	},
+    {
+      "path": "pages/zhdj/rctd",
+      "style": {
+        "navigationBarTitleText": "人才天地"
+      }
+    },
     {
       "path": "pages/sqfw/sqdh",
       "style": {
-        "navigationBarBackgroundColor": "#FB6A6A"     
+        "navigationBarBackgroundColor": "#FB6A6A"
       }
     },
     {
@@ -142,20 +149,20 @@
         "enablePullDownRefresh": true
       }
     },
-{
+    {
       "path": "pages/shzz/fromitens",
       "style": {
         "navigationBarTitleText": "加入组织"
-       
+
       }
     },
-	{
-	  "path": "pages/sqfw/sqxqjs",
-	  "style": {
-	    "navigationBarTitleText": "社区详情",
-		 "navigationBarBackgroundColor": "#FB6A6A"
-	  }
-	},
+    {
+      "path": "pages/sqfw/sqxqjs",
+      "style": {
+        "navigationBarTitleText": "社区详情",
+        "navigationBarBackgroundColor": "#FB6A6A"
+      }
+    },
     {
       "path": "pages/shzz/fromtext",
       "style": {
@@ -163,19 +170,36 @@
       }
 
     },
+	
+	 { "path" : "pages/phones/phones", 
+	 "style" : { "navigationBarTitleText" : "通讯录",
+	 "app-plus":{ "bounce":"none", "scrollIndicator":"none" } } }, 
+	 { "path" : "pages/phones/phone-search",
+	  "style" : { "navigationBarTitleText" : "搜索联系人" } },
+	
+	
     {
       "path": "pages/normal/add/add",
       "style": {}
     }, {
       "path": "pages/bmfw/bmfw",
       "style": {
-        "navigationBarTitleText": "便民服务"
+
+        "navigationBarTitleText": "便民服务",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
       }
     },
     {
       "path": "pages/bmfw/selectInfo/selectInfo",
       "style": {
-        "navigationBarTitleText": "居民信息查询"
+        "navigationBarTitleText": "居民信息查询",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
       }
     },
     {
@@ -184,24 +208,49 @@
     }, {
       "path": "pages/bmfw/ctxm/ctxm", //创投项目
       "style": {
-        "navigationBarTitleText": "创投项目"
+        "navigationBarTitleText": "创投项目",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
       }
     }, {
       "path": "pages/forum/forum",
       "style": {
-        "navigationBarTitleText": "社区论坛"
+        "navigationBarTitleText": "社区论坛",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
       }
     }, {
       "path": "pages/forum/add",
       "style": {
-        "navigationBarTitleText": "发帖"
+        "navigationBarTitleText": "发帖",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
       }
     }, {
       "path": "pages/ggfw/ggfw",
       "style": {}
+    }, {
+      "path": "pages/forum/detail",
+      "style": {
+        "navigationBarTitleText": "详情",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
+      }
     }
       ,{
-            "path" : "pages/forum/detail",
+            "path" : "pages/user/info",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/modify",
             "style" : {}
         }
     ],
@@ -220,13 +269,13 @@
         "iconPath": "static/img/msg.png",
         "selectedIconPath": "static/img/msg_active.png"
       }, {
-        "pagePath": "pages/contact/contact",
+        "pagePath": "pages/phones/phones",
         "text": "通讯录",
         "iconPath": "static/img/contact.png",
         "selectedIconPath": "static/img/contact_active.png"
       },
       {
-        "pagePath": "pages/user/user",
+        "pagePath": "pages/user/person",
         "text": "我的",
         "iconPath": "static/img/user.png",
         "selectedIconPath": "static/img/user_active.png"

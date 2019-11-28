@@ -9,7 +9,7 @@
 
       <!-- 发贴用户信息 -->
       <div class="poster_view">
-        <uni-icons type="contact" size="60" color="#dd524d"></uni-icons>
+        <uni-icons type="contact" size="60" color="#dd524d" v-if="!userImage"></uni-icons>
         <image :src="userImage" mode="" class="touxiang" v-if="userImage"></image>
         <view class="user_info">
           <div class="account">
@@ -22,11 +22,19 @@
 
       <!-- 内容 -->
       <div v-if="query.content" class="content_view" v-html="query.content"></div>
+      <!-- 主贴点赞 -->
+      <div class="main_agree">
+        <div class="agree">
+          <text class="text">赞一下</text>
+          <image :src="agree_icon" mode="" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num, query.note_no)"></image>
+          <uni-badge type="error" :text="query.praise_num ? query.praise_num : '0'"></uni-badge>
+        </div>
+      </div>
 
       <!-- 回复 -->
       <div class="little_title">评论</div>
       <div class="reply_view">
-        <div class="noddata" v-if="backData.length<=0">暂无评论</div>
+        <div class="noddata" v-if="backData.length <= 0">暂无评论</div>
         <div class="discuss_item" v-for="(item, index) in backData" :key="index">
           <!-- <image src="" mode="" class="touxiang"></image> -->
           <uni-icons type="contact" size="60" color="#dd524d"></uni-icons>
@@ -35,24 +43,11 @@
               <div class="user_info">{{ item.create_user }}</div>
               <div class="agree">
                 <image :src="item.agree_icon" mode="" style="width: 16px;height: 16px;" @click="addAgree(item, item.praise_num, item.id)"></image>
-                <uni-badge :text="item.praise_num" type="error" v-if="item.praise_num <= 99"></uni-badge>
+                <uni-badge :text="item.praise_num ? item.praise_num : '0'" type="error" v-if="item.praise_num <= 99"></uni-badge>
                 <uni-badge text="99+" type="error" v-else></uni-badge>
               </div>
             </div>
-            <div class="content_box" v-html="item.remark">
-              <!--              我如果爱你</br>
-              绝不像攀援的凌霄花，</br>
-              借你的高枝炫耀自己；</br>
-              我如果爱你</br>
-              绝不学痴情的鸟儿，</br>
-              为绿荫重复单调的歌曲；</br>
-              也不止像泉源，</br>
-              常年送来清凉的慰藉；</br>
-              也不止像险峰，</br>
-              增加你的高度，衬托你的威仪。</br>
-              甚至日光，</br>
-              甚至春雨。</br> -->
-            </div>
+            <div class="content_box" v-html="item.remark"></div>
             <div class="time_date_box">
               <div class="time_date">{{ item.create_time }}</div>
               <div class="settings_icon" v-if="item.create_user === userInfo.user_no">
@@ -79,17 +74,171 @@ export default {
   data() {
     return {
       userInfo: {}, //账号用户信息
-      userImage:"",
+      userImage: '',
       note_user_info: {}, //发帖用户信息
       query: {},
       note_no: '',
       agree_icon: '../../static/img/agreeb.png',
+      disagree_icon: '../../static/img/agreea.png',
       agree_status: false,
       backData: [],
+      agreePepoleList: [], //点赞人合集
       remark: '' //回复内容
     };
   },
+  onLoad: function(option) {
+    uni.setNavigationBarTitle({
+      title: '详情'
+    });
+    if (option) {
+      // let query = JSON.parse(option.query);
+      // console.log('query:', query);
+      // this.query = query;
+      this.note_no = option.no;
+      // this.note_no = query.note_no;
+      this.getMainInfo();
+      this.getWriteBackList(); // 获取留言列表
+      uni.setNavigationBarTitle({
+        title: '详情'
+      });
+      this.getAgreePeopleList(this.note_no);
+    }
+    let userInfo = uni.getStorageSync('userInfo');
+    this.userInfo = userInfo;
+  },
   methods: {
+    getNoteUserInfo() {
+      // 获取发帖人信息
+      let url = this.$api.select + '/sso/select/srvsso_user_select';
+      let req = {
+        serviceName: 'srvsso_user_select',
+        colNames: ['*'],
+        condition: [{ colName: 'user_no', ruleType: 'eq', value: this.query.create_user }],
+        order: []
+      };
+      this.$http.post(url, req).then(res => {
+        if (res.data.state === 'SUCCESS' && res.data.data) {
+          console.log(res.data.data[0]);
+          this.note_user_info = res.data.data[0];
+        }
+      });
+    },
+    getTouxiangPath() {
+      // 获取头像路径
+      let imgId = this.query.head_img;
+      let url = this.$api.select + '/file/select/srvfile_attachment_select';
+      let req = {
+        colNames: ['*'],
+        condition: [
+          {
+            colName: 'file_no',
+            ruleType: 'eq',
+            value: imgId // 图片编号
+          }
+        ],
+        serviceName: 'srvfile_attachment_select'
+      };
+      this.$http.post(url, req).then(res => {
+        console.log(res.data.data[0].fileurl);
+        if (res.data.data) {
+          this.note_user_info['head_img'] = this.$api.select + '/file/download?filePath=' + res.data.data[0].fileurl;
+          this.userImage = this.$api.select + '/file/download?filePath=' + res.data.data[0].fileurl;
+        }
+      });
+    },
+    getMainInfo() {
+      // 查找主贴相关数据
+      let note_no = this.note_no;
+      let url = this.$api.select + '/sqfw/select/srvzhsq_forum_note_select';
+      let req = { serviceName: 'srvzhsq_forum_note_select', colNames: ['*'], condition: [{ colName: 'note_no', ruleType: 'like', value: note_no }], order: [] };
+      this.$http.post(url, req).then(res => {
+        if (res.data.state === 'SUCCESS' && res.data.data) {
+          this.query = res.data.data[0];
+          this.getNoteUserInfo(); //查找此贴发帖人信息
+          this.getTouxiangPath(); // 查找发帖人头像
+          this.getAgreePeopleList(this.note_no);
+        }
+      });
+    },
+    getAgreePeopleList(note_no) {
+      // 查找赞过此贴的人的列表
+      let url = this.$api.select + '/sqfw/select/srvzhsq_forum_praise_select';
+      let req = { serviceName: 'srvzhsq_forum_praise_select', colNames: ['*'], condition: [{ colName: 'note_no', ruleType: 'like', value: note_no }] };
+      this.$http.post(url, req).then(res => {
+        if (res.data.data) {
+          this.agreePepoleList = res.data.data;
+          // 得到此贴所有点赞人的集合
+          let userList = this.agreePepoleList;
+          let userInfo = uni.getStorageSync('userInfo');
+          userList = userList.map(users => {
+            return users.praise_user;
+          });
+          console.log(userList, userInfo.user_no);
+          if (userList.indexOf(userInfo.user_no) != -1) {
+            this.agree_icon = '../../static/img/agreea.png';
+            this.agree_status = true;
+          } else {
+            this.agree_icon = '../../static/img/agreeb.png';
+            this.agree_status = false;
+          }
+        }
+      });
+    },
+    getAgreePeopleForLiuYan(leave_no) {
+      // 获取赞过此条留言的人的列表
+      let url = this.$api.select + '/sqfw/select/srvzhsq_leaveword_praise_select';
+      let req = {
+        serviceName: 'srvzhsq_leaveword_praise_select',
+        colNames: ['*'],
+        condition: [
+          {
+            colName: 'leave_no',
+            ruleType: 'eq',
+            value: leave_no // 图片编号
+          }
+        ]
+      };
+      this.$http.post(url, req).then(res => {
+        console.log(res.data.data);
+        let data = res.data.data;
+        let arr = [];
+        data.map(d => {
+          arr.push(d.praise_user);
+        });
+      });
+    },
+    addAgreePeople() {
+      // 在点赞信息表中增加此账号对此贴的点赞信息
+      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_praise_add';
+      let userInfo = uni.getStorageSync('userInfo');
+      console.log(userInfo);
+      let req = [
+        { serviceName: 'srvzhsq_forum_praise_add', condition: [], data: [{ note_no: 'BX-NT201911270053', praise_user: userInfo.user_no, praise_time: this.getDateTime() }] }
+      ];
+      this.$http.post(url, req).then(res => {
+        if (res.data.state === 'SUCCESS') {
+          // this.getWriteBackList();
+          console.log('点赞成功');
+        }
+      });
+    },
+    delAgreePeople() {
+      // 在点赞信息表中删除此账号对此贴的点赞信息
+      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_praise_delete';
+      let userInfo = this.userInfo;
+      let req = [
+        {
+          serviceName: 'srvzhsq_forum_praise_delete',
+          condition: [{ colName: 'praise_user', ruleType: 'eq', value: userInfo.user_no }, { colName: 'note_no', ruleType: 'eq', value: this.note_no }]
+        }
+      ];
+      this.$http.post(url, req).then(res => {
+        if (res.data.state === 'SUCCESS') {
+          // this.getWriteBackList();
+          console.log('删除点赞成功');
+        }
+      });
+    },
     addAgree(item, num, id) {
       this.agree_status = !this.agree_status;
       if (this.agree_status) {
@@ -107,8 +256,28 @@ export default {
         }
       });
     },
+    addMainAgree(item, num, no) {
+      // 主贴点赞
+      this.agree_status = !this.agree_status;
+      if (this.agree_status) {
+        this.agree_icon = '../../static/img/agreea.png';
+        num++;
+        this.addAgreePeople();
+      } else {
+        this.agree_icon = '../../static/img/agreeb.png';
+        num--;
+        this.delAgreePeople();
+      }
+      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_note_update';
+      let req = [{ serviceName: 'srvzhsq_forum_note_update', condition: [{ colName: 'note_no', ruleType: 'eq', value: no }], data: [{ praise_num: num }] }];
+      this.$http.post(url, req).then(res => {
+        if (res.data.state === 'SUCCESS') {
+          this.getMainInfo();
+        }
+      });
+    },
     getWriteBackList() {
-      // 获取回复列表
+      // 获取留言列表
       let url = this.$api.select + '/sqfw/select/srvzhsq_leave_word_select';
       let req = {
         serviceName: 'srvzhsq_leave_word_select',
@@ -120,16 +289,34 @@ export default {
       this.$http.post(url, req).then(res => {
         if (res.data.data) {
           let data = res.data.data;
+          let userList = this.agreePepoleList;
+          userList = userList.map(users => {
+            return users.praise_user;
+          });
+          // console.log(userList);
           data.map(item => {
-            item.agree_icon = '../../static/img/agreeb.png';
+            if (userList.indexOf(item.leave_user) != -1) {
+              item.agree_icon = '../../static/img/agreea.png';
+            } else {
+              item.agree_icon = '../../static/img/agreeb.png';
+            }
+          });
+          let arr = [];
+          data.map(datas => {
+            arr = this.getAgreePeopleForLiuYan(datas.leave_no);
+            // arr
+            console.log(arr);
           });
           this.backData = data;
-          console.log(this.backData);
+          console.log(this.backData, arr);
         }
       });
     },
+    replyLeaveMessage() {
+      // 回复留言(评论)/评论留言(评论)
+    },
     writeBack() {
-      // 回复消息
+      // 留言/评论
       let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_add';
       let req = [
         {
@@ -150,6 +337,7 @@ export default {
           ]
         }
       ];
+
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           uni.showToast({
@@ -164,8 +352,9 @@ export default {
     deleteItem(id) {
       // 删除回复
       uni.showModal({
+        
         title: '确认删除此条评论？',
-        success: (res) => {
+        success: res => {
           if (res.confirm) {
             console.log('用户点击确定');
             let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_delete';
@@ -195,29 +384,14 @@ export default {
       let dd = date.getDay();
       return yy + '-' + mm + '-' + dd + ' ' + h + ':' + m + ':' + s;
     }
-  },
-  onLoad(option) {
-    let userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
-      this.userInfo = JSON.parse(userInfo).data;
-      console.log('userInfo', this.userInfo);
-    }
-    console.log(option.query);
-    if (option) {
-      let query = JSON.parse(option.query);
-      console.log('query:', query);
-      this.query = query;
-      this.note_no = query.note_no;
-      this.getWriteBackList();
-      uni.setNavigationBarTitle({
-        title: '详情'
-      });
-    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+img {
+  width: 100upx;
+}
 .forum_detail_wrap {
   width: 100%;
   position: relative;
@@ -234,7 +408,7 @@ export default {
     width: 120upx;
     height: 120upx;
     border-radius: 100%;
-    background-color: #dd524d;
+    // background-color: #dd524d;
     margin: 20upx;
   }
   .title_view {
@@ -290,6 +464,28 @@ export default {
     margin: 10upx auto;
     padding: 20upx;
     border-radius: 5px;
+    /deep/ img {
+      max-width: 300px;
+    }
+  }
+  .main_agree {
+    display: flex;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    width: calc(100% - 40upx);
+    min-height: 50upx;
+    padding: 20upx;
+    border-radius: 5px;
+    .agree {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .text {
+        font-size: 24upx;
+        font-weight: 600;
+        padding: 0 20upx;
+      }
+    }
   }
   .little_title {
     font-size: 24upx;
@@ -302,11 +498,11 @@ export default {
     margin-bottom: 150upx;
     min-height: 200upx;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    .noddata{
+    .noddata {
       width: 100%;
       height: 100%;
       text-align: center;
-      line-height:  200upx;
+      line-height: 200upx;
     }
     .discuss_item {
       width: 100%;
