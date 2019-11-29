@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
 	<view class="alphabet">
 		<view class="alphabet-item" 
 		v-for="(item, key) of phones" 
@@ -118,4 +118,3 @@
 }
 
 </style>
- -->

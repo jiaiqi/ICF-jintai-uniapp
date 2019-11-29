@@ -3,7 +3,7 @@
     <view class="forum_detail">
       <!-- 标题 -->
       <div class="title_view">
-        <text class="title_text bold_text">{{ query.note_title }}</text>
+        <text class="title_text bold_text">{{ query.bt }}</text>
         <span class="time_date">时间：{{ query.create_time }}</span>
       </div>
 
@@ -16,17 +16,17 @@
             发帖人:
             <text class="username">{{ query.create_user }}</text>
           </div>
-          <div class="state">状&nbsp;&nbsp;&nbsp;态:&nbsp;&nbsp;{{ query.note_status }}</div>
+          <div class="state">状&nbsp;&nbsp;&nbsp;态:&nbsp;&nbsp;{{ query.proc_status }}</div>
         </view>
       </div>
 
       <!-- 内容 -->
-      <div v-if="query.content" class="content_view" v-html="JSON.parse(JSON.stringify(query.content).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
+      <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
       <!-- 主贴点赞 -->
    <!--   <div class="main_agree">
         <div class="agree">
           <text class="text">赞一下</text>
-          <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num, query.note_no)"></image>
+          <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num, query.ftno)"></image>
           <uni-badge type="error" :text="query.praise_num ? query.praise_num : '0'"></uni-badge>
         </div>
       </div> -->
@@ -48,7 +48,7 @@
                 <uni-badge text="99+" type="error" v-else></uni-badge>
               </div>
             </div>
-            <div class="content_box" v-html="item.remark"></div>
+            <div class="content_box" v-html="item.bt"></div>
             <div class="time_date_box">
               <div class="time_date">{{ item.create_time }}</div>
               <div class="settings_icon" v-if="item.create_user === userInfo.user_no">
@@ -66,7 +66,7 @@
       <!-- 主贴点赞 -->
       <div class="main_agree">
         <div class="agree">
-          <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num, query.note_no)"></image>
+          <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num, query.ftno)"></image>
           <uni-badge type="error" :text="query.praise_num ? query.praise_num : '0'"></uni-badge>
         </div>
       </div>
@@ -86,7 +86,7 @@ export default {
       userImage: '',
       note_user_info: {}, //发帖用户信息
       query: {},
-      note_no: '',
+      ftno: '',
       agree_icon: '../../static/img/agreeb.png',
       disagree_icon: '../../static/img/agreea.png',
       agree_status: false,
@@ -100,10 +100,10 @@ export default {
       title: '详情'
     });
     if (option) {
-      this.note_no = option.no;
+      this.ftno = option.no;
       this.getMainInfo();
       this.getWriteBackList(); // 获取留言列表
-      this.getAgreePeopleList(this.note_no); // 查找点赞过此贴的人
+      this.getAgreePeopleList(this.ftno); // 查找点赞过此贴的人
     }
     let userInfo = uni.getStorageSync('userInfo');
     this.userInfo = userInfo;
@@ -151,22 +151,22 @@ export default {
     },
     getMainInfo() {
       // 查找主贴相关数据
-      let note_no = this.note_no;
-      let url = this.$api.select + '/sqfw/select/srvzhsq_forum_note_select';
-      let req = { serviceName: 'srvzhsq_forum_note_select', colNames: ['*'], condition: [{ colName: 'note_no', ruleType: 'like', value: note_no }], order: [] };
+      let ftno = this.ftno;
+      let url = this.$api.select + '/zhdj/select/srvzhsq_djlt_ftxx_select';
+      let req = { serviceName: 'srvzhsq_djlt_ftxx_select', colNames: ['*'], condition: [{ colName: 'ftno', ruleType: 'eq', value: ftno }], order: [] };
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS' && res.data.data) {
           this.query = res.data.data[0];
           this.getNoteUserInfo(); //查找此贴发帖人信息
           this.getTouxiangPath(); // 查找发帖人头像
-          this.getAgreePeopleList(this.note_no);
+          this.getAgreePeopleList(this.ftno);
         }
       });
     },
-    getAgreePeopleList(note_no) {
+    getAgreePeopleList(ftno) {
       // 查找赞过此贴的人的列表
-      let url = this.$api.select + '/sqfw/select/srvzhsq_forum_praise_select';
-      let req = { serviceName: 'srvzhsq_forum_praise_select', colNames: ['*'], condition: [{ colName: 'note_no', ruleType: 'like', value: note_no }] };
+      let url = this.$api.select + '/zhdj/select/srvzhsq_forum_praise_select';
+      let req = { serviceName: 'srvzhsq_forum_praise_select', colNames: ['*'], condition: [{ colName: 'ftno', ruleType: 'like', value: ftno }] };
       this.$http.post(url, req).then(res => {
         if (res.data.data) {
           this.agreePepoleList = res.data.data;
@@ -190,7 +190,7 @@ export default {
     },
     async getAgreePeopleForLiuYan(leave_no) {
       // 获取赞过此条留言的人的列表
-      let url = this.$api.select + '/sqfw/select/srvzhsq_leaveword_praise_select';
+      let url = this.$api.select + '/zhdj/select/srvzhsq_leaveword_praise_select';
       let req = {
         serviceName: 'srvzhsq_leaveword_praise_select',
         colNames: ['*'],
@@ -214,10 +214,10 @@ export default {
     },
     addAgreePeople() {
       // 在点赞信息表中增加此账号对此贴的点赞信息
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_praise_add';
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_forum_praise_add';
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
-      let req = [{ serviceName: 'srvzhsq_forum_praise_add', condition: [], data: [{ note_no: this.note_no, praise_user: userInfo.user_no }] }];
+      let req = [{ serviceName: 'srvzhsq_forum_praise_add', condition: [], data: [{ ftno: this.ftno, praise_user: userInfo.user_no }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
@@ -227,12 +227,12 @@ export default {
     },
     delAgreePeople() {
       // 在点赞信息表中删除此账号对此贴的点赞信息
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_praise_delete';
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_forum_praise_delete';
       let userInfo = this.userInfo;
       let req = [
         {
           serviceName: 'srvzhsq_forum_praise_delete',
-          condition: [{ colName: 'praise_user', ruleType: 'eq', value: userInfo.user_no }, { colName: 'note_no', ruleType: 'eq', value: this.note_no }]
+          condition: [{ colName: 'praise_user', ruleType: 'eq', value: userInfo.user_no }, { colName: 'ftno', ruleType: 'eq', value: this.ftno }]
         }
       ];
       this.$http.post(url, req).then(res => {
@@ -258,7 +258,7 @@ export default {
         num++;
       }
       // }
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_update';
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_leave_word_update';
       let req = [{ serviceName: 'srvzhsq_leave_word_update', condition: [{ colName: 'id', ruleType: 'eq', value: id }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
@@ -268,10 +268,10 @@ export default {
     },
     delDiscussAgreePeople(leave_no) {
       // 删除当前登录账号对当前评论的点赞记录
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leaveword_praise_delete';
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_leaveword_praise_delete';
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
-      let req = [{ serviceName: 'srvzhsq_leaveword_praise_delete', condition: [{ colName: 'leave_no', ruleType: 'eq', value: leave_no },{ colName: 'note_no', ruleType: 'eq', value: this.note_no },{ colName: 'praise_user', ruleType: 'eq', value: this.userInfo.user_no }] }];
+      let req = [{ serviceName: 'srvzhsq_leaveword_praise_delete', condition: [{ colName: 'leave_no', ruleType: 'eq', value: leave_no },{ colName: 'ftno', ruleType: 'eq', value: this.ftno },{ colName: 'praise_user', ruleType: 'eq', value: this.userInfo.user_no }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           console.log('删除成功');
@@ -280,7 +280,7 @@ export default {
     },
     addDiscussAgreePeople(leave_no) {
       // 增加当前登录账号对当前评论的点赞记录
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leaveword_praise_add';
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_leaveword_praise_add';
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
       let req = [{ serviceName: 'srvzhsq_leaveword_praise_add', condition: [], data: [{ leave_no: leave_no, praise_user: userInfo.user_no }] }];
@@ -302,8 +302,8 @@ export default {
         num--;
         this.delAgreePeople();
       }
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_note_update';
-      let req = [{ serviceName: 'srvzhsq_forum_note_update', condition: [{ colName: 'note_no', ruleType: 'eq', value: no }], data: [{ praise_num: num }] }];
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_forum_note_update';
+      let req = [{ serviceName: 'srvzhsq_forum_note_update', condition: [{ colName: 'ftno', ruleType: 'eq', value: no }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           this.getMainInfo();
@@ -312,19 +312,19 @@ export default {
     },
     async getWriteBackList() {
       // 获取留言列表
-      let url = this.$api.select + '/sqfw/select/srvzhsq_leave_word_select';
+      let url = this.$api.select + '/zhdj/select/srvzhsq_djlt_lyjl_select';
       let req = {
-        serviceName: 'srvzhsq_leave_word_select',
+        serviceName: 'srvzhsq_djlt_lyjl_select',
         colNames: ['*'],
-        condition: [{ colName: 'note_no', ruleType: 'eq', value: this.note_no }],
+        condition: [{ colName: 'ftno', ruleType: 'like', value: this.ftno }],
         page: { pageNo: 1, rownumber: 10 },
-        order: [{ colName: 'praise_num', orderType: 'desc' }]
+        order: [{ colName: 'create_time', orderType: 'desc' }]
       };
       let res = await this.$http.post(url, req)
       // this.$http.post(url, req).then(res => {
         if (res.data.data) {
           let data = res.data.data;
-          
+          this.backData = data;
           data.forEach(datas => {
             this.getAgreePeopleForLiuYan(datas.leave_no).then(res => {
               datas['agreePeople'] = res;
@@ -336,6 +336,7 @@ export default {
                 datas['agree_icon'] = '../../static/img/agreeb.png' ;
               }
             }).then(()=>{
+              console.log(this.backData)
               this.backData = data;
             }) //获取每一条留言的点赞数
           })
@@ -357,7 +358,7 @@ export default {
         this.remark = ''
         return
       }
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_add';
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_leave_word_add';
       let req = [
         {
           serviceName: 'srvzhsq_leave_word_add',
@@ -365,7 +366,7 @@ export default {
           data: [
             {
               leave_title: this.getDateTime(),
-              note_no: this.note_no,
+              ftno: this.ftno,
               leave_time: this.getDateTime(),
               leave_type: '留言',
               adopt_state: '否',
@@ -396,7 +397,7 @@ export default {
         success: res => {
           if (res.confirm) {
             console.log('用户点击确定');
-            let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_delete';
+            let url = this.$api.select + '/zhdj/operate/srvzhsq_leave_word_delete';
             let req = [{ serviceName: 'srvzhsq_leave_word_delete', condition: [{ colName: 'id', ruleType: 'in', value: id }] }];
             this.$http.post(url, req).then(ress => {
               if (ress.data.state === 'SUCCESS') {

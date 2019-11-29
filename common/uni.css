@@ -395,7 +395,7 @@ radio-group label, checkbox-group label{
 	right: 0;
 	bottom: 0;
 	left: 0;
-	height: 1px;
+	height: 0px;
 	content: '';
 	-webkit-transform: scaleY(.5);
 	transform: scaleY(.5);
@@ -866,17 +866,17 @@ radio-group label, checkbox-group label{
 /* textarea */
 textarea{
 	width: 100%;
-	padding: 15upx 25upx;
+	/* padding: 15upx 25upx; */
 }
 .uni-textarea{
 	width:100%;
 	background:#FFF;
-	padding: 15upx 25upx;
+	/* padding: 15upx 25upx; */
 }
 .uni-textarea textarea{
 	width:96%;
 	/* padding:18upx 2%; */
-	padding: 15upx 25upx;
+	/* padding: 15upx 25upx; */
 	line-height:1.6;
 	font-size:28upx;
 	height:150upx;

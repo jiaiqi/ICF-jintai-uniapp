@@ -68,6 +68,13 @@
 		</view>
 		
 		
+		<view class="list_content" v-if="listData.length > 0&&title=='党建论坛'" >
+		  <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
+		    <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
+		    <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+		  </view>
+		</view>
+    
 		<view class="list_content" v-if="listData.length > 0&&title=='社区活动'" >
 		  <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
 		    <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
@@ -276,18 +283,21 @@ export default {
     }else if (options.to === 'sqlt') { // 社区论坛
       this.getBmList('srvzhsq_forum_note_select');
       this.title = '社区论坛';
-    }else if (options.to === 'sqxc') { // 社区论坛
+    }else if (options.to === 'sqxc') { // 社区献策
       this.getBmList('srvzhsq_forum_opinion_select');
       this.title = '社区献策';
     }else if(options.to === 'gggg'){  //公告公示
 		this.getHmLists('srvzhsq_gsgg_select');
 		this.title = '公告公示';
-	}else if(options.to === 'djjl'){  //公告公示D
+	}else if(options.to === 'djjl'){  //党建活动记录D
 		this.getDmLists('srvzhsq_djhdjl_djhd_select');
 		this.title = '党建活动记录';
-	}else if(options.to === 'sqhd'){  //公告公示D
+	}else if(options.to === 'sqhd'){  //社区活动D
 		this.getWmLists('srvzhsq_activity_record_select');
 		this.title = '社区活动';
+	}else if(options.to === 'djlt'){  //党建论坛D
+		this.getDmLists('srvzhsq_djlt_ftxx_select');
+		this.title = '党建论坛';
 	}
     uni.setNavigationBarTitle({    
     	title: this.title,

@@ -35,7 +35,7 @@ export default {
 				{ image: '../../static/img/dyfw.png', text: '党员服务' },
 				{ image: '../../static/img/shzz.png', text: '党组织' ,'url':'./dzz'},
 				{ image: '../../static/img/rctd.png', text: '人才天地' ,'url':'./rctd'},
-				{ image: '../../static/img/sqlt.png', text: '党建论坛' }
+				{ image: '../../static/img/sqlt.png', text: '党建论坛','url':'../djForum/djForum' }
 			]
 		};
 	},

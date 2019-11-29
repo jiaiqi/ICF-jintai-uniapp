@@ -38,7 +38,7 @@
 		
 		</view>
 
-		<view class="contentBox" @click="detaile(item)" v-for="(item,index) in datalist" :key="index+0.2">
+		<view class="contentBox" @click="detaile(item)" v-for="(item,index) in datalist" :key="index">
 			<text class="crips"></text>
 			
 			<text class="content-news" v-if="item.activity_title">{{item.activity_title}}</text>

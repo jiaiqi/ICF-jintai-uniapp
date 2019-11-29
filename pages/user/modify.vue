@@ -1,6 +1,6 @@
 <template>
   <view>
-    <cmd-nav-bar back title="修改密码"></cmd-nav-bar>
+    <!-- <cmd-nav-bar back title="修改密码"></cmd-nav-bar> -->
     <cmd-page-body type="top">
       <cmd-transition name="fade-up">
         <view class="modify">

@@ -247,11 +247,53 @@
     }
       ,{
             "path" : "pages/user/info",
-            "style" : {}
+            "style": {
+              "navigationBarTitleText": "个人信息",
+              "app-plus": {
+                "animationType": "fade-in",
+                "animationDuration": 300
+              }
+            }
         }
         ,{
             "path" : "pages/user/modify",
-            "style" : {}
+            "style": {
+              "navigationBarTitleText": "修改密码",
+              "app-plus": {
+                "animationType": "fade-in",
+                "animationDuration": 300
+              }
+            }
+        }
+        ,{
+            "path" : "pages/djForum/djForum",//党建论坛
+            "style" : {
+              "navigationBarTitleText": "党建论坛",
+              "app-plus": {
+                "animationType": "fade-in",
+                "animationDuration": 300
+              }
+            }
+        },
+        {
+            "path" : "pages/djForum/add",//党建论坛发帖
+            "style" : {
+              "navigationBarTitleText": "发帖",
+              "app-plus": {
+                "animationType": "fade-in",
+                "animationDuration": 300
+              }
+            }
+        },
+        {
+            "path" : "pages/djForum/detail",//党建论坛详情
+            "style" : {
+              "navigationBarTitleText": "详情",
+              "app-plus": {
+                "animationType": "fade-in",
+                "animationDuration": 300
+              }
+            }
         }
     ],
   "tabBar": {
