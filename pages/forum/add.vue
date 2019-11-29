@@ -279,17 +279,17 @@ export default {
           };
           this.$http.post(url2, req2).then(res2 => {
             if (res2.data.data) {
-              uni.showModal({
-                title: '提交成功，即将跳转到详情',
-                success: res => {
-                  if (res.confirm) {
-                    uni.navigateTo({
-                      url: './detail?query=' + encodeURIComponent(JSON.stringify(res2.data.data[0]))
-                    });
-                  }
-                }
-              });
-              console.log(res2.data.data);
+				uni.showModal({
+				    title: '提示',
+				    content: '提交成功，即将跳转到详情',
+					showCancel:false,
+				    success: function (res) {
+						uni.redirectTo({
+							url: './detail?no=' + res2.data.data[0].note_no
+						})
+				    }
+				});
+				
             }
           });
         }

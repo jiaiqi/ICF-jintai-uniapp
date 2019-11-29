@@ -12,7 +12,7 @@
         </view>
         <view class="btn-row">
             <!-- <button type="primary" class="primary" @tap="bindLogin">登录公众号</button> -->
-            <button type="primary" class="primary" @tap="accoutLogin">登录</button>
+            <button type="primary" class="primary" style="background-color: #E51C23;" @tap="accoutLogin">登录</button>
         </view>
         <view class="action-row">
             <!-- <navigator url="../reg/reg">注册账号</navigator>

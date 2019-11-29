@@ -101,7 +101,8 @@
     border-radius: 50upx;
     font-size: 16px;
     color: #fff;
-    background: linear-gradient(to right, #365fff, #36bbff);
+	background-color: #E51C23;
+    /* background: linear-gradient(to right, #365fff, #36bbff); */
   }
 
   .btn-logout-hover {

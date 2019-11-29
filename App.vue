@@ -167,9 +167,8 @@
 	m-input {
 		width: 100%;
 		min-height: 100%;
-		display: flex;
+		display: flex;	
 	}
-
 	.content {
 		display: flex;
 		flex: 1;
