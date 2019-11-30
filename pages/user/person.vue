@@ -1,16 +1,16 @@
 <template>
 	<view class="person-wrap">
-		<view class="person-head">
-			<cmd-avatar src="https://avatar.bbs.miui.com/images/noavatar_small.gif" @click="fnInfoWin" size="lg" :make="{ 'background-color': '#fff' }"></cmd-avatar>
+		<view class="person-head" @click="fnInfoWin">
+			<cmd-avatar src="https://avatar.bbs.miui.com/images/noavatar_small.gif"  size="lg" :make="{ 'background-color': '#fff' }"></cmd-avatar>
 			<view class="person-head-box">
 				<view class="person-head-nickname">{{ userInfo.real_name }}</view>
 				<view class="person-head-username">ID：{{ userInfo.user_no }}</view>
 			</view>
 		</view>
 		<view class="person-list">
-			<cmd-cell-item title="我的设备" slot-left arrow @click="myEquipment"><cmd-icon type="bullet-list" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
+			<cmd-cell-item title="我的帖子" slot-left arrow @click="myPost"><cmd-icon type="bullet-list" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
 			<cmd-cell-item title="消息通知" slot-left arrow @click="messageNotification"><cmd-icon type="message" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
-			<cmd-cell-item title="系统设置" slot-left arrow @click="systemSetting"><cmd-icon type="settings" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
+			<cmd-cell-item title="后台管理" slot-left arrow @click="systemSetting"><cmd-icon type="settings" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
 			<cmd-cell-item title="检查版本" addon="v1.0" slot-left arrow @click="checkVersion"><cmd-icon type="alert-circle" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
 		</view>
 	</view>
@@ -42,18 +42,21 @@ export default {
 			});
 		},
 		/**
-		 * 我的设备
+		 * 我的帖子
 		 */
-		myEquipment() {
+		myPost() {
 			uni.showModal({
 				title: '提示',
-				content: '你点击了 我的设备 ',
+				content: '是否查看我的帖子 ',
 				success(res) {
 					if (res.confirm) {
 						uni.showToast({
 							title: '你点击了确定',
 							icon: 'none'
 						});
+            uni.navigateTo({
+              url:"../forum/myPost"
+            })
 					} else if (res.cancel) {
 						uni.showToast({
 							title: '你点击了取消',
@@ -91,7 +94,7 @@ export default {
 		systemSetting() {
 			uni.showModal({
 				title: '提示',
-				content: '你点击了 系统设置 ',
+				content: '你点击了 后台管理 ',
 				success(res) {
 					if (res.confirm) {
 						uni.showToast({

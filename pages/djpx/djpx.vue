@@ -34,7 +34,7 @@
 		<view class="px_list">
 			<view class="list_title"> 
 				<view class="title_left">学习心得</view>
-				<!-- <view class="title_right"><button class="title_btn">安排</button></view> -->
+				<!-- <view class="title_right"><button class="title_btn">发表</button></view> -->
 			</view>
 			<view class="loadAnimation" v-if="selectList[2].resDatas.length < 1">
 				<view class="loadAnimItem"><view class="loadAnimContent"></view></view>
@@ -255,11 +255,16 @@ swiper-item {
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		.title_left {
-			font-size: 30upx;
-			// font-family: '宋体';
-			font-weight: 600;
-		}
+	.title_left {
+	 text-indent: 0.5rem;
+	 border-left: 5upx solid #e51c23;
+	 font-size: 30upx;
+	 font-weight: 600;
+	 margin: 20upx 0;
+	}
+	.title_right{
+	  margin: 20upx 0;
+	}
 		.title_btn {
 			width: 120upx;
 			height: 50upx;

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="" style="padding: 10px;">
-			<text style="font-size: 17px;font-weight: 600; border-left: 2px solid red;padding: 5px;">社区排行榜</text>
+			<text style="font-size: 17px;font-weight: 600; border-left: 2px solid red;padding: 5px;">社区列表</text>
 		</view>
 		
 		
@@ -204,7 +204,7 @@
 					<view class="testline" style="display: flex;">
 						<text style="display: block;font-weight: 600;font-size: 16px;" @click="navxq(item.id)">{{item.sqname}}</text> 
 						 <view class="listcenter" style="display: flex">
-							<image src="../../static/img/ditu.png" mode="" class="calls"  @click="open(0)"></image>
+							<image src="../../static/img/ditu.png" mode="" class="calls"  @click="open(item.latitude,item.sqtrapeze,item.sqname)"></image>
 						 </view>
 					</view>
 					<view class="testline" style="display: flex;font-size: 15px;color: #666;" @click="navxq(item.id)">
@@ -324,8 +324,11 @@
 								}, 1000);
 							},
 			
-			open(types) {
-			  plus.runtime.openWeb(this.url, function(res) {
+			open(j,w,n) {
+				let url = 'https://m.amap.com/share/index/lnglat=' +w+','+j+'&name='+n+'&callnative=0'
+				
+				// location.href='https://m.amap.com/share/index/lnglat=108.840104,34.326915&name=西部社区&callnative=0'
+			  plus.runtime.openWeb(url, function(res) {
 			    console.log(res);
 			  });
 			},

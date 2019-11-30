@@ -1,5 +1,5 @@
 <template>
-	<view class="alphabet">
+<!-- 	<view class="alphabet">
 		<view class="alphabet-item" 
 		v-for="(item, key) of phones" 
 		:key="key"
@@ -15,7 +15,7 @@
 		<view class="alphabet-alert" v-if="touchmove">
 			{{activeClass}}
 		</view>
-	</view>
+	</view> -->
 </template>
 
 <script>

@@ -51,7 +51,7 @@ export default {
 			shortcutMenu: [
 				{ image: '../../static/img/zhdj.png', text: '智慧党建', url: '../zhdj/zhdj' },
 				{ image: '../../static/img/sqfw.png', text: '社区服务', url: '../sqfw/sqfw' },
-				{ image: '../../static/img/ggfw.png', text: '公共服务', url: null },
+				{ image: '../../static/img/ggfw.png', text: '公共服务', url: '../ggfw/ggfw' },
 				{ image: '../../static/img/bmfw.png', text: '便民服务', url: '../bmfw/bmfw' },
 				{ image: '../../static/img/shzz.png', text: '社会组织', url: '../shzz/zzhome' },
 				{ image: '../../static/img/zyfw.png', text: '志愿服务', url: null },

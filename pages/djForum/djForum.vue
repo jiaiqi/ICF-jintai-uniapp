@@ -68,15 +68,10 @@ export default {
   },
   methods: {
     toAdd(e) {
-      if (e.serviceName === 'srvzhsq_forum_note_add') {
-        uni.navigateTo({
-          url: './add?query=' + encodeURIComponent(JSON.stringify(e))
-        });
-      } else if (e.serviceName === 'srvzhsq_forum_opinion_add') {
-        uni.navigateTo({
-          url: '../normal/add/add?query=' + encodeURIComponent(JSON.stringify(e))
-        });
-      }
+      let url = "/zhdj/operate/srvzhsq_djlt_ftxx_add"
+      uni.navigateTo({
+        url: './add'
+      });
     },
     change(e) {
       // console.log(e)

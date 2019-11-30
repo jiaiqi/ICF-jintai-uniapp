@@ -1,25 +1,14 @@
 <template>
 	<view class="Choicecontent">
+		
 		<view class="uniconicons" v-show="contnet">
-			<view class="onelistsex">
+			<view :class="!showone?'onelistsexlat':'onelistsexslat' "  v-for="(item,index) in datalisttwo" :key='index'   >
 				<image class="photo-zuhi" src="../../static/img/jtu.png" mode=""></image> 
 				<view class="contentdzzs">
 					<view class="dabletext">
-						<text class="title" v-if="datalisttwo[0]">{{datalisttwo[0].zjmc}}</text><text class="twoorder"  @click="showBoole()">下级党组织</text>
+						<text class="title"  @click="morrebar(10000)">{{item.zjmc}}</text><text class="twoorder" @click="topcikck(item.id)" >组织详情</text>
 					</view>
-					<view class="listcss" @click="topcikck(datalisttwo[0].id)"  v-if="datalisttwo[0]">
-						<view class="dressin">地址：{{datalisttwo[0].zjdz}}</view>
-						<view class="" >电话：{{datalisttwo[0].zjdh}}</view>
-					</view>
-				</view>
-			</view>
-			<view :class="datashows?'onelistsexlat':'onelistsexslat' "  v-for="(item,index) in datalist" :key='index'   >
-				<image class="photo-zuhi" src="../../static/img/jtu.png" mode=""></image> 
-				<view class="contentdzzs">
-					<view class="dabletext">
-						<text class="title">{{item.zjmc}}</text><text class="twoorder" @click="morrebar(item.no)">下级党组织</text>
-					</view>
-					<view class="listcss" @click="topcikck(item.id)">
+					<view class="listcss"  @click="morrebar(10000)">
 						<view class="dressin" >地址：{{item.zjdz}}</view>
 						<view class=""  >电话：{{item.zjdh}}</view>
 					</view>
@@ -28,14 +17,36 @@
 			</view>
 		</view>
 		
-		<view class="dabletextstr" v-show="!contnet">
+		
+		
+		<view class="uniconicons" v-show="datashows">
+			<view :class="!showone?'onelistsexlat':'onelistsexslat' "  v-for="(item,index) in datalist" :key='index'   >
+				<image class="photo-zuhi" src="../../static/img/jtu.png" mode=""></image> 
+				<view class="contentdzzs">
+					<view class="dabletext">
+						<text class="title"  @click="listda(item.no)">{{item.zjmc}}</text><text class="twoorder" @click="topcikck(item.id)" >组织详情</text>
+					</view>
+					<view class="listcss"  @click="listda(item.no)">
+						<view class="dressin" >地址：{{item.zjdz}}</view>
+						<view class=""  >电话：{{item.zjdh}}</view>
+					</view>
+					
+				</view>
+				
+			</view>
+			<view class="btn" @click="twoinorder">
+				返回上一级
+			</view>
+		</view>
+	
+		<view class="dabletextstr" v-if="threes">
 			<view class="onelistsexlat"  v-for="(item,index) in datalist" :key='index'  >
 				<image class="photo-zuhi" src="../../static/img/jtu.png" mode=""></image> 
 				<view class="contentdzzs">
 					<view class="dabletext">
-						<text class="title">{{item.zjmc}}</text>
+						<text class="title">{{item.zjmc}}</text> <text class="twoorder" @click="topcikck(item.id)" >组织详情</text>
 					</view>
-					<view class="listcss" @click="topcikck(item.id)">
+					<view class="listcss" >
 						<view class="dressin" >地址：{{item.zjdz}}</view>
 						<view class=""  >电话：{{item.zjdh}}</view>
 					</view>
@@ -58,6 +69,7 @@
 				datashows:false,
 				showone:false,
 				contnet:true,
+				threes:false,
 				datalisttwo:[]
 			}
 		},
@@ -88,17 +100,29 @@
 					this.datalisttwo=res.data.data
 				})
 			},
-			showBoole(){
-				this.datashows=!this.datashows
-				console.log(this.datashows)
-			},
+		
 			morrebar(value){
 				this.contnet=false
 				this.getdata(value)
+				this.datashows=true
+			},
+			listda(value){
+				this.getdata(value)
+				this.contnet=false
+				this.datashows=false
+				this.threes=true
 			},
 			inorder(){
-				this.contnet=true
-				this.getdata("10000")
+				this.getdata(10000)
+				this.contnet=false
+				this.datashows=true
+				this.threes=false
+			},
+			twoinorder(){
+				this.datashows=false,
+				this.showone=false,
+				this.contnet=true,
+				this.threes=false
 			},
 			topcikck(id){
 				uni.navigateTo({
@@ -153,6 +177,7 @@
 		font-size: 15px;
 		position: absolute;
 		right: 20upx;
+		top:162upx;
 	}
 	
 	@keyframes rightEaseInAnimate{
@@ -167,10 +192,12 @@
 		display: flex;
 		padding: 20upx;
 		margin: 0 20upx;
-		box-shadow:0px 20px 20px #E5E5E5;
+		box-shadow:0px 0px 26px 0 rgba(0,0,0,.12);
 		line-height: 50upx;
 		   animation: rightEaseInAnimate 1s ease 1; 
 		    animation-fill-mode: forwards;
+			margin: 15px;
+			border-radius: 10px;
 	}
 	.onelistsexslat{
 		display: flex;

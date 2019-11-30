@@ -3,24 +3,51 @@
     {
       "path": "pages/home/home",
       "style": {
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "首页",
+        "app-plus": {
+          "titleNView": {
+            "type": "transparent"
+          }
+        }
       }
-    }, {
+    }, 
+    {
       "path": "pages/login/login",
       "style": {
         "navigationBarTitleText": "登录"
       }
-    }, {
+    }, 
+    {
+      "path": "pages/reg/reg",
+      "style": {
+        "navigationBarTitleText": "注册"
+      }
+    }, 
+    {
+      "path": "pages/pwd/pwd",
+      "style": {
+        "navigationBarTitleText": "忘记密码"
+      }
+    }, 
+    {
       "path": "pages/user/user",
       "style": {
-        "navigationBarTitleText": "我的"
+        "navigationBarTitleText": "我的",
+        "app-plus": {
+          "titleNView": {
+            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
+          }
+        }
       }
     },
     {
       "path": "pages/user/person",
       "style": {
-        "navigationBarTitleText": "我的",
-        "navigationBarBackgroundColor":"#e52d27"
+        "navigationBarTitleText": "个人中心",
+        "navigationBarBackgroundColor": "#e52d27",
+        "app-plus": {
+          // "titleNView": false //禁用原生导航栏
+        }
       }
     },
     {
@@ -59,6 +86,11 @@
       "path": "pages/zhdj/zhdj",
       "style": {
         // "navigationBarTitleText": "智慧党建",
+        "app-plus": {
+          "titleNView": {
+            // "type": "transparent"
+          }
+        }
       }
     },
     {
@@ -72,7 +104,7 @@
         "navigationBarTitleText": "党建培训",
         "app-plus": {
           "titleNView": {
-            // "type": "transparent",
+            "type": "transparent"
             // "buttons": [{
             // 		"type": "share"
             // 	},
@@ -120,7 +152,6 @@
     {
       "path": "pages/zhdj/ggcontent",
       "style": {
-        "navigationBarTitleText": "党组织机构详情"
       }
     },
     {
@@ -129,12 +160,43 @@
         "navigationBarTitleText": "党组织"
       }
     },
+	{
+	  "path": "pages/zhdj/dygl",
+	   "style": {
+		  "app-plus": {
+			  "bounce": "none",
+			  "titleNView": {
+				  "buttons": [ 
+					  {
+						  "text": "党员", 
+						  "fontSize":"16",
+						  "float": "right",
+						  "color":"#fff"
+					  }
+					 
+				  ],
+				  "searchInput":{
+						  "align": "center",
+						  "placeholder": "请输入查找党员信息",
+						  "borderRadius":"50upx",
+						  "backgroundColor": "#fff"
+					  }
+			  }
+		  }
+	  }
+	},
     {
-      "path": "pages/zhdj/rctd",
+      "path": "pages/zhdj/dyxq",
       "style": {
-        "navigationBarTitleText": "人才天地"
+        "navigationBarTitleText": "党员资料"
       }
     },
+	{
+	  "path": "pages/zhdj/rctd",
+	  "style": {
+	    "navigationBarTitleText": "人才天地"
+	  }
+	},
     {
       "path": "pages/sqfw/sqdh",
       "style": {
@@ -144,7 +206,7 @@
     {
       "path": "pages/sqfw/sqjs",
       "style": {
-        "navigationBarTitleText": "社区介绍",
+        "navigationBarTitleText": "社区列表",
         "navigationBarBackgroundColor": "#FB6A6A",
         "enablePullDownRefresh": true
       }
@@ -159,7 +221,7 @@
     {
       "path": "pages/sqfw/sqxqjs",
       "style": {
-        "navigationBarTitleText": "社区详情",
+        "navigationBarTitleText": "社区介绍",
         "navigationBarBackgroundColor": "#FB6A6A"
       }
     },
@@ -170,14 +232,25 @@
       }
 
     },
-	
-	 { "path" : "pages/phones/phones", 
-	 "style" : { "navigationBarTitleText" : "通讯录",
-	 "app-plus":{ "bounce":"none", "scrollIndicator":"none" } } }, 
-	 { "path" : "pages/phones/phone-search",
-	  "style" : { "navigationBarTitleText" : "搜索联系人" } },
-	
-	
+
+    {
+      "path": "pages/phones/phones",
+      "style": {
+        "navigationBarTitleText": "通讯录",
+        "app-plus": {
+          "bounce": "none",
+          "scrollIndicator": "none"
+        }
+      }
+    },
+    {
+      "path": "pages/phones/phone-search",
+      "style": {
+        "navigationBarTitleText": "搜索联系人"
+      }
+    },
+
+
     {
       "path": "pages/normal/add/add",
       "style": {}
@@ -220,7 +293,10 @@
         "navigationBarTitleText": "社区论坛",
         "app-plus": {
           "animationType": "fade-in",
-          "animationDuration": 300
+          "animationDuration": 300,
+          "titleNView": {
+            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
+          }
         }
       }
     }, {
@@ -234,8 +310,35 @@
       }
     }, {
       "path": "pages/ggfw/ggfw",
-      "style": {}
-    }, {
+      "style": {
+		   "navigationBarTitleText": "公共服务"
+	  }
+    }, 
+	{
+	  "path": "pages/ggfw/fwlc",
+	  "style": {
+		   "navigationBarTitleText": "小区列表"
+	  }
+	},
+	{
+	  "path": "pages/ggfw/fwxq",
+	  "style": {
+		   "navigationBarTitleText": "申请流程"
+	  }
+	},
+	// {
+	//   "path": "components/l-file/l-file",
+	//   "style": {
+	// 	   "navigationBarTitleText": "申请流程"
+	//   }
+	// },
+	{
+	  "path": "pages/ggfw/sqyy",
+	  "style": {
+		   "navigationBarTitleText": "申请预约"
+	  }
+	},
+	{
       "path": "pages/forum/detail",
       "style": {
         "navigationBarTitleText": "详情",
@@ -244,55 +347,75 @@
           "animationDuration": 300
         }
       }
+    }, {
+      "path": "pages/user/info",
+      "style": {
+        "navigationBarTitleText": "个人信息",
+        "app-plus": {
+          "titleNView": false, //禁用原生导航栏
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
+      }
+    }, {
+      "path": "pages/user/modify",
+      "style": {
+        "navigationBarTitleText": "修改密码",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
+      }
+    }, {
+      "path": "pages/djForum/djForum", //党建论坛
+      "style": {
+        "navigationBarTitleText": "党建论坛",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300,
+          "titleNView": {
+            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
+          }
+        }
+      }
+    },
+    {
+      "path": "pages/djForum/add", //党建论坛发帖
+      "style": {
+        "navigationBarTitleText": "发帖",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
+      }
+    },
+    {
+      "path": "pages/djForum/detail", //党建论坛详情
+      "style": {
+        "navigationBarTitleText": "详情",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300,
+          "titleNView": {
+            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
+          }
+        }
+      }
     }
       ,{
-            "path" : "pages/user/info",
-            "style": {
-              "navigationBarTitleText": "个人信息",
-              "app-plus": {
-                "animationType": "fade-in",
-                "animationDuration": 300
-              }
+            "path" : "pages/forum/myPost", // 我的帖子
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/user/register", // 注册
+            "style" : {
+              "navigationBarTitleText": "注册"
             }
         }
         ,{
-            "path" : "pages/user/modify",
-            "style": {
-              "navigationBarTitleText": "修改密码",
-              "app-plus": {
-                "animationType": "fade-in",
-                "animationDuration": 300
-              }
-            }
-        }
-        ,{
-            "path" : "pages/djForum/djForum",//党建论坛
+            "path" : "pages/user/forgot",  // 忘记密码
             "style" : {
-              "navigationBarTitleText": "党建论坛",
-              "app-plus": {
-                "animationType": "fade-in",
-                "animationDuration": 300
-              }
-            }
-        },
-        {
-            "path" : "pages/djForum/add",//党建论坛发帖
-            "style" : {
-              "navigationBarTitleText": "发帖",
-              "app-plus": {
-                "animationType": "fade-in",
-                "animationDuration": 300
-              }
-            }
-        },
-        {
-            "path" : "pages/djForum/detail",//党建论坛详情
-            "style" : {
-              "navigationBarTitleText": "详情",
-              "app-plus": {
-                "animationType": "fade-in",
-                "animationDuration": 300
-              }
+              "navigationBarTitleText": "忘记密码"
             }
         }
     ],

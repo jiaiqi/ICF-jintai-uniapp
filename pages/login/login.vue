@@ -15,9 +15,11 @@
             <button type="primary" class="primary" style="background-color: #E51C23;" @tap="accoutLogin">登录</button>
         </view>
         <view class="action-row">
-            <!-- <navigator url="../reg/reg">注册账号</navigator>
-            <text>|</text> -->
-            <navigator url="../pwd/pwd">忘记密码</navigator>
+            <navigator url="../user/register">注册账号</navigator>
+            <!-- <navigator url="../reg/reg">注册账号</navigator> -->
+            <text>|</text>
+            <!-- <navigator url="../pwd/pwd">忘记密码</navigator> -->
+            <navigator url="../user/forgot">忘记密码</navigator>
         </view>
         <view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
             <view class="oauth-image" v-for="provider in providerList" :key="provider.value">

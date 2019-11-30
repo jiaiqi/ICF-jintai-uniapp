@@ -1,24 +1,13 @@
 <template>
   <view class="add_pages">
-    <view class="forumTitleBox">
-      <!-- <image src="../../static/img/title.png" mode="" class="icon"></image> -->
-      <input type="text" placeholder="标题" v-model="pageTitle" />
-    </view>
+    <view class="forumTitleBox"><input type="text" placeholder="标题(必填)" v-model="pageTitle" /></view>
     <view class="forumClassBox">
       <div class="class_box_title">
-        <!-- <image src="../../static/img/class.png" mode="" class="icon"></image> -->
         <div class="mpvue-picer"><QSPickerCustom ref="nationPicker" name="formName" title="分类" variableName="custom" v-model="classify" @change="changePicker" /></div>
       </div>
     </view>
 
-    <!--  <view class="forumClassBox">
-      <div class="class_box_title">
-        <image src="../../static/img/class.png" mode="" class="icon"></image>
-        <div class="mpvue-picer"><QSPickerCustom ref="columnPicker" name="formName" title="栏目" variableName="custom" v-model="noteColumn" @change="changePicker" /></div>
-      </div>
-    </view> -->
     <view class="forumContentBox">
-      <!-- <image src="../../static/img/words.png" mode="" class="icon"></image> -->
       <view class="editbox">
         <textarea v-model="textareaVal" placeholder="写点什么吧..." class="textarea" />
         <view class="uni-list list-pd">
@@ -236,32 +225,29 @@ export default {
       let selectList = this.selectList;
       let classify = this.classify['data'] ? this.classify['data'][0] : '默认';
       let type = '';
-      selectList.map(item => {
-        if (item.label === classify) {
-          type = item.value;
-        }
-      });
-      let img = this.imgPathList[0];
-      if (img) {
-        img = img.split('/');
-        img = img[img.length - 2];
+      if (selectList) {
+        selectList.map(item => {
+          if (item.label === classify) {
+            type = item.value;
+          }
+        });
       }
-      // let contentText = this.$refs.edit.editItems;
       let textareaVal = this.textareaVal;
-      this.imgPathList.map(imgs => {
-        textareaVal += `</br><img src="${this.$api.select}/file/download?filePath=${imgs}"></img>`;
-      });
+      if (this.imgPathList) {
+        this.imgPathList.map(imgs => {
+          textareaVal += `</br><img src="${this.$api.select}/file/download?filePath=${imgs}"></img>`;
+        });
+      }
       let content = {
-        note_title: this.pageTitle,
-        note_type: type,
-        content: textareaVal,
-        images: img
+        bt: this.pageTitle,
+        lx: type,
+        nr: textareaVal
       };
-      console.log(content);
-      let url = this.$api.add + '/sqfw/operate/srvzhsq_forum_note_add';
+
+      let url = this.$api.add + '/zhdj/operate/srvzhsq_djlt_ftxx_add'; // 社区论坛发帖
       let req = [
         {
-          serviceName: 'srvzhsq_forum_note_add',
+          serviceName: 'srvzhsq_djlt_ftxx_add',
           data: [content]
         }
       ];
@@ -270,9 +256,9 @@ export default {
         if (res.data.resultCode === 'SUCCESS' && res.data.response) {
           let id = res.data.response[0].response.ids[0];
           console.log(id);
-          let url2 = this.$api.select + '/sqfw/select/srvzhsq_forum_note_select';
+          let url2 = this.$api.select + '/zhdj/select/srvzhsq_djlt_ftxx_select';
           let req2 = {
-            serviceName: 'srvzhsq_forum_note_select',
+            serviceName: 'srvzhsq_djlt_ftxx_select',
             colNames: ['*'],
             condition: [{ colName: 'id', ruleType: 'eq', value: id }],
             order: []
@@ -280,16 +266,16 @@ export default {
           this.$http.post(url2, req2).then(res2 => {
             if (res2.data.data) {
               uni.showModal({
-                title: '提交成功，即将跳转到详情',
+                title: '提示',
+                content: '提交成功，即将跳转到详情',
                 success: res => {
                   if (res.confirm) {
                     uni.navigateTo({
-                      url: './detail?query=' + encodeURIComponent(JSON.stringify(res2.data.data[0]))
+                      url: './detail?no=' + res2.data.data[0].ftno
                     });
                   }
                 }
               });
-              console.log(res2.data.data);
             }
           });
         }

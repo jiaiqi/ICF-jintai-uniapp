@@ -288,9 +288,14 @@ swiper-item {
     flex-direction: row;
     justify-content: space-between;
     .title_left {
-      font-size: 30upx;
-      // font-family: '宋体';
-      font-weight: 600;
+     text-indent: 0.5rem;
+     border-left: 5upx solid #e51c23;
+     font-size: 30upx;
+     font-weight: 600;
+     margin: 20upx 0;
+    }
+    .title_right{
+      margin: 20upx 0;
     }
     .title_btn {
       width: 120upx;

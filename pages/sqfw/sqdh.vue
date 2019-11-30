@@ -5,7 +5,7 @@
       <view class="textFlex" style="margin-bottom: 10px;">
         <text style="font-weight: 600;">{{ titles }}</text>
       </view>
-      <view class="textFlex smalltext" style="margin-bottom: 10px;" @click="open(0)">
+      <view class="textFlex smalltext" style="margin-bottom: 10px;" @click="open()">
         <image class="mapwz" src="../../static/img/wz.png" mode=""></image>
         <text>{{ dress }}</text>
       </view>
@@ -28,7 +28,7 @@
 export default {
   data() {
     return {
-      url: 'https://m.amap.com',
+      url: 'https://m.amap.com/share/index/lnglat=108.764936,34.43811&name=park&callnative=0',
       titles: '',
       dress: '',
       title: 'map',
@@ -47,7 +47,8 @@ export default {
   },
   methods: {
     open(types) {
-      plus.runtime.openWeb(this.url, function(res) {
+		
+      plus.runtime.openWeb(url, function(res) {
         console.log(res);
       });
     }

@@ -38,7 +38,8 @@
 		
 		</view>
 
-		<view class="contentBox" @click="detaile(item)" v-for="(item,index) in datalist" :key="index">
+		<view class="contentBox" @tap="detaile(item)"   v-for="(item,index) in datalist" :key="index">
+
 			<text class="crips"></text>
 			
 			<text class="content-news" v-if="item.activity_title">{{item.activity_title}}</text>
@@ -50,7 +51,20 @@
 	
 		<view class="morea" @click="toMore()">更多>></view>
 			
-		
+		<view class="">
+			<view class="titleone" >{{titletwo}}</view>
+			<view class="contentBox" @tap="detaile(item)"   v-for="(item,index) in datalisttwost" :key="index">
+			
+				<text class="crips"></text>
+				
+				<text class="content-news" v-if="item.activity_title">{{item.activity_title}}</text>
+				
+				<text class="yeardata">{{  (item.create_time).substring(0,11)}}</text>
+			</view>
+				
+				
+			<view class="morea" @click="toMoretwo()">更多>></view>
+		</view>
 		
 	</view>
 </template>
@@ -62,7 +76,10 @@
 				datalist:[],
 				listshow:true,
 				classes:'/zhdj',
-				src:'../../static/img/dj.png'
+				src:'../../static/img/dj.png',
+				titletwo:'',
+				numberpage:8,
+				datalisttwost:[]
 			}
 		},
 		methods:{
@@ -82,19 +99,43 @@
 				
 				req['page'] = {
 					pageNo: 1,
-					rownumber: 8
+					rownumber: this.numberpage
 				};
 				this.$http.post(url, req).then(res => {
-					console.log(res)
+			
 					this.datalist=res.data.data
 					this.listshow=false
 				})
 			},
+			getdatalist(){
+				
+				let url =this.$api.select +"/sqfw/select/srvzhsq_activity_arrange_select"
+				let req = {};
+				req.serviceName ="srvzhsq_activity_arrange_select";
+				req.colNames = ['*'];
+				req.condition = [];
+				req.order = [];
+				
+				req['page'] = {
+					pageNo: 1,
+					rownumber: 3
+				};
+				this.$http.post(url, req).then(res => {
+					console.log(res)
+					this.datalisttwost=res.data.data
+					// this.listshow=false
+				})
+			}, 
 			toMore() {
 				uni.navigateTo({
 					url: '../normal/list/list?to='+this.titlebar 
 				});
 			},
+			toMoretwo() {
+				uni.navigateTo({
+					url: '../normal/list/list?to=hdap'
+				});
+			}
 		},
 		onLoad(serve){
 			if(serve.serve=="srvzhsq_djhdjl_djhd_select"){
@@ -115,12 +156,15 @@
 				this.titlebar="sqhd"
 				this.classes = "/sqfw"
 						this.src="../../static/img/hdsss.png"
-				this.titletop = "社区活动"
+						this.numberpage=3
+				this.titletop = "活动记录"
+				this.titletwo="活动安排"
 				uni.setNavigationBarTitle({
 				  title: "社区活动"
 				});
 			}
 			this.getdata(serve.serve)
+			this.getdatalist()
 		}
 	}
 </script>

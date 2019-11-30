@@ -82,6 +82,14 @@
 		  </view>
 		</view>
 		
+		
+		<view class="list_content" v-if="listData.length > 0&&title=='活动安排'" >
+		  <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
+		    <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
+		    <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+		  </view>
+		</view>
+		
       </transition>
       <view>{{ loadText }}</view>
       <view class="list_bottom" v-if="listData&&listData.length>=14">
@@ -261,6 +269,18 @@ export default {
 		    return;
 		  }
 		});
+	},
+	getDmListsdata(serviceName){
+		let url = this.$api.select + '/' + 'sqfw' + '/select/' + serviceName;
+		let req = { serviceName:serviceName, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 14}, order: [] };
+		this.$http.post(url, req).then(res => {
+		  if (res.data.data.length > 0) {
+		    this.listData = res.data.data;
+		    console.error( this.listData)
+		  } else {
+		    return;
+		  }
+		});
 	}
   },
   onLoad(options) {    
@@ -296,8 +316,11 @@ export default {
 		this.getWmLists('srvzhsq_activity_record_select');
 		this.title = '社区活动';
 	}else if(options.to === 'djlt'){  //党建论坛D
-		this.getDmLists('srvzhsq_djlt_ftxx_select');
+		this.getDmLists('srvzhsq_djlt_ftxx_select'); hdap
 		this.title = '党建论坛';
+	}else if(options.to === 'hdap'){  //党建论坛D
+		this.getDmListsdata('srvzhsq_activity_arrange_select'); 
+		this.title = '活动安排';
 	}
     uni.setNavigationBarTitle({    
     	title: this.title,
@@ -327,9 +350,11 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     .title_left {
+      text-indent: 0.5rem;
+      border-left: 5upx solid #e51c23;
       font-size: 30upx;
-      // font-family: '宋体';
       font-weight: 600;
+      margin: 20upx 0;
     }
     .title_btn {
       width: 120upx;
