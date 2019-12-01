@@ -31,10 +31,10 @@
         <!-- <uni-load-more :status="loadMoreStatus"></uni-load-more> -->
       </view>
     </mix-pulldown-refresh>
-    <view class="toTop" @click="toTop" v-if="postData.length > 8">
+<!--   <view class="toTop" @click="toTop" v-if="postData.length > 8">
       <span>回到</span>
       <span>顶部</span>
-    </view>
+    </view> -->
   </view>
 </template>
 
@@ -244,8 +244,8 @@ page,
 
   .scroll-wrapper {
     width: 100%;
-    margin: 0 auto;
-    overflow: hidden;
+    // margin: 0 auto;
+    // overflow: scroll;
     min-height: 140upx;
     .list_item {
       width: 90%;
