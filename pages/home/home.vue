@@ -10,7 +10,7 @@
 				</swiper-item>
 			</swiper>
 		</uni-swiper-dot>
-		<uni-grid :options="shortcutMenu" column-num="3" :show-border="true" :square="true" @click="goPages"></uni-grid>
+		<uni-grid :options="shortcutMenu" column-num="3" :show-border="false" :square="true" @click="goPages"></uni-grid>
 	</view>
 </template>
 
@@ -54,7 +54,7 @@ export default {
 				{ image: '../../static/img/ggfw.png', text: '公共服务', url: '../ggfw/ggfw' },
 				{ image: '../../static/img/bmfw.png', text: '便民服务', url: '../bmfw/bmfw' },
 				{ image: '../../static/img/shzz.png', text: '社会组织', url: '../shzz/zzhome' },
-				{ image: '../../static/img/zyfw.png', text: '志愿服务', url: null },
+				{ image: '../../static/img/zyfw.png', text: '论坛栏目', url: '../forum/category' },
 				{ image: '../../static/img/sqlt.png', text: '社区论坛', url: '../forum/forum' }
         // { image: '../../static/img/appicon/zh.png', text: '智慧党建', url: '../zhdj/zhdj' },
         // { image: '../../static/img/appicon/sq.png', text: '社区服务', url: '../sqfw/sqfw' },

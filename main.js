@@ -43,13 +43,7 @@ fly.interceptors.request.use((request)=>{
 			}
 		},
 	})
-	let self = this
-	let stores = store
-	let apis = api
-	let flys = fly
-	let commons = common
-	let rpn = rpn
-	// let self = this
+  
 	request.timeout = 20000;
 	let bxAuthTicket = uni.getStorageSync("bxAuthTicket")
 	let outTime = uni.getStorageSync("outTime")
@@ -76,24 +70,19 @@ fly.interceptors.request.use((request)=>{
 		if(bxAuthTicket){
 			request.headers.bx_auth_ticket = bxAuthTicket
 		}
-		// if(apiPath !== "bxsys/getSeesionId" && apiPath !== "wx/getLoginTicket" && apiPath !== "/bxsyslogin" && apiPath !== "/promoteQrcode;" && apiPath !== "promoteQrcode;"){
-		// 	request.url = request.url + ";BXSERVERCOOKIEID=" + bxAuthTicket
-		// }
 		return request
 	}else{
 		uni.reLaunch({
 		    url: '../login/login'
 		});
-		// let logineds = stores.getters.getLogined
-		// if(logineds && !isExpired){
-		// 	flys.unlock();
-		// }else if(isExpired){
-		// 	flys.lock();//锁住请求
-		// 	
-		// }else{
-		// 	flys.unlock();
-		// }
-		
 	}
-	//console.log("url",request.url)
+})
+
+// 添加响应拦截器
+fly.interceptors.response.use((res) => {
+    // 对响应数据做些事
+    
+    return res
+}, (error) => {
+    return Promise.reject(error)
 })

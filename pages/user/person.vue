@@ -45,26 +45,29 @@ export default {
 		 * 我的帖子
 		 */
 		myPost() {
-			uni.showModal({
-				title: '提示',
-				content: '是否查看我的帖子 ',
-				success(res) {
-					if (res.confirm) {
-						uni.showToast({
-							title: '你点击了确定',
-							icon: 'none'
-						});
-            uni.navigateTo({
-              url:"../forum/myPost"
-            })
-					} else if (res.cancel) {
-						uni.showToast({
-							title: '你点击了取消',
-							icon: 'none'
-						});
-					}
-				}
-			});
+      uni.navigateTo({
+        url:"../forum/myPost"
+      })
+			// uni.showModal({
+			// 	title: '提示',
+			// 	content: '是否查看我的帖子 ',
+			// 	success(res) {
+			// 		if (res.confirm) {
+			// 			uni.showToast({
+			// 				title: '你点击了确定',
+			// 				icon: 'none'
+			// 			});
+   //          uni.navigateTo({
+   //            url:"../forum/myPost"
+   //          })
+			// 		} else if (res.cancel) {
+			// 			uni.showToast({
+			// 				title: '你点击了取消',
+			// 				icon: 'none'
+			// 			});
+			// 		}
+			// 	}
+			// });
 		},
 		/**
 		 * 消息通知

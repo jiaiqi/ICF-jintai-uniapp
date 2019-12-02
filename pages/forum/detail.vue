@@ -25,12 +25,12 @@
 			<!-- 主贴点赞 -->
 
 			<!-- 回复 -->
-			<div class="little_title">评论</div>
+			<div class="little_title"><text>网友评论</text></div>
 			<div class="reply_view">
 				<div class="noddata" v-if="backData && backData.length <= 0">暂无数据</div>
 				<div class="discuss_item" v-for="(item, index) in backData" :key="index">
-					<!-- <image src="" mode="" class="touxiang"></image> -->
-					<uni-icons type="contact" size="60" color="#dd524d"></uni-icons>
+					<image :src="item.head_img_path" v-if="item.head_img_path" class="touxiang"></image>
+					<uni-icons type="contact" size="60" color="#dd524d" v-if="!item.head_img_path"></uni-icons>
 					<div class="text_box">
 						<div class="user_info_box">
 							<div class="user_info">{{ item.create_user }}</div>
@@ -220,7 +220,8 @@ export default {
 							ruleType: 'eq',
 							value: msg.leave_no // 留言编号
 						}
-					]
+					],
+          order: [{ colName: 'create_time', orderType: 'desc' }]
 				}
 				this.$http.post(url, req).then(resp => {
 					if (resp.data.data) {
@@ -354,30 +355,13 @@ export default {
 				colNames: ['*'],
 				condition: [{ colName: 'note_no', ruleType: 'eq', value: this.note_no }],
 				page: { pageNo: 1, rownumber: 10 },
-				// order: [{ colName: 'create_time', orderType: 'desc' }]
+				order: [{ colName: 'create_time', orderType: 'desc' }]
 			};
 			let res = await this.$http.post(url, req);
-			// this.$http.post(url, req).then(res => {
 			if (res.data.data) {
 				let data = res.data.data;
-				// this.backData = data;
 				this.getAgreePeopleForLeaveMessage(data);
-				// data.forEach(datas => {
-				//   this.getAgreePeopleForLiuYan(datas.leave_no).then(res => {
-				//     datas['agreePeople'] = res;
-				//     console.log('datas',datas)
-				//     let userInfo = this.userInfo;
-				//     if (res.indexOf(userInfo.user_no) != -1) {
-				//       datas['agree_icon'] = '../../static/img/agreea.png';
-				//     } else {
-				//       datas['agree_icon'] = '../../static/img/agreeb.png' ;
-				//     }
-				//   }).then(()=>{
-				//     this.backData = data;
-				//   }) //获取每一条留言的点赞数
-				// })
 			}
-			// });
 		},
 		replyLeaveMessage() {
 			// 回复留言(评论)/评论留言(评论)
@@ -409,6 +393,7 @@ export default {
 							type: '留言',
 							leave_user: this.userInfo.user_no,
 							praise_num: 0,
+              head_img_path:this.userInfo.head_img_path?this.userInfo.head_img_path:"",
 							remark: this.remark
 						}
 					]
@@ -490,11 +475,12 @@ export default {
 	// background-color: #fff;
 	flex-direction: column;
 	.touxiang {
-		width: 120upx;
-		height: 120upx;
+		width: 100upx;
+		height: 100upx;
+    padding: 10upx;
 		border-radius: 100%;
 		// background-color: #dd524d;
-		margin: 20upx;
+		margin-right:10upx;
 	}
 	.title_view {
 		display: flex;
@@ -576,6 +562,14 @@ export default {
 		font-size: 24upx;
 		font-weight: 600;
 		margin-top: 50upx;
+    height: 80upx;
+    line-height: 80upx;
+    background-color: #fff;
+    text-indent:.5rem;
+    text{
+      padding-left: .5rem;
+      border-left: 2px solid #E51C23;
+    }
 	}
 	.reply_view {
 		width: 100%;
@@ -593,7 +587,7 @@ export default {
 			width: 100%;
 			min-height: 150upx;
 			display: flex;
-			padding: 20upx 0;
+			// padding: 20upx 0;
 			border-bottom: 1px solid #d8d8d8;
 			margin-bottom: 10upx;
 			&:last-child {

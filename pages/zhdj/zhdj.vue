@@ -7,7 +7,7 @@
 				</swiper-item>
 			</swiper>
 		</uni-swiper-dot>
-		<uni-grid :options="shortcutMenu" column-num="3" :show-border="true" :highlight="true" @click="onGridItem"></uni-grid>
+		<uni-grid :options="shortcutMenu" column-num="3" :show-border="false" :highlight="true" @click="onGridItem"></uni-grid>
 	</view>
 </template>
 

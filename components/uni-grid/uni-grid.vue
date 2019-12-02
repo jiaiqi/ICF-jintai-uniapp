@@ -39,7 +39,8 @@
 			return {}
 		},
 		created() {
-			this.columnNumber = this.gridGroup[0].length
+        this.columnNumber = this.gridGroup[0].length
+      
 			console.log(this.options)
 		},
 		computed: {
@@ -53,7 +54,6 @@
 						groupItem = []
 					}
 				})
-				console.log("222222222",groupItem)
 				if (groupItem.length > 0) {
 					if (this.columnNum > groupItem.length) {
 						for (let i = 0,length = groupItem.length; i < this.columnNum - length; i++) {
@@ -108,7 +108,7 @@
 		flex: 1;
 		justify-content: center;
 		align-items: center;
-		margin-bottom: 15px;
+		// margin-bottom: 15px;
 		text-align: center;
 	}
 
@@ -130,7 +130,7 @@
 		bottom: -50%;
 		border-color: #c8c7cc;
 		border-style: solid;
-		border-width: 0px;
+		border-width: 1px;
 		-webkit-transform: scale(.5);
 		transform: scale(.5);
 		border-top-width: 0;

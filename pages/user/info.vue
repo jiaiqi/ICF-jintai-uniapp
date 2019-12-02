@@ -86,6 +86,8 @@
         });
       },
       logout(){
+        uni.setStorageSync("userInfo",null)
+        uni.setStorageSync("bxAuthTicket","")
         uni.navigateTo({
           url:'/pages/login/login'
         })

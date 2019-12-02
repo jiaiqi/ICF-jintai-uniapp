@@ -16,10 +16,11 @@
     </view>
     <mix-pulldown-refresh ref="mixPulldownRefresh" :top="0" @refresh="onPulldownReresh">
       <view class="scroll-wrapper">
-        <view class="list_item" v-for="(item, i) in postData" :key="i" @tap="toDetail(item)">
-          <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
-          <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
-          <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+        <view class="list_item" v-for="(item, i) in postData" :key="i">
+          <view class="item_title" v-if="item.bt" @tap="toDetail(item)">{{ item.bt }}</view>
+          <view class="item_title" v-if="item.note_title" @tap="toDetail(item)">{{ item.note_title }}</view>
+          <view class="item_date" @tap="toDetail(item)">{{ item.create_time.slice(0, 10) }}</view>
+          <view class="delete_item" @click="deleteItem(item)"><uni-icons type="trash" size="30" color="white"></uni-icons></view>
         </view>
         <!-- <view class="list-item" v-for="item in list" :key="item">列表项 {{ item }}</view> -->
 
@@ -31,7 +32,7 @@
         <!-- <uni-load-more :status="loadMoreStatus"></uni-load-more> -->
       </view>
     </mix-pulldown-refresh>
-<!--   <view class="toTop" @click="toTop" v-if="postData.length > 8">
+    <!--   <view class="toTop" @click="toTop" v-if="postData.length > 8">
       <span>回到</span>
       <span>顶部</span>
     </view> -->
@@ -41,12 +42,12 @@
 <script>
 import mixPulldownRefresh from '@/components/mix-pulldown-refresh/mix-pulldown-refresh';
 import mixLoadMore from '@/components/mix-load-more/mix-load-more';
-import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+import uniIcons from '@/components/uni-icons/uni-icons.vue';
 export default {
   components: {
     mixPulldownRefresh,
     mixLoadMore,
-    uniLoadMore
+    uniIcons
   },
   data() {
     return {
@@ -87,7 +88,55 @@ export default {
       this.activeTab = num;
       this.loadData('refresh');
     },
-    toDetail() {},
+    toDetail(item) {
+      console.log(item, 'item');
+      let url = '';
+      if (item.note_no) {
+        url = './detail?no=' + item.note_no;
+      } else if (item.ftno) {
+        url = '../djForum/detail?no=' + item.ftno;
+      }
+      uni.navigateTo({
+        url: url
+      });
+    },
+    deleteItem(item) {
+      uni.showModal({
+        title: '警告！',
+        content: '确认是否删除此条帖子',
+        success: res => {
+          if (res.confirm) {
+            uni.showToast({
+              title: '即将删除本条帖子'
+            });
+            let url = '';
+            let req = {};
+            if (item.note_no) {
+              url = this.$api.select + '/sqfw/operate/srvzhsq_forum_note_delete';
+              req = [{ serviceName: 'srvzhsq_forum_note_delete', condition: [{ colName: 'id', ruleType: 'in', value: item.id }] }];
+            } else if (item.ftno) {
+              url = this.$api.select + '/sqfw/operate/srvzhsq_djlt_ftxx_delete';
+              req = [{ serviceName: 'srvzhsq_djlt_ftxx_delete', condition: [{ colName: 'id', ruleType: 'in', value: item.id }] }];
+            }
+            this.$http.post(url, req).then(res => {
+              if (res.data.resultCode === 'SUCCESS') {
+                uni.showToast({
+                  title: '删除成功',
+                  icon: 'none',
+                  duration: 1000
+                });
+                this.loadData('refresh');
+              }
+            });
+          } else if (res.cancel) {
+            uni.showToast({
+              title: '您点击了取消'
+            });
+          }
+        }
+      });
+      // console.log(item,'item')
+    },
     loadData(type) {
       uni.showToast({
         title: '加载中',
@@ -192,6 +241,43 @@ export default {
 </script>
 
 <style lang="scss">
+/* 顶部tabbar */
+.nav-bar {
+  position: relative;
+  z-index: 10;
+  height: 90upx;
+  white-space: nowrap;
+  box-shadow: 0 2upx 8upx rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+  .nav-item {
+    display: inline-block;
+    width: 150upx;
+    height: 90upx;
+    text-align: center;
+    line-height: 90upx;
+    font-size: 30upx;
+    color: #303133;
+    position: relative;
+    &:after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-bottom: 4upx solid #007aff;
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      transition: 0.3s;
+    }
+  }
+  .current {
+    color: #007aff;
+    &:after {
+      width: 50%;
+    }
+  }
+}
+
 page,
 .content {
   background-color: #f8f8f8;
@@ -248,16 +334,17 @@ page,
     // overflow: scroll;
     min-height: 140upx;
     .list_item {
-      width: 90%;
+      width: calc(100% - 20upx);
       background-color: #fff;
-      padding:0 5%;
+      // padding:0 5%;
+      padding-left: 20upx;
       border-bottom: 1px #f5f5f5 solid;
-      padding-top: 8upx;
+      // padding-top: 8upx;
       display: flex;
       align-items: center;
       justify-content: space-between;
       .item_title {
-        max-width: 70%;
+        flex: 1;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -267,6 +354,14 @@ page,
         font-size: 12px;
         color: #999;
         line-height: 100upx;
+        flex: 0.5;
+        text-align: center;
+      }
+      .delete_item {
+        height: 100upx;
+        width: 100upx;
+        text-align: center;
+        background-color: rgba($color: #e51c23, $alpha: 0.8);
       }
     }
   }

@@ -293,10 +293,10 @@
         "navigationBarTitleText": "社区论坛",
         "app-plus": {
           "animationType": "fade-in",
-          "animationDuration": 300,
-          "titleNView": {
-            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
-          }
+          "animationDuration": 300
+          // "titleNView": {
+          //   "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
+          // }
         }
       }
     }, {
@@ -404,7 +404,9 @@
     }
       ,{
             "path" : "pages/forum/myPost", // 我的帖子
-            "style" : {}
+            "style": {
+              "navigationBarTitleText": "我的帖子"
+            }
         }
         ,{
             "path" : "pages/user/register", // 注册
@@ -417,6 +419,18 @@
             "style" : {
               "navigationBarTitleText": "忘记密码"
             }
+        }
+        ,{
+            "path" : "pages/forum/category", //论坛栏目
+            "style" : {
+              "navigationBarTitleText": "栏目"
+            }
+        }
+        ,{ 
+            "path" : "pages/forum/list", //帖子列表
+           "style" : {
+             "navigationBarTitleText": "论坛"
+           }
         }
     ],
   "tabBar": {

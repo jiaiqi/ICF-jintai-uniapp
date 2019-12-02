@@ -23,7 +23,7 @@
       <!-- 内容 -->
       <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
       <!-- 主贴点赞 -->
-   <!--   <div class="main_agree">
+      <!--   <div class="main_agree">
         <div class="agree">
           <text class="text">赞一下</text>
           <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num, query.ftno)"></image>
@@ -34,7 +34,7 @@
       <!-- 回复 -->
       <div class="little_title">评论</div>
       <div class="reply_view">
-        <div class="noddata" v-if="backData&&backData.length <= 0">暂无数据</div>
+        <div class="noddata" v-if="backData && backData.length <= 0">暂无数据</div>
         <div class="discuss_item" v-for="(item, index) in backData" :key="index">
           <!-- <image src="" mode="" class="touxiang"></image> -->
           <uni-icons type="contact" size="60" color="#dd524d"></uni-icons>
@@ -60,7 +60,7 @@
       </div>
     </view>
     <div class="tool_bar">
-      <textarea class="huifu" v-model="remark"  placeholder="想对Ta说点什么..." />
+      <textarea class="huifu" v-model="remark" placeholder="想对Ta说点什么..." />
       <button type="primary" class="huifu_btn" @click="writeBack">回复</button>
       <!-- <input type="textarea" v-model="remark" class="huifu" placeholder="想对Ta说点什么..." /> -->
       <!-- 主贴点赞 -->
@@ -271,7 +271,16 @@ export default {
       let url = this.$api.select + '/zhdj/operate/srvzhsq_leaveword_praise_delete';
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
-      let req = [{ serviceName: 'srvzhsq_leaveword_praise_delete', condition: [{ colName: 'leave_no', ruleType: 'eq', value: leave_no },{ colName: 'ftno', ruleType: 'eq', value: this.ftno },{ colName: 'praise_user', ruleType: 'eq', value: this.userInfo.user_no }] }];
+      let req = [
+        {
+          serviceName: 'srvzhsq_leaveword_praise_delete',
+          condition: [
+            { colName: 'leave_no', ruleType: 'eq', value: leave_no },
+            { colName: 'ftno', ruleType: 'eq', value: this.ftno },
+            { colName: 'praise_user', ruleType: 'eq', value: this.userInfo.user_no }
+          ]
+        }
+      ];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           console.log('删除成功');
@@ -320,27 +329,31 @@ export default {
         page: { pageNo: 1, rownumber: 10 },
         order: [{ colName: 'create_time', orderType: 'desc' }]
       };
-      let res = await this.$http.post(url, req)
+      let res = await this.$http.post(url, req);
       // this.$http.post(url, req).then(res => {
-        if (res.data.data) {
-          let data = res.data.data;
-          this.backData = data;
-          data.forEach(datas => {
-            this.getAgreePeopleForLiuYan(datas.leave_no).then(res => {
-              datas['agreePeople'] = res;
-              console.log('datas',datas)
-              let userInfo = this.userInfo;
-              if (res.indexOf(userInfo.user_no) != -1) {
-                datas['agree_icon'] = '../../static/img/agreea.png';
-              } else {
-                datas['agree_icon'] = '../../static/img/agreeb.png' ;
+      if (res.data.data) {
+        let data = res.data.data;
+        this.backData = data;
+        data.forEach(datas => {
+          this.getAgreePeopleForLiuYan(datas.leave_no)
+            .then(res => {
+              if (res) {
+                datas['agreePeople'] = res;
+                console.log('datas', datas, res);
+                let userInfo = this.userInfo;
+                if (res.indexOf(userInfo.user_no) != -1) {
+                  datas['agree_icon'] = '../../static/img/agreea.png';
+                } else {
+                  datas['agree_icon'] = '../../static/img/agreeb.png';
+                }
               }
-            }).then(()=>{
-              console.log(this.backData)
+            })
+            .then(() => {
+              console.log(this.backData);
               this.backData = data;
-            }) //获取每一条留言的点赞数
-          })
-        }
+            }); //获取每一条留言的点赞数
+        });
+      }
       // });
     },
     replyLeaveMessage() {
@@ -348,32 +361,27 @@ export default {
     },
     writeBack() {
       // 留言/评论
-      let str = this.remark
-       str = str.replace(/\s*/g,"");
-      if(!str){
+      let str = this.remark;
+      str = str.replace(/\s*/g, '');
+      if (!str) {
         uni.showToast({
-          title:"请输入文字",
-          icon:"none"
-        })
-        this.remark = ''
-        return
+          title: '请输入文字',
+          icon: 'none'
+        });
+        this.remark = '';
+        return;
       }
-      let url = this.$api.select + '/zhdj/operate/srvzhsq_leave_word_add';
+      let url = this.$api.select + '/zhdj/operate/srvzhsq_djlt_lyjl_add';
       let req = [
         {
-          serviceName: 'srvzhsq_leave_word_add',
-          condition: [],
+          serviceName: 'srvzhsq_djlt_lyjl_add',
           data: [
             {
-              leave_title: this.getDateTime(),
-              ftno: this.ftno,
-              leave_time: this.getDateTime(),
-              leave_type: '留言',
-              adopt_state: '否',
-              type: '留言',
-              leave_user: this.userInfo.user_no,
-              praise_num: 0,
-              remark: this.remark
+              ftno: this.ftno, //发帖编号
+              lylx: '留言', //留言类型
+              bt: '留言测试', //标题
+              nr: this.remark, //内容
+              lyr: this.userInfo.user_no //留言人
             }
           ]
         }
@@ -385,6 +393,7 @@ export default {
             title: '评论成功',
             duration: 1000
           });
+          console.log(res.data);
           this.remark = '';
           this.getWriteBackList();
         }
@@ -430,8 +439,8 @@ export default {
   watch: {
     backData: {
       handler(newValue, oldValue) {
-        this.backData = newValue
-        console.log('aaaaaaaa',newValue, this.backData);
+        this.backData = newValue;
+        console.log('aaaaaaaa', newValue, this.backData);
       },
       // 立即执行handler函数
       immediate: true,
@@ -647,7 +656,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    uni-image{
+    uni-image {
       padding-right: 5upx;
     }
     .text {

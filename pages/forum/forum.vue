@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content" mode="long" :dotsStyles="dotsStyles">
+   <uni-swiper-dot :info="selectList[0].resDatas" :current="current" field="content" mode="long" :dotsStyles="dotsStyles" v-if="selectList[0].resDatas">
       <swiper class="swiper-box" @change="change" :autoplay="true" style="height: 470upx;">
         <swiper-item v-for="(item, index) in selectList[0].resDatas" :key="index">
           <view class="swiper-item"><image :src="item" mode="aspectFill" style="width: 100%;height: 470upx;"></image></view>
@@ -51,7 +51,7 @@
             </view>
           </view>
           <view class="no-data" v-if="!selectList[2].resDatas">暂无数据...</view>
-            <view class="list_bottom" v-if="selectList[2].resDatas.length >= 4">
+          <view class="list_bottom" v-if="selectList[2].resDatas.length >= 4">
             <image src="../../static/img/moreList.png" style="width: 40upx;height: 40upx;"></image>
             <view class="bottom_right" @tap="toMore('sqxc')">更多</view>
           </view>
@@ -87,7 +87,7 @@ export default {
         },
         {
           serviceName: 'srvzhsq_forum_note_add', // 社区发帖列表
-          selectServiceName:'srvzhsq_forum_note_select',
+          selectServiceName: 'srvzhsq_forum_note_select',
           title: '社区发帖',
           appType: 'sqfw',
           pageType: 'select',
@@ -95,8 +95,8 @@ export default {
         },
         {
           serviceName: 'srvzhsq_forum_opinion_add', // 社区献策
-          selectServiceName:"srvzhsq_forum_opinion_select",
-          addServiceName:'srvzhsq_forum_opinion_add',
+          selectServiceName: 'srvzhsq_forum_opinion_select',
+          addServiceName: 'srvzhsq_forum_opinion_add',
           title: '社区献策',
           appType: 'sqfw',
           pageType: 'select',
@@ -107,16 +107,15 @@ export default {
   },
   methods: {
     toAdd(e) {
-      if(e.serviceName==='srvzhsq_forum_note_add'){
+      if (e.serviceName === 'srvzhsq_forum_note_add') {
         uni.navigateTo({
-          url: './add?query='+encodeURIComponent(JSON.stringify(e))
+          url: './add?query=' + encodeURIComponent(JSON.stringify(e))
         });
-      }else if(e.serviceName==='srvzhsq_forum_opinion_add'){
+      } else if (e.serviceName === 'srvzhsq_forum_opinion_add') {
         uni.navigateTo({
-          url: '../normal/add/add?query='+encodeURIComponent(JSON.stringify(e))
+          url: '../normal/add/add?query=' + encodeURIComponent(JSON.stringify(e))
         });
       }
-    
     },
     change(e) {
       // console.log(e)
@@ -127,8 +126,8 @@ export default {
         url: '../normal/detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
       });
     },
-    toForumDetail(item){
-      console.log(JSON.stringify(item))
+    toForumDetail(item) {
+      console.log(JSON.stringify(item));
       uni.navigateTo({
         // url: 'detail?query=' + encodeURIComponent(JSON.stringify(item))
         url: 'detail?no=' + item.note_no
@@ -193,7 +192,7 @@ export default {
       req.serviceName = this.selectList[1].selectServiceName;
       req.colNames = ['*'];
       req.condition = [];
-      req.order = [];
+      req.order = [{ colName: 'create_time', orderType: 'desc' }];
       // req.proc_data_type = 'myall';
       req['page'] = {
         pageNo: 1,
@@ -214,8 +213,8 @@ export default {
       req.serviceName = this.selectList[2].selectServiceName;
       req.colNames = ['*'];
       req.condition = [];
-      req.order = [];
-      req.proc_data_type = 'myall';
+      req.order = [{ colName: 'create_time', orderType: 'desc' }];
+      // req.proc_data_type = 'myall';
       req['page'] = {
         pageNo: 1,
         rownumber: 4
@@ -288,13 +287,13 @@ swiper-item {
     flex-direction: row;
     justify-content: space-between;
     .title_left {
-     text-indent: 0.5rem;
-     border-left: 5upx solid #e51c23;
-     font-size: 30upx;
-     font-weight: 600;
-     margin: 20upx 0;
+      text-indent: 0.5rem;
+      border-left: 5upx solid #e51c23;
+      font-size: 30upx;
+      font-weight: 600;
+      margin: 20upx 0;
     }
-    .title_right{
+    .title_right {
       margin: 20upx 0;
     }
     .title_btn {
