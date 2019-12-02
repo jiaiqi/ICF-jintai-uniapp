@@ -4,13 +4,18 @@
     <cmd-page-body type="top">
       <cmd-transition name="fade-up">
         <view class="forgot">
-          <view class="forgot-phone">
+         <!-- <view class="forgot-phone">
             <cmd-input v-model="mobile.phone" type="number" maxlength="11" placeholder="请输入手机号"></cmd-input>
             <view class="forgot-phone-getcode" @tap="!safety.state ? fnGetPhoneCode() : ''">{{!safety.state&&'获取验证码'||(safety.time+' s')}}</view>
-          </view>
+          </view> -->
           <view class="forgot-code">
-            <cmd-input v-model="mobile.code" type="number" maxlength="6" placeholder="请输入短信验证码"></cmd-input>
+            <cmd-input v-model="mobile.email" type="email" maxlength="6" placeholder="请输入邮箱"></cmd-input>
+            <!-- <cmd-input v-model="mobile.code" type="number" maxlength="6" placeholder="请输入短信验证码"></cmd-input> -->
           </view>
+		  <view class="forgot-code">
+		    <cmd-input v-model="mobile.idCard" type="idCard" maxlength="6" placeholder="请输入身份证号"></cmd-input>
+		    <!-- <cmd-input v-model="mobile.code" type="number" maxlength="6" placeholder="请输入短信验证码"></cmd-input> -->
+		  </view>
           <view class="forgot-password">
             <cmd-input v-model="mobile.passwordOne" type="password" displayable maxlength="26" placeholder="请输入新密码"></cmd-input>
           </view>
@@ -42,8 +47,10 @@
     data() {
       return {
         mobile: {
-          phone: '',
-          code: '',
+          // phone: '',
+		  idCard:'',
+          // code: '',
+		  email:'',
           passwordOne: '',
           passwordTwo: ''
         },
@@ -64,12 +71,15 @@
        */
       mobile: {
         handler(newValue) {
-          if (this.phoneReg.test(newValue.phone) && newValue.code.length == 6 && newValue.passwordOne.length >= 8 &&
-            newValue.passwordOne == newValue.passwordTwo) {
-            this.forgotMobile = true;
-          } else {
-            this.forgotMobile = false;
-          }
+			if(newValue.passwordOne.length >= 6&&newValue.passwordOne == newValue.passwordTwo){
+				this.forgotMobile = true;
+			}
+          // if (this.phoneReg.test(newValue.phone) && newValue.code.length == 6 && newValue.passwordOne.length >= 8 &&
+          //   newValue.passwordOne == newValue.passwordTwo) {
+          //   this.forgotMobile = true;
+          // } else {
+          //   this.forgotMobile = false;
+          // }
         },
         deep: true
       }
@@ -81,7 +91,14 @@
        */
       fnForgot() {
         console.log(JSON.stringify(this.mobile));
+		
       },
+	  /**
+	   * 根据邮箱和身份证号查找用户信息
+	   */
+	  getUserInfo(){
+		  
+	  },
       /**
        * 获取验证码
        */
