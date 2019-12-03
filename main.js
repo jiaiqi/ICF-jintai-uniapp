@@ -68,7 +68,7 @@ fly.interceptors.request.use((request)=>{
 		return request
 	}else{
 		uni.reLaunch({
-		    url: '../login/login'
+		    // url: '../login/login'
 		});
 	}
 })
