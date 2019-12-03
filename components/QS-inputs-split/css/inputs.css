@@ -47,10 +47,12 @@
 
 .padding_20rpx_30rpx {
 	/* padding: 20rpx 30rpx; */
+	height: 28px !important;
 }
 
 .padding_10rpx_15rpx {
-	padding: 10rpx 15rpx;
+	/* padding: 10rpx 15rpx; */
+	
 }
 
 .padding_5rpx_7_5rpx {

@@ -1,17 +1,25 @@
 <template>
 	<view class="content">
+		
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">申请人：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">公租房名称：</text>
 			</view>
-			<input type="text" value="" />
+			<text class="lineh" style="">{{titlename}}</text>
 		</view>
 		
 		<view class="content-box">
 			<view class="content-width">
+				<text class="texts" style="color: red;">*</text><text class="texts">申请人：</text>
+			</view>
+			<input type="text" v-model="people" value="" />
+		</view>
+		
+		<view class="content-box" v-if="false">
+			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">用户编号：</text>
 			</view>
-			<input type="text" value="admin" disabled="disabled" style="background: #EEEEEE;"/>
+			<input type="text" v-model="peadmin" disabled="disabled" style="background: #EEEEEE;"/>
 		</view>
 		
 		
@@ -19,26 +27,16 @@
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">性别：</text>
 			</view>
-			   <radio-group @change="radioChange">
+			   <radio-group @change="change">
 					<label class="uni-list-cell uni-list-cell-pd" >
 						<view>
-							<radio style="transform:scale(0.7);" value="男" checked="true" /><text style="margin-right: 40px;">男</text>
+							<radio style="transform:scale(0.7);"  value="男" checked="" /><text style="margin-right: 40px;">男</text>
 							<radio style="transform:scale(0.7)" value="女" checked="" /><text >女</text>
 						</view>
 						<!-- <view>{{item.name}}</view> -->
 					</label>
 				</radio-group>
 		</view>
-		
-		<view class="content-box">
-			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">民族：</text>
-			</view>
-			<view class="mpvue-picer">
-			  <QSPickerCustom ref="nationPicker" name="formName" variableName="custom" title="" v-model="Fileddatas.column" @change="changePicker" />
-			</view>
-		</view>
-		
 		<view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">籍贯：</text>
@@ -66,58 +64,122 @@
 			<input type="text" value="" />
 		</view>
 		
-		<view class="content-box">
-			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">公租房名称：</text>
-			</view>
-			<view class="mpvue-picer">
-			  <QSPickerCustom ref="nationPicker" name="formName" variableName="custom" title="" v-model="Fileddatas.column" @change="changePicker" />
-			</view>
-		</view>
 		
-		<view class="content-box">
+		<!-- <view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="opacity: 0;">*</text><text class="texts">材料清单：</text>
 			</view>
 			<textarea value="" class="serse" placeholder="材料清单" />
 		</view>
-		<view class="content-box">
-			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">附件：</text>
-			</view>
-			<input type="text" value="" />
-		</view>
+	
 		
 		<view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">图片：</text>
 			</view>
-			<input type="text" value="" />
-		</view>
-		<view class="btn">
+			<QSPick name='pics'>55</QSPick>
+		</view> -->
+		<view class="btn" @click="toadd">
 			提交申请
 		</view>
 	</view>
 </template>
-
 <script>
+	import QSPick from '@/components/QS-inputs-split/elements/QS-pics/index.vue';
 	import QSPickerCustom from '@/components/QS-inputs-split/elements/QS-picker-custom/index.vue';
+	import QSApp from '@/components/QS-inputs-split/js/app.js';
 	export default{
 		data(){
 			return{
-				 Fileddatas: {}
+				 Fileddatas: {},
+				 titlename:'' ,//房屋名称
+				 pinck:'',
+				 people:'' ,//申请人信息
+				 peadmin:'admin', //用户编号
 			}
 		},
 		components: {
 		  QSPickerCustom,
+		  QSPick
 		},
 		methods:{
-			changePicker() {
-			  this.Fileddatas.column = this.Fileddatas.column.data[0];
-			   this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
-			  console.log('选择了：', this.Fileddatas.column);
+			changePicker(val) {
+			  console.log(val)
+			},
+			change(e){
+				console.log(e)
+			},
+			toadd(){
+				// if(this.dateValue==''||this.valueadmin==''||this.baominvalue==''||this.pinck==''||this.phone==''){
+				// 	uni.showToast({
+				// 	    title: '请填写完整再提交',
+				// 	    duration: 2000,
+				// 		icon:"none"
+				// 	});
+				// }else if(!(/^1[3456789]\d{9}$/.test(this.phone))){
+				// 	  uni.showToast({
+				// 	      title: '手机号码填写有误',
+				// 	      duration: 2000,
+				// 		icon:"none"
+				// 	  }); 
+				// }else
+				
+				// if{
+					let url =this.$api.select + "/sqfw/apply/srvzhsq_tenement_lzfsq_add?srvzhsq_tenement_lzfsq_add"
+					let req =[
+						{"serviceName":"srvzhsq_tenement_lzfsq_add",
+						"data":[{
+							"sq_name":"申请人",
+							"user_no":"admin",
+							"garden":"男",
+							"nation":"汉族",
+							"native":null,
+							"card_id":"610326199610041632",
+							"phone":"110",
+							"address":"现居地",
+							"title":"廉租房测试数据",
+							"materials":"材料",
+							"files":null,
+							"pohoto":null,
+							"child_data_list":[],
+							}]}]
+					uni.showToast({
+						title:"提交中..." ,
+						icon:"loading"
+					});
+					
+					this.$http.post(url, req).then(res => {
+						console.log(res)
+						if(res.status==200){
+							uni.hideToast();
+							if(res.data.resultCode!=="SUCCESS"){
+								uni.showToast({
+								    title:res.data.resultMessage ,
+								    duration: 2000,
+									icon:"none"
+								});
+							}else{
+								uni.showToast({
+								    title:"提交成功",
+								    duration: 2000,
+									icon:"success"
+								});
+								
+							}
+						}
+					})
+								
+				// }
+				
+				
+				
+				
 			}
 		},
+		onLoad(option){
+			this.titlename=(JSON.parse(decodeURIComponent(option.query)))
+			this.change()
+		}
 		
 	}
 </script>
@@ -136,6 +198,9 @@
 		font-size: 14px;
 		padding: 2px 5px;
 		margin: 10px 0;
+	}
+	.lineh{
+		line-height: 96upx;
 	}
 	.content-box{
 		display: flex;

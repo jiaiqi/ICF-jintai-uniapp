@@ -225,6 +225,12 @@
         "navigationBarBackgroundColor": "#FB6A6A"
       }
     },
+	{
+	  "path": "pages/sqfw/bmym",
+	  "style": {
+	    "navigationBarTitleText": "活动报名"
+	  }
+	},
     {
       "path": "pages/shzz/fromtext",
       "style": {

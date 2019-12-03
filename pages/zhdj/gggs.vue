@@ -51,18 +51,17 @@
 	
 		<view class="morea" @click="toMore()">更多>></view>
 			
-		<view class="">
-			<view class="titleone" >{{titletwo}}</view>
-			<view class="contentBox" @tap="detaile(item)"   v-for="(item,index) in datalisttwost" :key="index">
+		<view class="" v-if="titlebar=='sqhd'">
+			<view class="" style="display: flex;justify-content: space-between;">
+				<view class="titleone" >{{titletwo}}</view>  <view class="baobtn"  @click="baoming()">我要报名</view>
+			</view>
 			
+				
+			<view class="contentBox" @tap="detaile(item)"   v-for="(item,index) in datalisttwost" :key="index">
 				<text class="crips"></text>
-				
-				<text class="content-news" v-if="item.activity_title">{{item.activity_title}}</text>
-				
+				<text class="content-news" v-if="item.activity_title">{{item.activity_title}} <span class="baing">报名中</span> </text>  
 				<text class="yeardata">{{  (item.create_time).substring(0,11)}}</text>
 			</view>
-				
-				
 			<view class="morea" @click="toMoretwo()">更多>></view>
 		</view>
 		
@@ -79,7 +78,8 @@
 				src:'../../static/img/dj.png',
 				titletwo:'',
 				numberpage:8,
-				datalisttwost:[]
+				datalisttwost:[],
+				titlebar:''
 			}
 		},
 		methods:{
@@ -105,6 +105,11 @@
 			
 					this.datalist=res.data.data
 					this.listshow=false
+				})
+			},
+			baoming(){
+				uni.navigateTo({
+					url:'../sqfw/bmym'
 				})
 			},
 			getdatalist(){
@@ -173,6 +178,20 @@
 	.content-gggs{
 		width: 100%;
 	}
+	.baobtn{
+		position: relative;
+		top: 20upx;
+		line-height: 45upx;
+		height: 45upx;
+		margin-right: 22upx;
+			width: 80uxp;
+			background: #E51C23;
+			color: #FFFFFF;
+			font-size: 15px;
+			letter-spacing: 2upx;
+			padding: 3px;
+			border-radius: 10upx;
+	}
 	.banners{
 		height: 400upx;
 		display: block;
@@ -221,5 +240,14 @@
 		font-size: 15px;
 		color: red;
 		margin-bottom: 50upx;
+	}
+	.baing{
+		border: 0.5px solid red;
+		line-height: 10px !important;
+		font-size: 13px;
+		padding: 1px;
+		border-radius: 5px;
+		margin-left: 7px !important;
+		color: red;
 	}
 </style>

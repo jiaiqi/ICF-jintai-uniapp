@@ -52,7 +52,7 @@
 			<text class="titlename">附 件 下 载：</text><a href="http://39.98.203.134:8081/file/download?filePath=/20190727/20190727150513912100/20190727150513912101.docx" style="color:blue;">公租房.doc</a>
 		</view>
 		
-		<view class="btn" @click="navto()">
+		<view class="btn" @click="navto(datalist.title)">
 			申请预约
 		</view>
 	</view>
@@ -66,9 +66,9 @@
 			}
 		},
 		methods:{
-			navto(){
+			navto(val){
 				uni.navigateTo({
-					url:'./sqyy'
+					url:'./sqyy?query='+ encodeURIComponent((JSON.stringify(val)))
 				})
 			},
 			down(){
