@@ -432,12 +432,12 @@
               "navigationBarTitleText": "栏目"
             }
         }
-        ,{ 
-            "path" : "pages/forum/list", //帖子列表
-           "style" : {
-             "navigationBarTitleText": "论坛"
-           }
-        }
+        // ,{ 
+        //     "path" : "pages/forum/list", //帖子列表
+        //    "style" : {
+        //      "navigationBarTitleText": "论坛"
+        //    }
+        // }
     ],
   "tabBar": {
     "color": "#7a7e83",
