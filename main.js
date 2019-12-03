@@ -7,10 +7,8 @@ import flyio from '@/common/wx.js' // 引入flyio 微信小程序使用
 import flyioh from 'flyio' // 引入flyio 其他h5 使用
 import store from '@/store/index.js' // 引入vuex 管理数据状态
 // import config from '@/common/config' // flyio 请求公共配置
-// import store from './store'
 import uniNavBar from "@/components/uni-nav-bar/uni-nav-bar.vue"
 let fly = new flyio
-// let flyh = new flyioh
 
 Vue.config.productionTip = false
 
@@ -51,11 +49,8 @@ fly.interceptors.request.use((request)=>{
 	let isExpired = outTime < date
 	console.log("isExpired",isExpired,outTime,date,outTime - date)
 	let urlstr = request.url
-	// request.url = request.url + ";BXSERVERCOOKIEID=" + srvCk
 	let len = urlstr.lastIndexOf('cn/') + 3
-	//console.log(len)
 	let lens = urlstr.indexOf(';')
-	//console.log(lens)
 	let ls = urlstr.lastIndexOf('?')
 	let apiPath = null
 	if(lens > 0){
@@ -81,7 +76,25 @@ fly.interceptors.request.use((request)=>{
 // 添加响应拦截器
 fly.interceptors.response.use((res) => {
     // 对响应数据做些事
-    
+    if(res.data.resultCode==="0011"){
+      uni.reLaunch({
+        url:'../login/login'
+      })
+      // uni.showModal({
+      //   showCancel:false,
+      //   title:"警告",
+      //   content:res.data.resultMessage + '即将跳转到登录页面',
+      //   success: (response) => {
+      //     if(response.confirm){
+            
+      //     }
+      //   }
+      // })
+    }
+    if(res.data.response&&res.data.response.length>0){
+     let bxAuthTicket = res.data.response[0].response.bx_auth_ticket
+     
+    }
     return res
 }, (error) => {
     return Promise.reject(error)

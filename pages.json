@@ -1,34 +1,36 @@
 {
-  "pages": [ //pages数组中第一项表示应用启动页,
+  "pages": [
+    //pages数组中第一项表示应用启动页,
     {
-      "path": "pages/home/home",
+      "path": "pages/CommunityServices/CommunityServices",
+      "path": "pages/SmartCity/smartcity",
       "style": {
-        "navigationBarTitleText": "首页",
-        "app-plus": {
-          "titleNView": {
-            "type": "transparent"
-          }
-        }
+        "navigationBarTitleText": "首页"
+        // "app-plus": {
+        //   "titleNView": {
+        //     "type": "transparent"
+        //   }
+        // }
       }
-    }, 
+    },
     {
       "path": "pages/login/login",
       "style": {
         "navigationBarTitleText": "登录"
       }
-    }, 
+    },
     {
       "path": "pages/reg/reg",
       "style": {
         "navigationBarTitleText": "注册"
       }
-    }, 
+    },
     {
       "path": "pages/pwd/pwd",
       "style": {
         "navigationBarTitleText": "忘记密码"
       }
-    }, 
+    },
     {
       "path": "pages/user/user",
       "style": {
@@ -151,8 +153,7 @@
     },
     {
       "path": "pages/zhdj/ggcontent",
-      "style": {
-      }
+      "style": {}
     },
     {
       "path": "pages/zhdj/dzz",
@@ -160,43 +161,42 @@
         "navigationBarTitleText": "党组织"
       }
     },
-	{
-	  "path": "pages/zhdj/dygl",
-	   "style": {
-		  "app-plus": {
-			  "bounce": "none",
-			  "titleNView": {
-				  "buttons": [ 
-					  {
-						  "text": "党员", 
-						  "fontSize":"16",
-						  "float": "right",
-						  "color":"#fff"
-					  }
-					 
-				  ],
-				  "searchInput":{
-						  "align": "center",
-						  "placeholder": "请输入查找党员信息",
-						  "borderRadius":"50upx",
-						  "backgroundColor": "#fff"
-					  }
-			  }
-		  }
-	  }
-	},
+    {
+      "path": "pages/zhdj/dygl",
+      "style": {
+        "app-plus": {
+          "bounce": "none",
+          "titleNView": {
+            "buttons": [{
+                "text": "党员",
+                "fontSize": "16",
+                "float": "right",
+                "color": "#fff"
+              }
+
+            ],
+            "searchInput": {
+              "align": "center",
+              "placeholder": "请输入查找党员信息",
+              "borderRadius": "50upx",
+              "backgroundColor": "#fff"
+            }
+          }
+        }
+      }
+    },
     {
       "path": "pages/zhdj/dyxq",
       "style": {
         "navigationBarTitleText": "党员资料"
       }
     },
-	{
-	  "path": "pages/zhdj/rctd",
-	  "style": {
-	    "navigationBarTitleText": "人才天地"
-	  }
-	},
+    {
+      "path": "pages/zhdj/rctd",
+      "style": {
+        "navigationBarTitleText": "人才天地"
+      }
+    },
     {
       "path": "pages/sqfw/sqdh",
       "style": {
@@ -225,12 +225,12 @@
         "navigationBarBackgroundColor": "#FB6A6A"
       }
     },
-	{
-	  "path": "pages/sqfw/bmym",
-	  "style": {
-	    "navigationBarTitleText": "活动报名"
-	  }
-	},
+    {
+      "path": "pages/sqfw/bmym",
+      "style": {
+        "navigationBarTitleText": "活动报名"
+      }
+    },
     {
       "path": "pages/shzz/fromtext",
       "style": {
@@ -317,34 +317,34 @@
     }, {
       "path": "pages/ggfw/ggfw",
       "style": {
-		   "navigationBarTitleText": "公共服务"
-	  }
-    }, 
-	{
-	  "path": "pages/ggfw/fwlc",
-	  "style": {
-		   "navigationBarTitleText": "小区列表"
-	  }
-	},
-	{
-	  "path": "pages/ggfw/fwxq",
-	  "style": {
-		   "navigationBarTitleText": "申请流程"
-	  }
-	},
-	// {
-	//   "path": "components/l-file/l-file",
-	//   "style": {
-	// 	   "navigationBarTitleText": "申请流程"
-	//   }
-	// },
-	{
-	  "path": "pages/ggfw/sqyy",
-	  "style": {
-		   "navigationBarTitleText": "申请预约"
-	  }
-	},
-	{
+        "navigationBarTitleText": "公共服务"
+      }
+    },
+    {
+      "path": "pages/ggfw/fwlc",
+      "style": {
+        "navigationBarTitleText": "小区列表"
+      }
+    },
+    {
+      "path": "pages/ggfw/fwxq",
+      "style": {
+        "navigationBarTitleText": "申请流程"
+      }
+    },
+    // {
+    //   "path": "components/l-file/l-file",
+    //   "style": {
+    // 	   "navigationBarTitleText": "申请流程"
+    //   }
+    // },
+    {
+      "path": "pages/ggfw/sqyy",
+      "style": {
+        "navigationBarTitleText": "申请预约"
+      }
+    },
+    {
       "path": "pages/forum/detail",
       "style": {
         "navigationBarTitleText": "详情",
@@ -407,50 +407,55 @@
           }
         }
       }
+    }, {
+      "path": "pages/forum/myPost", // 我的帖子
+      "style": {
+        "navigationBarTitleText": "我的帖子"
+      }
+    }, {
+      "path": "pages/user/register", // 注册
+      "style": {
+        "navigationBarTitleText": "注册"
+      }
+    }, {
+      "path": "pages/user/forgot", // 忘记密码
+      "style": {
+        "navigationBarTitleText": "忘记密码"
+      }
+    }, {
+      "path": "pages/forum/category", //论坛栏目
+      "style": {
+        "navigationBarTitleText": "栏目"
+      }
     }
-      ,{
-            "path" : "pages/forum/myPost", // 我的帖子
-            "style": {
-              "navigationBarTitleText": "我的帖子"
-            }
-        }
-        ,{
-            "path" : "pages/user/register", // 注册
-            "style" : {
-              "navigationBarTitleText": "注册"
-            }
-        }
-        ,{
-            "path" : "pages/user/forgot",  // 忘记密码
-            "style" : {
-              "navigationBarTitleText": "忘记密码"
-            }
-        }
-        ,{
-            "path" : "pages/forum/category", //论坛栏目
-            "style" : {
-              "navigationBarTitleText": "栏目"
-            }
-        }
-        // ,{ 
-        //     "path" : "pages/forum/list", //帖子列表
-        //    "style" : {
-        //      "navigationBarTitleText": "论坛"
-        //    }
-        // }
-    ],
+    // ,{ 
+    //     "path" : "pages/forum/list", //帖子列表
+    //    "style" : {
+    //      "navigationBarTitleText": "论坛"
+    //    }
+    // }
+    , {
+      "path": "pages/CommunityServices/CommunityServices",
+      "style": {
+        "navigationBarTitleText": "社区服务"
+      }
+    }, {
+      "path": "pages/SecondaryPage/SecondaryPage",
+      "style": {}
+    }
+  ],
   "tabBar": {
     "color": "#7a7e83",
     "selectedColor": "#E51C23",
     "backgroundColor": "#ffffff",
     "list": [{
-        "pagePath": "pages/home/home",
-        "text": "首页",
+        "pagePath": "pages/SmartCity/smartcity",
+        "text": "智慧党建",
         "iconPath": "static/img/home.png",
         "selectedIconPath": "static/img/home_active.png"
       }, {
-        "pagePath": "pages/message/message",
-        "text": "消息",
+        "pagePath": "pages/CommunityServices/CommunityServices",
+        "text": "社区服务",
         "iconPath": "static/img/msg.png",
         "selectedIconPath": "static/img/msg_active.png"
       }, {

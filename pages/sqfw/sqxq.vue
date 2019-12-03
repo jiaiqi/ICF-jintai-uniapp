@@ -39,6 +39,8 @@
 				<!-- JSON.parse((JSON.stringify(datalist.activity_content).replace(/\width:650px;/gi,'width:100%;height:230px' ).replace(/\<img/gi,'<img width=100% height=230px ' ))) -->
 			</view>
 				
+				
+				<view class="btn"  @click="baoming()">我要报名</view>
 		</view>
 		
 	</view>
@@ -56,7 +58,11 @@
 		},
 		components: { uniBadge },
 		methods: {
-	
+			baoming(){
+				uni.navigateTo({
+					url:'./bmym'
+				})
+			},
 		},
 		onLoad(options) {
 			uni.setNavigationBarTitle({
@@ -141,5 +147,15 @@
 	    }
 	  }
 	}
-	
+	.btn{
+		margin: 40upx 20upx;
+		height:80upx;
+		background: red;
+		font-size: 34rpx;
+		color: #FFFFFF;
+		font-weight: 600;
+		text-align: center;
+		line-height: 80upx;
+		border-radius: 20upx;
+	}
 </style>

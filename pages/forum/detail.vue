@@ -133,6 +133,7 @@ export default {
 				],
 				serviceName: 'srvfile_attachment_select'
 			};
+      
 			this.$http.post(url, req).then(res => {
 				if (res.data.data && res.data.data.length > 0) {
 					console.log(res.data.data);

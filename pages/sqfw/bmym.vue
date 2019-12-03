@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="content-box">
+		<view class="content-box" v-if='false'>
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">用户编号：</text>
 			</view>
@@ -18,22 +18,22 @@
 			</view>
 			<input type="text" v-model="phone"/>
 		</view>
-		<view class="content-box">
+		<!-- <view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">选择时间：</text>
 			</view>
 			<view class="input" >
 				<QSPickerDate  name="formName" variableName="date" title="" v-model="dateValue"  @change="changePickers(dateValue)"   placherhold="请选择" />
 			</view>
-		</view>
-		<view class="content-box">
+		</view> -->
+	<!-- 	<view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">选择活动：</text>
 			</view>
 			<view class="input">
 				<QSPickerCustom  ref="nationPickerZ"  name="formName" variableName="custom" title=""  v-model="pinck" @change="changePicker(pinck)"  />
 			</view>
-		</view>
+		</view> -->
 		<view class="btn" @click="addvalue()">
 			提交申请
 		</view>
@@ -87,7 +87,7 @@
 				this.$refs[name].setData(data);
 			},
 			addvalue(){
-				if(this.dateValue==''||this.valueadmin==''||this.baominvalue==''||this.pinck==''||this.phone==''){
+				if(this.baominvalue==''||this.phone==''){
 					uni.showToast({
 					    title: '请填写完整再提交',
 					    duration: 2000,

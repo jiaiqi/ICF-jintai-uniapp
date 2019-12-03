@@ -3,11 +3,11 @@
     <view class="input-group">
       <view class="input-row border">
         <text class="title">账号：</text>
-        <m-input class="m-input" type="text" clearable focus v-model="account.name" placeholder="请输入账号"></m-input>
+        <m-input class="m-input" type="text" clearable  v-model="account.name" placeholder="请输入账号"></m-input>
       </view>
       <view class="input-row">
         <text class="title">密码：</text>
-        <m-input type="password" displayable v-model="account.password" placeholder="请输入密码" @keyup.enter="accoutLogin"></m-input>
+        <m-input type="password" displayable v-model="account.password" placeholder="请输入密码"></m-input>
       </view>
     </view>
     <view class="btn-row">
@@ -48,17 +48,17 @@ export default {
   },
   computed: mapState(['forcedLogin']),
   onLoad(option) {
-    if(option.username){
-      this.account.name = option.username
+    if (option.username) {
+      this.account.name = option.username;
     }
-    if(option.password){
-      this.account.password = option.password
+    if (option.password) {
+      this.account.password = option.password;
     }
     //#ifdef MP-WEIXIN
     this.miniLogin();
     //#endif
     //#ifdef APP-PLUS || H5
-    
+
     this.appLogin();
     //#endif
   },
@@ -100,7 +100,7 @@ export default {
        */
       if (this.forcedLogin) {
         uni.reLaunch({
-          url: '../home/home'
+          url: '@/pages/home/home'
         });
       } else {
         uni.navigateBack();
@@ -191,7 +191,10 @@ export default {
                         self.$store.commit('setLogined', users.logined);
                         self.$store.commit('setUserNo', users.user_info);
                         // uni.navigateBack({ delta: 1})
-                        self.goWxLink('../home/home', 'reLaunch');
+                        uni.reLaunch({
+                          url: '@/pages/home/home'
+                        });
+                        // self.goWxLink('../home/home', 'reLaunch');
                       } else {
                         let users = {
                           logined: false
@@ -240,13 +243,8 @@ export default {
 
       console.log('ssos', ssos, uni.getSystemInfoSync());
       let reqS = {
-        // /programlogin;SSOSESSIONID=
         url: self.$api.programlogin + ';SSOSESSIONID=' + ssos,
         data: [{ serviceName: 'srvuser_login', data: [{ user_no: self.account.name, pwd: self.account.password }] }]
-        //  "data": {
-        // "user_no": self.account.name,
-        // "pwd": self.account.password
-        //  }
       };
       if (ssos === '') {
         // #ifdef  MP-WEIXIN
@@ -271,16 +269,7 @@ export default {
         .then(res => {
           this.login.loading = false;
           console.log(res.status, res.data, res.header);
-          // 根据登录状态进行处理
-          // if(res.data.bxssocookieid && res.data.bxssocookieid !== null && res.data.bxssocookieid !== "" && res.data.bxssocookieid !== undefined){
-          // 	try {
-          //
-          // 		uni.setStorageSync('loginInfoSsoCk', res.data.bxssocookieid); //保存 sso 票据信息
-          // 	} catch (e) {
-          // 		// error
-          // 	}
-          // 	// self.$store.commit('setWxLoginInfoSsoCk', res.data.bxssocookieid) // 登录成功 保存sso登录票据
-          // }
+
           switch (res.data.resultCode) {
             case 'FAILURE':
               uni.showToast({
@@ -290,7 +279,6 @@ export default {
               break;
             case 'bind_login_success':
               // 绑定登录成功，设置登录状态
-              //console.log("bind_login_success",res.data.resultMessage)
               let users = {
                 logined: true,
                 user_info: {
@@ -330,7 +318,10 @@ export default {
                   self.$store.commit('setUserNo', users.user_info);
                   uni.setStorageSync('loginInfoSrvCk', e); //保存 后端服务 票据信息
                   // uni.navigateBack({ delta: 1})
-                  self.goWxLink('../home/home', 'reLaunch');
+                  uni.switchTab({
+                    url: '@pages/SmartCity/smartcity'
+                  });
+                  // self.goWxLink('../home/home', 'reLaunch');
                 } else {
                   let users = {
                     logined: false
@@ -360,11 +351,11 @@ export default {
               //console.log("userINfo",res.data.user_no)
               let bx_auth_ticket = res.data.response[0].response.bx_auth_ticket;
               let userInfo = res.data.response[0].response.login_user_info;
-              this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
+              // this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
               let loginTime = new Date().getTime() + res.data.response[0].response.expire_time * 1000;
               let expire_time = res.data.response[0].response.expire_time;
               uni.setStorageSync('bxAuthTicket', bx_auth_ticket); //保存凭证
-              // uni.setStorageSync('userInfo', userInfo); //保存用户信息
+              uni.setStorageSync('userInfo', userInfo); //保存用户信息
               uni.setStorageSync('expireTime', res.data.response[0].response.expire_time); //保存时效
               uni.setStorageSync('outTime', loginTime); //保存时效
               let use = {
@@ -385,7 +376,10 @@ export default {
                 return res;
               });
               console.log('menureq', menureq);
-              self.goWxLink('../home/home', 'reLaunch');
+              // self.goWxLink('../home/home', 'reLaunch');
+              uni.switchTab({
+                url: '../SmartCity/smartcity'
+              });
               break;
             default:
               break;
@@ -407,8 +401,7 @@ export default {
           hisVer: true
         };
         this.$http.post(url, req).then(res => {
-          
-          if(res.data.data&&res.data.data[0]){
+          if (res.data.data && res.data.data[0]) {
             const userInfo = res.data.data[0];
             if (userInfo.photo_url) {
               const url2 = this.$api.select + '/file/select/srvfile_attachment_select';
@@ -417,17 +410,16 @@ export default {
                 colNames: ['*'],
                 condition: [{ colName: 'file_no', value: userInfo.photo_url, ruleType: 'eq' }, { colName: 'is_delete', value: '1', ruleType: 'eq' }]
               };
-              this.$http.post(url2,req2).then(res2=>{
-                if(res2.data.data&&res2.data.data[0]){
-                  let head_img = res2.data.data[0].fileurl
-                  head_img = this.$api.select+ "/file/download?filePath=" +head_img
-                  userInfo.head_img_path = head_img
-                  uni.setStorageSync("userInfo",userInfo) //保存用户信息
+              this.$http.post(url2, req2).then(res2 => {
+                if (res2.data.data && res2.data.data[0]) {
+                  let head_img = res2.data.data[0].fileurl;
+                  head_img = this.$api.select + '/file/download?filePath=' + head_img;
+                  userInfo.head_img_path = head_img;
+                  uni.setStorageSync('userInfo', userInfo); //保存用户信息
                 }
-              })
+              });
             }
           }
-        
         });
       }
     }

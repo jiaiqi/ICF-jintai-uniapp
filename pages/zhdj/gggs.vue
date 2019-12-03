@@ -52,12 +52,12 @@
 		<view class="morea" @click="toMore()">更多>></view>
 			
 		<view class="" v-if="titlebar=='sqhd'">
-			<view class="" style="display: flex;justify-content: space-between;">
-				<view class="titleone" >{{titletwo}}</view>  <view class="baobtn"  @click="baoming()">我要报名</view>
+			<view class="" >
+				<view class="titleone" >{{titletwo}}</view>  
 			</view>
 			
 				
-			<view class="contentBox" @tap="detaile(item)"   v-for="(item,index) in datalisttwost" :key="index">
+			<view class="contentBox" @tap="detaile(item,"1")"   v-for="(item,index) in datalisttwost" :key="index">
 				<text class="crips"></text>
 				<text class="content-news" v-if="item.activity_title">{{item.activity_title}} <span class="baing">报名中</span> </text>  
 				<text class="yeardata">{{  (item.create_time).substring(0,11)}}</text>
@@ -83,9 +83,9 @@
 			}
 		},
 		methods:{
-			detaile(item){
+			detaile(item,val){
 				uni.navigateTo({
-					url:'../sqfw/sqxq?query='+ encodeURIComponent((JSON.stringify(item)).replace(/%/g, '%25'))
+					url:'../sqfw/sqxq?query='+ encodeURIComponent((JSON.stringify(item)).replace(/%/g, '%25'))+'&num=1'
 				})
 			},
 			getdata(serve){
@@ -107,11 +107,7 @@
 					this.listshow=false
 				})
 			},
-			baoming(){
-				uni.navigateTo({
-					url:'../sqfw/bmym'
-				})
-			},
+			
 			getdatalist(){
 				
 				let url =this.$api.select +"/sqfw/select/srvzhsq_activity_arrange_select"
