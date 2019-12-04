@@ -361,7 +361,7 @@ export default {
 							//console.log("userINfo",res.data.user_no)
 							let bx_auth_ticket = res.data.response[0].response.bx_auth_ticket;
 							let userInfo = res.data.response[0].response.login_user_info;
-							// this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
+							this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
 							let loginTime = new Date().getTime() + res.data.response[0].response.expire_time * 1000;
 							let expire_time = res.data.response[0].response.expire_time;
 							uni.setStorageSync('bxAuthTicket', bx_auth_ticket); //保存凭证
@@ -424,6 +424,7 @@ export default {
 								if (res2.data.data && res2.data.data[0]) {
 									let head_img = res2.data.data[0].fileurl;
 									head_img = this.$api.select + '/file/download?filePath=' + head_img;
+                  let userInfo = uni.getStorageSync('userInfo')
 									userInfo.head_img_path = head_img;
 									uni.setStorageSync('userInfo', userInfo); //保存用户信息
 								}

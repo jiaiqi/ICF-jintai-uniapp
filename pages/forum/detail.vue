@@ -230,7 +230,6 @@ export default {
 						let arr = data.map(item => {
 							return item.praise_user;
 						});
-						console.log(arr);
 						msg['agreePeople'] = arr;
 						if (arr.indexOf(userInfo.user_no) != -1) {
 							msg['agree_icon'] = '../../static/img/agreea.png';
