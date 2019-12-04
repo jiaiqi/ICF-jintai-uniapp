@@ -3,14 +3,12 @@
     <view class="px_list">
       <view class="list_title">
         <view class="title_left">{{ title }}</view>
-        <!-- <view class="title_right" @tap="toAdd"><button class="title_btn">添加</button></view> -->
+        <view class="title_right" @tap="toAdd" v-if="showAddButton"><button class="title_btn">添加</button></view>
       </view>
-      <view class="loadAnimation" v-if="listData.length < 1&&!nodata">
-        <view class="loadAnimItem" v-for="i in 14" :key='i'><view class="loadAnimContent"></view></view>
+      <view class="loadAnimation" v-if="listData.length < 1 && !nodata">
+        <view class="loadAnimItem" v-for="i in 14" :key="i"><view class="loadAnimContent"></view></view>
       </view>
-      <view class="loadAnimation" v-if="listData.length < 1&&nodata">
-        暂无数据
-      </view>
+      <view class="loadAnimation" v-if="listData.length < 1 && nodata">暂无数据</view>
       <transition name="slide-fade">
         <view class="list_content" v-if="listData.length > 0 && (title == '党建培训' || title == '学习心得' || title === '培训安排')">
           <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
@@ -36,7 +34,7 @@
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
           </view>
         </view>
-        <view class="list_content" v-if="listData.length > 0 && title == '社区献策'">
+        <view class="list_content" v-if="listData.length > 0 && title == '我为社区献策'">
           <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="toDetail(item)">
             <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
@@ -64,7 +62,7 @@
           </view>
         </view>
 
-        <view class="list_content" v-if="listData.length > 0 && title == '社区活动'">
+        <view class="list_content" v-if="listData.length > 0 && (title === '社区活动' || title === '社会组织活动')">
           <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
             <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
@@ -75,6 +73,29 @@
           <view class="list_item" v-for="(item, index) in listData" :key="index" @tap="detaile(item)">
             <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
             <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+          </view>
+        </view>
+
+        <view class="list_content" v-if="listData.length > 0 && title == '社会组织'">
+          <view
+            class="list_item"
+            v-for="(item, index) in listData"
+            :key="index"
+            @click="details(item.proc_status, item.zuzhi_name || item.organize_name, item.zuzhi_address || item.address, item.zuzhi_jj || item.remark)"
+          >
+            <view class="item_title" v-if="item.organize_name">{{ item.organize_name }}</view>
+            <view :class="item.proc_status == '完成' ? 'colortext' : 'colortext-red'">{{ item.proc_status == '完成' ? '已审批' : '未审批' }}</view>
+          </view>
+        </view>
+        <view class="list_content" v-if="listData.length > 0 && title == '志愿者组织'">
+          <view
+            class="list_item"
+            v-for="(item, index) in listData"
+            :key="index"
+            @click="details(item.proc_status, item.zuzhi_name || item.organize_name, item.zuzhi_address || item.address, item.zuzhi_jj || item.remark)"
+          >
+            <view class="item_title" v-if="item.zuzhi_name">{{ item.zuzhi_name }}</view>
+            <view :class="item.proc_status == '完成' ? 'colortext' : 'colortext-red'">{{ item.proc_status == '完成' ? '已审批' : '未审批' }}</view>
           </view>
         </view>
       </transition>
@@ -95,6 +116,9 @@ export default {
       currentPage: 1,
       title: '',
       loadText: '',
+      columnData: {},
+      showAddButton: false,
+      showDeleteButton: false,
       selectList: [
         {
           serviceName: 'srvzhsq_pxap_select', // 党建培训查询
@@ -119,13 +143,42 @@ export default {
         }
       ],
       listData: [],
-      nodata:false
+      nodata: false,
+      query: {} //url携带的参数
     };
   },
   methods: {
     toAdd(e) {
+      let serviceName = '';
+      if (this.query.service_name && this.query.service_name.includes('select')) {
+        let query = this.query;
+        serviceName = this.query.service_name.replace('select', 'add');
+        query.service_name = serviceName
+        uni.navigateTo({
+          url: '../add/add?query=' + encodeURIComponent(JSON.stringify(query))
+        });
+      }
+    },
+    details(statenum, names, dress, session) {
+      uni.setStorage({
+        key: 'zuzhi',
+        data: {
+          names: names,
+          dress: dress,
+          session: session
+        },
+        success: function() {
+          console.log('success');
+        }
+      });
+      // <!-- 名称  地址  简介-->
+      if (statenum !== '完成') {
+        statenum = 1;
+      } else {
+        statenum = 0;
+      }
       uni.navigateTo({
-        url: '../add/add?serviceName=srvzhsq_pxap_select&pageType=add&api=zhdj'
+        url: '../../shzz/fromtext?state=' + statenum
       });
     },
     getPxList() {
@@ -170,28 +223,28 @@ export default {
         }
       });
     },
-    getBmList(serviceName,column_no,parent_no) {
+    getBmList(serviceName, column_no, parent_no) {
       // 获取便民信息列表
       let url = this.$api.select + '/' + 'sqfw' + '/select/' + serviceName;
       let req = { serviceName: serviceName, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 10 }, order: [] };
       if (serviceName === 'srvzhsq_bmfw_ssp_select' || serviceName === 'srvzhsq_forum_opinion_select') {
         req.proc_data_type = 'myall';
       }
-      if(column_no){
-        req.condition=[
+      if (column_no) {
+        req.condition = [
           // {colName: "parent_no", ruleType: "eq", value: parent_no},
-          {colName: "note_column", ruleType: "eq", value: column_no}
-        ]
+          { colName: 'note_column', ruleType: 'eq', value: column_no }
+        ];
       }
       this.$http.post(url, req).then(res => {
-        if (res.data.data&&res.data.data.length > 0) {
+        if (res.data.data && res.data.data.length > 0) {
           // self.selectList[2].resDatas = res.data.data;
           this.listData = res.data.data;
           console.log(this.listData);
         } else {
-          setTimeout(()=>{
-            this.nodata = true
-          },2000)
+          setTimeout(() => {
+            this.nodata = true;
+          }, 2000);
           return;
         }
       });
@@ -204,7 +257,7 @@ export default {
     toForumDetail(item) {
       console.log(JSON.stringify(item));
       uni.navigateTo({
-        url: '../../forum/detail?query=' + encodeURIComponent(JSON.stringify(item))
+        url: '../../forum/detail?no='  + item.note_no
       });
     },
     detaile(item) {
@@ -277,11 +330,83 @@ export default {
           return;
         }
       });
+    },
+    getDmListsdatalisr(serviceName) {
+      let url = this.$api.select + '/' + 'sqfw' + '/select/' + serviceName;
+      let req = { serviceName: serviceName, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 14 }, order: [] };
+      this.$http.post(url, req).then(res => {
+        if (res.data.data.length > 0) {
+          this.listData = res.data.data;
+          console.error(this.listData);
+        } else {
+          return;
+        }
+      });
+    },
+    getListData(query) {
+      // 获取列表数据
+      if (query) {
+        console.log('query:', query);
+        this.query = query;
+        let url = this.$api.select + '/' + query.app_name + '/select/' + query.service_name;
+        let req = { serviceName: query.service_name, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 14 }, order: [] };
+        this.$http.post(url, req).then(res => {
+          if (res.data.data && res.data.data.length > 0) {
+            this.listData = res.data.data;
+          } else {
+            this.nodata = true;
+          }
+        });
+      }
+    },
+    async getColumnsData(app = 'sqfw', service_name, use_type = 'add') {
+      //获取字段信息
+      let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
+      let req = {
+        serviceName: 'srvsys_service_columnex_v2_select',
+        colNames: ['*'],
+        condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
+        order: [{ colName: 'seq', orderType: 'asc' }]
+      };
+      let res = await this.$http.post(url, req);
+      if (res.data.data) {
+        let cols = res.data.data;
+        return cols;
+      }
     }
   },
   onLoad(options) {
-    console.log(options);
-    if (options.to == 'xxxd') {
+    let query = {};
+    if (options.query||options.data) {
+      query = JSON.parse(options.query?options.query:options.data?options.data:[]);
+      console.log('query,qieur.label', query, query.label);
+      const app = query.menu_url.match(/menuapp=(\S*)/)[1];
+      query.app_name = app;
+      console.log('app', app, query.menu_url);
+      this.query = query;
+      this.title = query.label;
+      this.getListData(query);
+      this.getColumnsData(app, query.service_name, 'list')
+        .then(cols => {
+          console.log('cols', cols);
+          this.columnData = cols;
+          if (cols.gridButton) {
+            cols.gridButton.map(btn => {
+              if (btn.permission == true && btn.button_type === 'add') {
+                this.showAddButton = true;
+              }
+              if (btn.permission == true && btn.button_type === 'delete') {
+                this.showDeleteButton = true;
+              }
+            });
+          }
+        })
+        .then(() => {
+          uni.setNavigationBarTitle({
+            title: this.title ? this.title : '列表'
+          });
+        });
+    } else if (options.to == 'xxxd') {
       this.getXdList();
       this.title = '学习心得';
     } else if (options.to === 'pxap') {
@@ -300,9 +425,9 @@ export default {
       this.title = '数字城管';
     } else if (options.to === 'sqlt') {
       // 社区论坛
-      if(options.column_no&&options.parent_no){
-        this.getBmList('srvzhsq_forum_note_select',options.column_no,options.parent_no);
-      }else{
+      if (options.column_no && options.parent_no) {
+        this.getBmList('srvzhsq_forum_note_select', options.column_no, options.parent_no);
+      } else {
         this.getBmList('srvzhsq_forum_note_select');
       }
       this.title = '社区论坛';
@@ -331,11 +456,20 @@ export default {
       //党建论坛D
       this.getDmListsdata('srvzhsq_activity_arrange_select');
       this.title = '活动安排';
+    } else if (options.to === 'shzzlist') {
+      //社会组织
+      this.getDmListsdatalisr('srvzhsq_social_organizie_select');
+      this.title = '社会组织';
+    } else if (options.to === 'zyzzz') {
+      //社会组织
+      this.getDmListsdatalisr('srvzhsq_zyz_zuzhi_select');
+      this.title = '志愿者组织';
     }
-    uni.setNavigationBarTitle({
-      title: this.title
-    });
-  }
+    // uni.setNavigationBarTitle({
+    //   title: this.title
+    // });
+  },
+  mounted() {}
 };
 </script>
 
@@ -365,14 +499,18 @@ export default {
       font-weight: 600;
       margin: 20upx 0;
     }
-    .title_btn {
-      width: 120upx;
-      height: 50upx;
-      line-height: 50upx;
-      margin: 0;
-      background-color: #e54d42;
-      color: #ffffff;
-      font-size: 30upx;
+    .title_right {
+      display: flex;
+      align-items: center;
+      .title_btn {
+        width: 120upx;
+        height: 50upx;
+        line-height: 50upx;
+        margin: 0;
+        background-color: #e54d42;
+        color: #ffffff;
+        font-size: 30upx;
+      }
     }
   }
   .list_content {
@@ -484,5 +622,15 @@ export default {
 /* .list-leave-active for below version 2.1.8 */ {
   opacity: 0;
   transform: translateY(100px);
+}
+.colortext {
+  font-size: 12px;
+  color: green;
+  line-height: 60upx;
+}
+.colortext-red {
+  font-size: 12px;
+  color: red;
+  line-height: 60upx;
 }
 </style>

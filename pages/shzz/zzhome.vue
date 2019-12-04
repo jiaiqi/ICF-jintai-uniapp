@@ -11,11 +11,17 @@
 		<view class="conent-gray">
 			<view class="gray-tab">
 				<view class="textbar">
-					<text class="leftborder">志愿者组织</text>
+					<text class="leftborder">{{label}}</text>
 					<text class="btnmenu" @tap="join(selectList[0])" >申请加入</text>
 				</view>
 			</view>
 			<view class="" v-if="shows">
+				
+				<view class="" style="margin: 20px 15px;">
+					<view class="loadAnimItem yangPeople"><view class="loadAnimContent"></view></view>
+				</view><view class="" style="margin: 20px 15px;">
+					<view class="loadAnimItem yangPeople"><view class="loadAnimContent"></view></view>
+				</view>
 				<view class="" style="margin: 20px 15px;">
 					<view class="loadAnimItem yangPeople"><view class="loadAnimContent"></view></view>
 				</view>
@@ -27,17 +33,17 @@
 			</view>
 			
 			<view v-else class="contentla" v-for="(item,index) in listhome" :key="index">
-				<view class="yangPeople"  @click="detail(item.proc_status,item.zuzhi_name,item.zuzhi_address,item.zuzhi_jj)">
-					<text>{{item.zuzhi_name}}</text>
+				<view class="yangPeople"  @click="detail(item.proc_status,item.zuzhi_name||item.organize_name,item.zuzhi_address||item.address,item.zuzhi_jj||item.remark)">
+					<text>{{item.organize_name||item.zuzhi_name}}</text>
 					<text :class="item.proc_status=='完成'?'colortext': 'colortext-red' ">{{item.proc_status=='完成'?'已审批':'未审批'}}</text>
 				</view>
-				<!-- 名称  地址  简介-->
 			</view>
-			<view class="more" @click="more(bordermore)">
-				<text>{{bordermore?'更多>>':'收起<<'}}</text>
+			<view class="more" @click="more(listtar)">
+				<text>更多>></text>
 			</view>
 		</view>
-		<view class="conent-gray">
+		
+		<!-- <view class="conent-gray">
 			<view class="gray-tab">
 				<view class="textbar">
 					<text class="leftborder">社会组织</text>
@@ -60,32 +66,12 @@
 					<text>{{item.organize_name}}</text>
 					<text :class="item.proc_status=='完成'?'colortext': 'colortext-red' ">{{item.proc_status=='完成'?'已审批':'未审批'}}</text>
 				</view> 
-				<!-- 名称  地址  简介-->
 			</view>
 			<view class="more" @click="mores(bordermores)">
 				<text>{{bordermores?'更多>>':'收起<<'}}</text>
 			</view>
-		</view>
-	<!-- 	<view class="conent-gray">
-			<view class="gray-tab">
-				<view class="textbar">
-					<text>志愿者组织</text>
-					<text style="color: red;text-decoration: underline;"  @tap="join(selectList[1])" >申请加入</text>
-				</view>
-			</view>
-			<view class="yangPeople">
-				<text>金台青年志愿者组织</text>
-				<text @click="detail">已审批</text>
-			</view>
-			<view class="groups">
-				<text>关爱行动志愿者小组</text>
-				<text>待审批</text>
-			</view>
-			
-			<view class="more" @click="more">
-				<text>{{bordermore?'更多>>':'收起<<'}}</text>
-			</view>
 		</view> -->
+	
 		<button class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">新增组织</button>
 	</view>
 	
@@ -99,7 +85,9 @@ export default {
 			bordermore:true,
 			shows:true,
 			bordermores:true,
-			numberlist:3,
+			numberlist:5,
+			listtar:'',
+			label:'',
 			selectList: [
 				{
 					serviceName: 'srvzhsq_zyz_member_select', //志愿者
@@ -129,28 +117,13 @@ export default {
 		}
 	},
 	methods:{
-		more(opention){
-			this.bordermore=!this.bordermore
-			if(opention){
-				this.numberlist=this.numberlist+100000
-				this.getdata()
-			}else{
-				this.numberlist=3
-				this.getdata()
-			}
+		more(val){
+			uni.navigateTo({
+				url: '../normal/list/list?to='+val
+			});
 			
 		},
-		mores(e){
-			this.bordermores=!this.bordermores
-			if(e){
-				this.numberlist=this.numberlist+100000
-				this.getdataall()
-			}else{
-				this.numberlist=3
-				this.getdataall()
-			}
-			
-		},
+	
 		join(e){
 			uni.navigateTo({
 				url: '../normal/add/add?query=' + encodeURIComponent(JSON.stringify(e))
@@ -178,47 +151,43 @@ export default {
 			url: './fromtext?state='+statenum
 		});
 	},
-	getdata(){
-		let url = this.$api.select +"/sqfw/select/srvzhsq_zyz_zuzhi_select?srvzhsq_zyz_zuzhi_select"
+	getdata(service){
+		let url = this.$api.select +"/sqfw/select/" +service
 		let req = {};
-		req.serviceName = 'srvzhsq_zyz_zuzhi_select';
+		req.serviceName = service;
 		req.colNames = ['*'];
 		req.condition = [];
 		req.order = [];
+		req.proc_data_type="myall"
 		req['page'] = {
 			pageNo: 1,
 			
 			rownumber: this.numberlist
 		};
 		this.$http.post(url, req).then(res => {
+			console.error("res222",res)
 			this.listhome =res.data.data
 			this.shows=false
 		})
 	},
-	getdataall(){
-		let url = this.$api.select +"/sqfw/select/srvzhsq_social_organizie_select?srvzhsq_social_organizie_select"
-		let req = {};
-		req.serviceName = 'srvzhsq_social_organizie_select';
-		req.colNames = ['*'];
-		req.condition = [];
-		req.order = [];
-		req['page'] = {
-			pageNo: 1,
-			rownumber: this.numberlist
-		};
-		
-		this.$http.post(url, req).then(res => {
-			console.log(	res)
-			this.listhomeall =res.data.data
-		})
-	},
-},
+ },
 	mounted(){
-		this.getdata()
-		this.getdataall()
+		// this.getdataall()
 	},
-	onLoad(){
-			
+	onLoad(option){
+			let listdatas  = (JSON.parse(decodeURIComponent(option.data||option.query)))
+			console.error(listdatas)
+			this.label = (listdatas.label)
+			if(listdatas.label=="社会组织"){
+				this.listtar='shzzlist'
+			}else if(listdatas.label=="志愿者组织"){
+				this.listtar='zyzzz'
+			}
+			console.log(listdatas.service_name)
+			this.getdata(listdatas.service_name)
+			uni.setNavigationBarTitle({
+				title: listdatas.label
+			});
 		}
 	}
 

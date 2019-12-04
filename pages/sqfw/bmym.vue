@@ -26,14 +26,14 @@
 				<QSPickerDate  name="formName" variableName="date" title="" v-model="dateValue"  @change="changePickers(dateValue)"   placherhold="请选择" />
 			</view>
 		</view> -->
-	<!-- 	<view class="content-box">
+		<view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">选择活动：</text>
 			</view>
 			<view class="input">
 				<QSPickerCustom  ref="nationPickerZ"  name="formName" variableName="custom" title=""  v-model="pinck" @change="changePicker(pinck)"  />
 			</view>
-		</view> -->
+		</view>
 		<view class="btn" @click="addvalue()">
 			提交申请
 		</view>
@@ -80,14 +80,14 @@
 					}
 					let a = '['+ JSON.stringify(datast) +']'
 					let b = JSON.parse(a)
-					this.setPickerDataFc('nationPickerZ',b );
+					this.setPickerDataFc('nationPickerZ',b);
 				})
 			},
 			setPickerDataFc(name, data) {
 				this.$refs[name].setData(data);
 			},
 			addvalue(){
-				if(this.baominvalue==''||this.phone==''){
+				if(this.baominvalue==''||this.phone==''||this.pinck==""){
 					uni.showToast({
 					    title: '请填写完整再提交',
 					    duration: 2000,
@@ -117,14 +117,15 @@
 					this.$http.post(url, req).then(res => {
 						console.log(res)
 						if(res.status==200){
-							uni.hideToast();
 							if(res.data.resultCode!=="SUCCESS"){
+								uni.hideToast();
 								uni.showToast({
 								    title:res.data.resultMessage ,
 								    duration: 2000,
 									icon:"none"
 								});
 							}else{
+								uni.hideToast();
 								uni.showToast({
 								    title:"提交成功",
 								    duration: 2000,

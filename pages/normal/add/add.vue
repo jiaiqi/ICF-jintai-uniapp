@@ -39,9 +39,18 @@ export default {
 
   mixins: [Emitter],
   onLoad: function(option) {
-    let query = JSON.parse(option.query);
+    let query = '';
+    if (option.query) {
+      query = JSON.parse(option.query);
+    }
+    if (option.data) {
+      query = JSON.parse(option.data);
+    }
+    console.log('query',query.label, query);
+    uni.setNavigationBarTitle({
+      title:query.label?query.label:"添加"
+    })
     this.getCols(query);
-    console.log('query', query);
   },
   methods: {
     async getCols(query) {
@@ -59,21 +68,16 @@ export default {
         this.$http.post(url, req).then(res => {
           if (res.data.data) {
             let cols = res.data.data.srv_cols;
-            self.query.cols =  res.data.data;
-            console.log(cols)
-            self.pageBtns =  res.data.data.formButton.filter(item=>item.permission === true);
+            self.query.cols = res.data.data;
+            console.log(cols);
+            self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
             self.query.serviceName = query.serviceName;
-            uni.setNavigationBarTitle({
-              title: self.query.cols.service_view_name
-            });
             this.showChild = true;
           }
         });
       } else {
-        self.query.cols = await self.getColData(query.serviceName, query.pageType, 'add', this.$api.select + '/' + query.appType + '/select/srvsys_service_columnex_v2_select');
-        uni.setNavigationBarTitle({
-          title: self.query.cols.service_view_name
-        });
+        const app = query.menu_url.match(/menuapp=(\S*)/)[1]
+        self.query.cols = await self.getColumnsData(app,query.service_name)
         console.log(self.query.cols);
         self.query.serviceName = query.serviceName;
         self.pageBtns = self.query.cols.formButton;
@@ -83,6 +87,20 @@ export default {
           }
         });
         this.showChild = true;
+      }
+    },
+    async getColumnsData(app='sqfw', service_name, use_type='add') {
+      let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
+      let req = {
+        serviceName: 'srvsys_service_columnex_v2_select',
+        colNames: ['*'],
+        condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
+        order: [{ colName: 'seq', orderType: 'asc' }]
+      };
+      let res = await this.$http.post(url, req)
+      if (res.data.data) {
+        let cols = res.data.data
+        return cols
       }
     },
     submitForm() {

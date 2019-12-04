@@ -7,8 +7,7 @@
 			<text>组织状态：</text> <text :class="states.state=='1'?'colortext-red': 'colortext' ">{{states.state==1?'未审批':'已审批'}}</text>
 		</view>
 		<view class="tiemname">
-			<text>组织简介：</text> <text class="searchs">是由志愿从事社会公益事业与社会保事业的各界青年组成的全国性社会团体 ，
-			是中国共产主义青年团中央指导的，由</text>
+			<text>组织简介：</text> <text class="searchs" v-html="session"></text>
 		</view>
 		<view class="tiemname">
 			<text>组织成员：</text> <text  class="searchs">社区年满18--35岁的青年男女</text>

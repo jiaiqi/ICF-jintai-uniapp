@@ -1,7 +1,7 @@
 <template>
 	<view class="wrap">
 		<uni-grid :column="3" :showBorder="showBorder">
-			<uni-grid-item v-for="(item, index) in treeData" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="item" :src="item.app_icon">
+			<uni-grid-item v-for="(item, index) in menuData" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="item">
 				<text class="text">{{ item.label }}</text>
 			</uni-grid-item>
 		</uni-grid>
@@ -17,8 +17,7 @@ export default {
 		return {
 			userInfo: {},
 			menuData: [],
-			treeData:[],
-			showBorder: false
+			showBorder: true
 		};
 	},
 	methods: {
@@ -35,19 +34,20 @@ export default {
 					let menuData = res.data.data;
 					let children = [];
 					let parents = [];
-
 					menuData.forEach((menu, i) => {
 						menu.children = [];
 						menu.label = menu.menu_name;
 						menu.value = menu.menu_no;
-						if (menu.parent_no) {
-							children.push(menu);
-						} else {
-							parents.push(menu);
-						}
-						this.getImagePath(menu.app_icon).then(path => {
-							menu.menu_icon_path = path;
-						});
+						if(menu.client_type.includes('APP')){
+              if (menu.parent_no) {
+              	children.push(menu);
+              } else {
+              	parents.push(menu);
+              }
+              this.getImagePath(menu.app_icon).then(path => {
+              	menu.menu_icon_path = path;
+              });
+            }
 						
 					});
 					children.forEach(item1 => {
@@ -96,15 +96,6 @@ export default {
 	onLoad(option) {
 		this.userInfo = uni.getStorageSync('userInfo');
 		this.getMenusList(option.app);
-	},
-	watch: {
-		menuData: {
-			handler: function(newVal, oldVal) {
-				this.treeData = newVal
-				return newVal;
-			},
-			deep: true
-		}
 	}
 };
 </script>
@@ -112,6 +103,8 @@ export default {
 <style lang="scss">
 .wrap {
 	width: 100%;
-	
+	.text{
+    line-height: 60upx;
+  }
 }
 </style>

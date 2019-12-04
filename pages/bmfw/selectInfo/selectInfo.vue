@@ -25,7 +25,7 @@ export default {
     let query = JSON.parse(option.query);
     this.query = query;
     uni.setNavigationBarTitle({
-      title:query.title
+      title:query.label
     })
     console.log('query', query);
   },
@@ -67,16 +67,6 @@ export default {
             });
             self.selectInfo(self.idCard);
           }
-        // uni.showModal({
-        //   title: '确认操作',
-        //   content: '是否确认查找',
-        //   success: function(res) {
-        //     if (res.confirm) {
-        //     } else if (res.cancel) {
-        //       console.log('您点击了取消');
-        //     }
-        //   }
-        // });
       }
     },
     selectInfo(id) {

@@ -51,7 +51,7 @@
 	
 		<view class="morea" @click="toMore()">更多>></view>
 			
-		<view class="" v-if="titlebar=='sqhd'">
+<!-- 		<view class="" v-if="titlebar=='sqhd'">
 			<view class="" >
 				<view class="titleone" >{{titletwo}}</view>  
 			</view>
@@ -63,7 +63,7 @@
 				<text class="yeardata">{{  (item.create_time).substring(0,11)}}</text>
 			</view>
 			<view class="morea" @click="toMoretwo()">更多>></view>
-		</view>
+		</view> -->
 		
 	</view>
 </template>
@@ -79,7 +79,8 @@
 				titletwo:'',
 				numberpage:8,
 				datalisttwost:[],
-				titlebar:''
+				titlebar:'',
+				titletop:''
 			}
 		},
 		methods:{
@@ -102,31 +103,12 @@
 					rownumber: this.numberpage
 				};
 				this.$http.post(url, req).then(res => {
-			
+				
 					this.datalist=res.data.data
+					console.log(res.data.data)
 					this.listshow=false
 				})
 			},
-			
-			getdatalist(){
-				
-				let url =this.$api.select +"/sqfw/select/srvzhsq_activity_arrange_select"
-				let req = {};
-				req.serviceName ="srvzhsq_activity_arrange_select";
-				req.colNames = ['*'];
-				req.condition = [];
-				req.order = [];
-				
-				req['page'] = {
-					pageNo: 1,
-					rownumber: 3
-				};
-				this.$http.post(url, req).then(res => {
-					console.log(res)
-					this.datalisttwost=res.data.data
-					// this.listshow=false
-				})
-			}, 
 			toMore() {
 				uni.navigateTo({
 					url: '../normal/list/list?to='+this.titlebar 
@@ -138,34 +120,54 @@
 				});
 			}
 		},
-		onLoad(serve){
-			if(serve.serve=="srvzhsq_djhdjl_djhd_select"){
+		onLoad(option){
+			 
+			 let listdatas  = (JSON.parse(decodeURIComponent(option.data||option.query)))
+			 let liststr=''
+			console.log(listdatas)
+			 if(listdatas.label=="党建活动"){
+				  liststr = (listdatas.children[2].service_name)
+			 }else if(listdatas.label=="公示公告"){
+				 liststr = (listdatas.children[0].service_name)
+			 }else if(listdatas.label=="活动记录"||listdatas.label=="活动安排"){
+				  liststr = (listdatas.service_name)
+			 }
+				 console.log(liststr)
+			
+			 // let service_name = liststr.slice((liststr.lastIndexOf('/'))+1,liststr.indexOf('?'))
+			 
+			if(liststr=="srvzhsq_djhdjl_djhd_select"){
 				this.titlebar="djjl"
 				this.titletop = "党建活动记录"
 				this.src="../../static/img/dj.png"
 				uni.setNavigationBarTitle({
 				  title: "党建活动记录"
 				});
-			}else if(serve.serve=="srvzhsq_gsgg_select"){
+			}else if(liststr=="srvzhsq_gsgg_select"){
 				this.titlebar="gggg"
 				this.titletop = "公告公示"
 				this.src="../../static/img/gs.png"
 				uni.setNavigationBarTitle({
 				  title: "公告公示"
 				});
-			}else if(serve.serve=="srvzhsq_activity_record_select"){
+			}else if(liststr=="srvzhsq_activity_record_select" ){
 				this.titlebar="sqhd"
 				this.classes = "/sqfw"
 						this.src="../../static/img/hdsss.png"
-						this.numberpage=3
 				this.titletop = "活动记录"
-				this.titletwo="活动安排"
 				uni.setNavigationBarTitle({
-				  title: "社区活动"
+				  title: "活动记录"
+				});
+			}else if(liststr=="srvzhsq_activity_arrange_select"){
+				this.titlebar="hdap"
+				this.classes = "/sqfw"
+				this.titletop = "活动安排"
+				uni.setNavigationBarTitle({
+				  title: "活动安排"
 				});
 			}
-			this.getdata(serve.serve)
-			this.getdatalist()
+			this.getdata(liststr)
+			// this.getdatalist()
 		}
 	}
 </script>

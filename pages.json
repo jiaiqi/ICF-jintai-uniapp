@@ -120,7 +120,7 @@
     }, {
       "path": "pages/shzz/zzhome",
       "style": {
-        "navigationBarTitleText": "志愿者与社会组织"
+        
       }
     },
     {
@@ -234,7 +234,7 @@
     {
       "path": "pages/shzz/fromtext",
       "style": {
-        "navigationBarTitleText": "志愿者组织详情"
+        "navigationBarTitleText": "组织详情"
       }
 
     },
@@ -451,13 +451,13 @@
     "list": [{
         "pagePath": "pages/SmartCity/smartcity",
         "text": "智慧党建",
-        "iconPath": "static/img/home.png",
-        "selectedIconPath": "static/img/home_active.png"
+        "iconPath": "static/img/appicon/zhdj0.png",
+        "selectedIconPath": "static/img/appicon/zhdj1.png"
       }, {
         "pagePath": "pages/CommunityServices/CommunityServices",
         "text": "社区服务",
-        "iconPath": "static/img/msg.png",
-        "selectedIconPath": "static/img/msg_active.png"
+        "iconPath": "static/img/home.png",
+        "selectedIconPath": "static/img/home_active.png"
       }, {
         "pagePath": "pages/phones/phones",
         "text": "通讯录",

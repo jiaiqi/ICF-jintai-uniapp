@@ -83,7 +83,7 @@ export default {
 			let treeData = this.treeData;
 			if (treeData) {
 				const url = treeData.app_dest_page + '?data=';
-				console.log('url,', url);
+        console.log("treeData",treeData)
 				uni.navigateTo({
 					url: url + encodeURIComponent(JSON.stringify(treeData))
 				});
@@ -91,8 +91,7 @@ export default {
 				uni.showModal({
 					title: '提示',
 					content: '此功能暂未完善',
-					showCancel: false,
-					success: res => {}
+					showCancel: false
 				});
 			}
 		},
@@ -113,7 +112,6 @@ export default {
 				this.$http.post(url, req).then(res => {
 					if (res.data && res.data.data && res.data.data.length > 0) {
 						let path = this.$api.select + '/file/download?filePath=' + res.data.data[0].fileurl;
-						console.log(path);
 						this.src = path;
 					}
 				});
@@ -169,7 +167,7 @@ export default {
 	background-color: $uni-bg-color-hover;
 }
 .menu_icon {
-	width: 160upx;
-	height: 160upx;
+	width: 80upx;
+	height: 80upx;
 }
 </style>
