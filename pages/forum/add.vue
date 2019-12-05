@@ -10,13 +10,6 @@
         <div class="mpvue-picer"><QSPickerCustom ref="nationPicker" name="formName" title="分类" variableName="custom" v-model="classify" @change="changePicker" /></div>
       </div>
     </view>
-
-    <!--  <view class="forumClassBox">
-      <div class="class_box_title">
-        <image src="../../static/img/class.png" mode="" class="icon"></image>
-        <div class="mpvue-picer"><QSPickerCustom ref="columnPicker" name="formName" title="栏目" variableName="custom" v-model="noteColumn" @change="changePicker" /></div>
-      </div>
-    </view> -->
     <view class="forumContentBox">
       <!-- <image src="../../static/img/words.png" mode="" class="icon"></image> -->
       <view class="editbox">

@@ -12,7 +12,7 @@
 			<view class="gray-tab">
 				<view class="textbar">
 					<text class="leftborder">{{label}}</text>
-					<text class="btnmenu" @tap="join(selectList[0])" >申请加入</text>
+					<!-- <text class="btnmenu" @tap="join(selectList[0])" >申请加入</text> -->
 				</view>
 			</view>
 			<view class="" v-if="shows">
@@ -39,7 +39,7 @@
 				</view>
 			</view>
 			<view class="more" @click="more(listtar)">
-				<text>更多>></text>
+				<text style="color:red;font-size: 16px;">更多>></text>
 			</view>
 		</view>
 		
@@ -72,7 +72,7 @@
 			</view>
 		</view> -->
 	
-		<button class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">新增组织</button>
+		<!-- <button class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">新增组织</button> -->
 	</view>
 	
 	
@@ -170,6 +170,21 @@ export default {
 			this.shows=false
 		})
 	},
+	async getColumnsData(app,service_name,use_type,list) { //获取字段信息
+	  let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
+	  let req = {
+	    serviceName: 'srvsys_service_columnex_v2_select',
+	    colNames: ['*'],
+	    condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
+	    order: [{ colName: 'seq', orderType: 'asc' }]
+	  };
+	  let res = await this.$http.post(url, req)
+	  if (res.data.data) {
+	    let cols = res.data.data
+		console.log(cols)
+	    // return cols
+	  }
+	}
  },
 	mounted(){
 		// this.getdataall()
@@ -188,6 +203,9 @@ export default {
 			uni.setNavigationBarTitle({
 				title: listdatas.label
 			});
+			
+			
+			this.getColumnsData('sqfw','srvzhsq_social_organizie_select','add','list')
 		}
 	}
 

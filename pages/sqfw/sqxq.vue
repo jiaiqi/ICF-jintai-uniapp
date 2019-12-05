@@ -10,7 +10,7 @@
 				<text v-if="datalist.activity_title" style="font-size: 18px;">{{datalist.activity_title }} </text>
 				<text v-else style="font-size: 18px;">{{datalist.bt || datalist.hdbt }} </text>
 				<view class="" style="color:#BEBEBE; font-size: 12px;font-weight: 100;">
-					<text v-if="datalist.ly">{{datalist.ly}} &nbsp;| <text style="opacity: 0;">4</text> </text> <text>{{datalist.hdsj }}</text>
+					<text v-if="datalist.ly">{{datalist.ly}} &nbsp;| <text style="opacity: 0;">4</text> </text> <text>{{ (datalist.create_time.slice(0,11)) }}</text>
 				</view>
 			</view>
 			
@@ -20,10 +20,10 @@
 			
 			
 			
-			<view class="">
+		<!-- 	<view class="">
 				<view>【活动时间】：</view>
 				<view>【活动地点】：</view>
-			</view>
+			</view> -->
 			
 			
 			
@@ -39,8 +39,11 @@
 				<!-- JSON.parse((JSON.stringify(datalist.activity_content).replace(/\width:650px;/gi,'width:100%;height:230px' ).replace(/\<img/gi,'<img width=100% height=230px ' ))) -->
 			</view>
 				
+			<view class="contents-box" v-else-if="datalist.content" v-html=" datalist.content ">
+				<!-- JSON.parse((JSON.stringify(datalist.activity_content).replace(/\width:650px;/gi,'width:100%;height:230px' ).replace(/\<img/gi,'<img width=100% height=230px ' ))) -->
+			</view>
 				
-				<view class="btn"  @click="baoming()">我要报名</view>
+				<!-- <view class="btn"  @click="baoming()">我要报名</view> -->
 		</view>
 		
 	</view>

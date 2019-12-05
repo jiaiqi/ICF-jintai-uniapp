@@ -19,7 +19,7 @@
 		<view class="tiemname">
 			<text>服务地点：</text> <text  class="searchs">{{dress}}</text>
 		</view>
-		<button v-if="states.state==1?false:true" class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">我要加入</button>
+		<!-- <button v-if="states.state==1?false:true" class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">我要加入</button> -->
 	</view>
 </template>
                                   

@@ -78,57 +78,7 @@ export default {
 	updated(){
 	},
 	methods: {
-		// 获取轮播图路径
-		getBannerList() {
-			// 获取轮播图编号
-			let url = 'http://39.98.203.134:8081/zhdj/select/srvzhsq_djhdjl_djhd_select';
-			let req = {};
-			req.serviceName = 'srvzhsq_djhdjl_djhd_select';
-			req.colNames = ['*'];
-			req.condition = [];
-			req.order = [];
-			req['page'] = {
-				pageNo: 1,
-				rownumber: 10
-			};
-			this.$http.post(url, req).then(res => {
-				// console.log(res);
-				let picUrlCode = [];
-				if (res.data.data && res.data.data instanceof Array) {
-					res.data.data.map(item => {
-						if (item.lbt) {
-							picUrlCode.push(item.lbt); // 将获取到的轮播图编号放入picUrlCode中
-						}
-					});
-				}
-				// console.log('picUrlCode:', picUrlCode);
-				if(picUrlCode && picUrlCode instanceof Array){
-					// 通过轮播图编号获取轮播图文件路径
-					picUrlCode.map(item => {
-						let path = 'http://39.98.203.134:8081/file/download?filePath=';
-						let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
-						let req = {
-							colNames: ['*'],
-							condition: [
-								{
-									colName: 'file_no',
-									ruleType: 'eq',
-									value: item // 轮播图编号
-								}
-							],
-							order: null,
-							page: null,
-							serviceName: 'srvfile_attachment_select'
-						};
-						this.$http.post(url, req).then(res => {
-							console.log(res.data.data)
-							this.picUrlList.push(path + res.data.data[0].fileurl);
-						});
-					});
-				}
-				console.log('picUrlList:', this.picUrlList);
-			});
-		},
+		
 		goPages(e) {
 			console.log(e);
 			let url = e.data.url;

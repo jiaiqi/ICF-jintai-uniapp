@@ -154,9 +154,17 @@ export default {
         let query = this.query;
         serviceName = this.query.service_name.replace('select', 'add');
         query.service_name = serviceName
-        uni.navigateTo({
-          url: '../add/add?query=' + encodeURIComponent(JSON.stringify(query))
-        });
+        console.log('--------------------\n',query)
+        if(query.menu_no==="bxsqlt_sqlt"||query.menu_no ==="bxzhsq_djlt"){
+          uni.navigateTo({
+            url: '../../forum/add?query=' + encodeURIComponent(JSON.stringify(query))
+          });
+        }else{
+          uni.navigateTo({
+            url: '../add/add?query=' + encodeURIComponent(JSON.stringify(query))
+          });
+        }
+        
       }
     },
     details(statenum, names, dress, session) {

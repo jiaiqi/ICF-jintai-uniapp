@@ -36,15 +36,9 @@ export default {
     }
   },
   created(){
-	 //  if (this.pathQuery.cols.srv_cols !== 'undefined') {
-		// console.log('cols.srv_cols新值====',this.pathQuery.cols)
-	 //  }
+
 	  this.getCols(this.pathQuery.cols.srv_cols, this.pageType)
-    // this.getColV2(this.pathQuery.serviceName)
-    // let len = this.pathQuery.cols.validators
-    // if (len !== null) {
-    //   this.validators = len[len.length - 1]
-    // }
+
     this.$on('on-form-blur', (event) => {
       let a = this.fields
       this.fields = a.map((item) => {
@@ -55,8 +49,7 @@ export default {
           return item
         }
       })
-      // console.log('formitem新值', event)
-      // this.fields.push(event)
+
     })
     this.$on('on-set-item', (event) => {
       console.log(event)
@@ -333,23 +326,23 @@ export default {
 }
 </script>
 <style lang="less">
-.form-view-item{
-  // padding: 8px;
-  div{
-    .weui-cells{
+// .form-view-item{
+//   // padding: 8px;
+//   div{
+//     .weui-cells{
 
-      &:before {
-        border-top: 0px solid #D9D9D9!important;
-      }
-    }
-  }
-  .weui-cells__title {
-    padding-left: 10px 15px;
-    border-left: 2px solid #03A9F4;
-    border-bottom:#D9D9D9;
-    font-size: 17px;
-  }
-}
+//       &:before {
+//         border-top: 0px solid #D9D9D9!important;
+//       }
+//     }
+//   }
+//   .weui-cells__title {
+//     padding-left: 10px 15px;
+//     border-left: 2px solid #03A9F4;
+//     border-bottom:#D9D9D9;
+//     font-size: 17px;
+//   }
+// }
 </style>
 
 

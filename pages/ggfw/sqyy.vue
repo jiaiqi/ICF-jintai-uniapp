@@ -184,7 +184,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.content{
 		width: 100%;
 		background: #FFFFFF;

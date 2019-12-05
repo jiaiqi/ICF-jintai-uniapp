@@ -1,29 +1,27 @@
 <template>
-	<view class="content">
-		<view class="input-group">
-			<view class="input-row border">
-				<text class="title">账号：</text>
+	<view class="content" :style="{backgroundImage: 'url('+imageURL+')'}">
+			<view class="titlehuany">欢迎来到智慧社区，<text @tap="visitorAccess">游客访问</text></view>
+		
+		<view class="inputs">
+			<view class="input-row ">
 				<m-input class="m-input" type="text" clearable v-model="account.name" placeholder="请输入账号"></m-input>
 			</view>
 			<view class="input-row">
-				<text class="title">密码：</text>
 				<m-input type="password" displayable v-model="account.password" placeholder="请输入密码"></m-input>
 			</view>
 		</view>
+		<navigator url="../user/forgot" style="color: #9E9E9E;text-align: right;margin-right: 40px;margin-top: 5px;">忘记密码?</navigator>
 		<view class="btn-row">
 			<!-- <button type="primary" class="primary" @tap="bindLogin">登录公众号</button> -->
-			<button type="primary" class="primary" style="background-color: #E51C23;" @tap="accoutLogin">账号登录</button>
-
-			<button type="primary" class="primary" style="background-color: #E51C23;" @tap="visitorAccess">游客访问</button>
+			<button type="primary" class="primary" style="background-color: #E51C23;" @tap="accoutLogin">登录</button>
+			<view class="barbottom" style="">
+				<text style="color: #9E9E9E;">还没有账号？</text>			
+				<navigator url="../user/register">注册账号</navigator>
+			</view>
+			<!-- <button type="primary" class="primary" style="background-color: #E51C23;" >游客访问</button> -->
 		</view>
 		<view class="btn-row"></view>
-		<view class="action-row">
-			<navigator url="../user/register">注册账号</navigator>
-			<!-- <navigator url="../reg/reg">注册账号</navigator> -->
-			<text>|</text>
-			<!-- <navigator url="../pwd/pwd">忘记密码</navigator> -->
-			<navigator url="../user/forgot">忘记密码</navigator>
-		</view>
+	
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{ top: positionTop + 'px' }">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value"><image :src="provider.image" @tap="oauth(provider.value)"></image></view>
 		</view>
@@ -42,6 +40,7 @@ export default {
 		return {
 			providerList: [],
 			hasProvider: false,
+      imageURL:require("@/static/img/logins.png"),
 			account: {
 				name: '',
 				password: ''
@@ -444,7 +443,18 @@ export default {
 
 <style>
 .primary {
-	margin-bottom: 30upx;
+	margin: 0upx 80upx 10px 80upx;
+	border-radius: 50upx;
+	letter-spacing: 1em;
+	height: 80upx;
+	line-height: 80upx;
+}
+.content{
+	/* background-image: url(../../static/img/logins.png); */
+	height:100vh;
+	width: 100%;
+	background-size:cover ;
+	position: relative;
 }
 .action-row {
 	display: flex;
@@ -470,7 +480,6 @@ export default {
 .oauth-image {
 	width: 100upx;
 	height: 100upx;
-	border: 1upx solid #dddddd;
 	border-radius: 100upx;
 	margin: 0 40upx;
 	background-color: #ffffff;
@@ -481,4 +490,36 @@ export default {
 	height: 60upx;
 	margin: 20upx;
 }
+.inputs{
+	margin: 0 30upx;
+	margin-top: 35vh;
+	
+}
+.titlehuany{
+	/* line-height: 60vh; */
+	position: absolute;
+	top: 27vh;
+	left: 13vw;
+	font-size: 17px;
+	font-family: Arial;
+	font-weight:lighter;
+	letter-spacing: 1px;
+}
+	.titlehuany text{
+		color: red;
+		border-bottom: 0.5px solid red;
+	}
+	
+	
+	.input-row{
+		width: calc(100% - 100upx);
+		height: 50px;
+		margin: 20px 50upx;
+		box-sizing: border-box;
+		border: none;
+	}
+	.barbottom{
+		display: flex;
+		margin-left:28vw ;
+	}
 </style>

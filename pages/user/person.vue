@@ -1,8 +1,9 @@
 <template>
 	<view class="person-wrap">
 		<view class="person-head" @click="fnInfoWin">
-			<cmd-avatar src="https://avatar.bbs.miui.com/images/noavatar_small.gif"  size="lg" :make="{ 'background-color': '#fff' }"></cmd-avatar>
-			<view class="person-head-box">
+			<!-- <cmd-avatar src="https://avatar.bbs.miui.com/images/noavatar_small.gif"  size="lg" :make="{ 'background-color': '#fff' }"></cmd-avatar> -->
+			<cmd-avatar :src="userInfo.head_img_path"></cmd-avatar>
+      <view class="person-head-box">
 				<view class="person-head-nickname">{{ userInfo.real_name }}</view>
 				<view class="person-head-username">ID：{{ userInfo.user_no }}</view>
 			</view>

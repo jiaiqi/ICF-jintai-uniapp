@@ -1,5 +1,8 @@
 <template>
 	<view class="wrap">
+		<view class="">
+			        <bw-swiper :swiperList="swiperList" style="width:100%;"></bw-swiper>
+		</view>
 		<uni-grid :column="3" :showBorder="showBorder">
 			<uni-grid-item v-for="(item, index) in menuData" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="item">
 				<text class="text">{{ item.label }}</text>
@@ -11,13 +14,15 @@
 <script>
 import uniGrid from '@/components/uni-grid/uni-grid.vue';
 import uniGridItem from '@/components/uni-grid-item/uni-grid-item.vue';
+import bwSwiper from '@/components/kp-swper/bw-swiper.vue'
 export default {
-	components: { uniGrid, uniGridItem },
+	components: { uniGrid, uniGridItem,bwSwiper },
 	data() {
 		return {
 			userInfo: {},
 			menuData: [],
-			showBorder: true
+			showBorder: true,
+			 swiperList:	[] 	
 		};
 	},
 	methods: {
@@ -69,6 +74,58 @@ export default {
 				}
 			});
 		},
+		// 获取轮播图路径
+		getBannerList() {
+			// 获取轮播图编号
+			let url = 'http://39.98.203.134:8081/zhdj/select/srvzhsq_djhdjl_djhd_select';
+			let req = {};
+			req.serviceName = 'srvzhsq_djhdjl_djhd_select';
+			req.colNames = ['*'];
+			req.condition = [];
+			req.order = [];
+			req['page'] = {
+				pageNo: 1,
+				rownumber: 10
+			};
+			this.$http.post(url, req).then(res => {
+				// console.log(res);
+				let picUrlCode = [];
+				if (res.data.data && res.data.data instanceof Array) {
+					res.data.data.map(item => {
+						if (item.lbt) {
+							picUrlCode.push(item.lbt); // 将获取到的轮播图编号放入picUrlCode中
+						}
+					});
+				}
+				// console.log('picUrlCode:', picUrlCode);
+				if(picUrlCode && picUrlCode instanceof Array){
+					// 通过轮播图编号获取轮播图文件路径
+					picUrlCode.map(item => {
+						let path = 'http://39.98.203.134:8081/file/download?filePath=';
+						let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+						let req = {
+							colNames: ['*'],
+							condition: [
+								{
+									colName: 'file_no',
+									ruleType: 'eq',
+									value: item // 轮播图编号
+								}
+							],
+							order: null,
+							page: null,
+							serviceName: 'srvfile_attachment_select'
+						};
+						this.$http.post(url, req).then(res => {
+							console.error(res.data.data)
+							let picUrlList = []
+							this.swiperList.push({'img':path + res.data.data[0].fileurl});
+							console.log('picUrlList:', picUrlList);
+						});
+					});
+				}
+			});
+		},
 		async getImagePath(imgId) {
 			if (imgId) {
 				let url = this.$api.select + '/file/select/srvfile_attachment_select';
@@ -96,6 +153,7 @@ export default {
 	onLoad(option) {
 		this.userInfo = uni.getStorageSync('userInfo');
 		this.getMenusList(option.app);
+		this.getBannerList()
 	}
 };
 </script>
@@ -103,6 +161,7 @@ export default {
 <style lang="scss">
 .wrap {
 	width: 100%;
+  background-color: #fff;
 	.text{
     line-height: 60upx;
   }

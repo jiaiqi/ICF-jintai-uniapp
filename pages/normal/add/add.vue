@@ -134,6 +134,7 @@ export default {
       console.log(a);
     },
     async submint(nData) {
+      let userInfo = uni.getStorageSync('userInfo')
       let self = this;
       let params = [
         {
@@ -148,6 +149,7 @@ export default {
         let a = {};
         data = nData.map(item => {
           a[item.columns] = item.column;
+          
         });
         if (this.foreignKey.length > 0) {
           a[this.foreignKey[0].colName] = this.foreignKey[0].value;

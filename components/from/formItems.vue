@@ -1,98 +1,62 @@
 <template>
   <view>
-    <view style="overflow: hidden;" :class="formValids.valid ? 'form-item-editer' : 'form-item-editer form-item-editer-err'">
-      <label class="label" style="float: left;font-size: 14px;color:#101010;padding: 0 10px;">
-        {{ Fileddatas.label }}
-        <span v-if="Fileddatas._formItemValidators.required" style="color:red;height:16px;line-height:1.4">*</span>
-      </label>
-      <view class="form-item-inputs">
-        <input
-          class="input"
-          @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
-          @blur="handleBlur"
-          v-if="Fileddatas.col_type === 'String'"
-          v-model="Fileddatas.column"
-          :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入内容'"
-        />
-        <radio-group
-          class="radio_group"
-          style="display: flex;"
-          @change="radioChange"
-          v-if="(Fileddatas.bx_col_type === 'enum' || Fileddatas.col_type === 'Enum') && Fileddatas.columns !== 'nation'"
-        >
-          <label style="display: flex;" class="uni-list-cell uni-list-cell-pd label" v-for="(item, index) in Fileddatas.option_list_v2" :key="index">
-            <radio class="Choice" :value="item.value" :checked="item.value === Fileddatas.column" />
-            <view>{{ item.key }}</view>
-          </label>
-        </radio-group>
-        <view v-else-if="Fileddatas.columns === 'nation'">
-          <div class="mpvue-picer">
-            <QSPickerCustom ref="nationPicker" name="formName" variableName="custom" title="选择民族:" v-model="Fileddatas.column" @change="changePicker" />
-          </div>
-        </view>
-		<view v-else-if="Fileddatas.bx_col_type === 'fk' && Fileddatas.col_type ==='bxzhsq_zyz_zuzhi'">
-		  <div class="mpvue-picer">
-		    <QSPickerCustom ref="nationPickerZ" name="formName" variableName="custom" title="选择组织:" v-model="Fileddatas.column" @change="changePicker" />
-		  </div>
-		</view>
-        <textarea
-          v-if="Fileddatas.col_type === 'MultilineText'"
-          placeholder="请输入内容"
-          class="text-box textarea"
-          scroll-y="true"
-          ref="mult"
-          @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
-          @blur="handleBlur"
-          v-model="Fileddatas.column"
-          @focus="formValidators(Fileddatas.column, Fileddatas._formItemValidators)"
-        ></textarea>
-        <edit ref="note" v-on:listenChild="show" class="note" v-if="Fileddatas.col_type === 'Note'"></edit>
-        <input
-          v-if="Fileddatas.col_type === 'int'"
-          class="uni-form-item uni-column input"
-          :maxlength="Fileddatas._formItemValidators.max"
-          @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
-          type="number"
-          v-model="Fileddatas.column"
-          :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入序号'"
-        />
-        <input
-          v-if="Fileddatas.col_type === 'bxzhsq_activity_arrange' || Fileddatas.bx_col_type === 'fk'"
-          class="uni-form-item uni-column input"
-          :maxlength="Fileddatas._formItemValidators.max"
-          @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
-          v-model="Fileddatas.column"
-          :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入活动名称'"
-        />
-       <!-- <picker
-          v-if="Fileddatas.col_type === 'Date'"
-          class="uni-list-cell-db"
-          mode="date"
-          :value="Fileddatas.column"
-          :start="startDate"
-          :end="endDate"
-          @change="bindDateChange"
-          ref="dateSelect"
-        >
-          <view class="uni-input">{{ Fileddatas.column ? Fileddatas.column : '请选择' }}</view>
-        </picker> -->
-        <hTimePicker sTime="0" cTime="24" interval="1" @changeTime="changeTime"  v-if="Fileddatas.col_type === 'Date'">
-          <view slot="pCon" class="changeTime">
-            {{Fileddatas.column?Fileddatas.column:"点击选择时间"}}
-          </view>
-        </hTimePicker>
-        <input
-          class="input"
-          readonly
-          v-if="Fileddatas.col_type === 'User'"
-          @change="bindDateChange"
-          @tap="setUserPoup"
-          :value="userList.userSelected.user_disp"
-          placeholder="选择发布人"
-        />
+    <view class="cu-form-group margin-top" v-if="Fileddatas.col_type !== 'Image' && Fileddatas.col_type !== 'FileList'">
+      <view class="title">{{ Fileddatas.label }}</view>
+      <input
+        class="input"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        @blur="handleBlur"
+        v-if="Fileddatas.col_type === 'String'"
+        v-model="Fileddatas.column"
+        :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入内容'"
+      />
+      <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.bx_col_type === 'enum' || Fileddatas.col_type === 'Enum'">
+        <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
+      </picker>
+      <view class="cu-bar bg-white margin-top"></view>
+      <textarea
+        v-if="Fileddatas.col_type === 'MultilineText'"
+        placeholder="请输入内容"
+        class="text-box textarea"
+        scroll-y="true"
+        ref="mult"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        @blur="handleBlur"
+        v-model="Fileddatas.column"
+        @focus="formValidators(Fileddatas.column, Fileddatas._formItemValidators)"
+      ></textarea>
+      <edit ref="note" v-on:listenChild="show" class="note" v-if="Fileddatas.col_type === 'Note'"></edit>
+      <input
+        v-if="Fileddatas.col_type === 'int'"
+        class="uni-form-item uni-column input"
+        :maxlength="Fileddatas._formItemValidators.max"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        type="number"
+        v-model="Fileddatas.column"
+        :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入序号'"
+      />
+      <input
+        v-if="Fileddatas.col_type === 'bxzhsq_activity_arrange' || Fileddatas.bx_col_type === 'fk'"
+        class="input"
+        :maxlength="Fileddatas._formItemValidators.max"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        v-model="Fileddatas.column"
+        :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入活动名称'"
+      />
+      <hTimePicker sTime="0" cTime="24" interval="1" @changeTime="changeTime" v-if="Fileddatas.col_type === 'Date'">
+        <view slot="pCon" class="changeTime">{{ Fileddatas.column ? Fileddatas.column : '点击选择时间' }}</view>
+      </hTimePicker>
+      <input
+        class="input"
+        readonly
+        v-if="Fileddatas.col_type === 'User'"
+        @change="bindDateChange"
+        @tap="setUserPoup"
+        :value="userList.userSelected.user_disp"
+        placeholder="选择发布人"
+      />
 
-        <input class="input" readonly ref="deptSelect" v-if="Fileddatas.col_type === 'Dept'" @tap="setDeptPoup" :value="DeptList.DeptSelected.label" placeholder="选择部门" />
-      </view>
+      <input class="input" readonly ref="deptSelect" v-if="Fileddatas.col_type === 'Dept'" @tap="setDeptPoup" :value="DeptList.DeptSelected.label" placeholder="选择部门" />
       <uni-popup v-if="Fileddatas.col_type === 'User'" ref="Upopup" type="bottom">
         <view class="popup-view">
           <view class="header">
@@ -128,12 +92,25 @@
         </view>
       </uni-popup>
     </view>
+    <view class="cu-bar bg-white margin-top" v-if="Fileddatas.col_type === 'Image'">
+      <view class="action">{{ Fileddatas.label }}</view>
+      <view class="action">{{ imgList.length }}/1</view>
+    </view>
+    <view class="cu-form-group" v-if="Fileddatas.col_type === 'Image'">
+      <view class="grid col-4 grid-square flex-sub">
+        <view class="bg-img" v-for="(item, index) in imgList" :key="index" @tap="ViewImage" :data-url="imgList[index]">
+          <image :src="imgList[index]" mode="aspectFill"></image>
+          <view class="cu-tag bg-red" @tap.stop="DelImg" :data-index="index"><text class="cuIcon-close"></text></view>
+        </view>
+        <view class="solids" @tap="ChooseImage" v-if="imgList.length < 1"><text class="cuIcon-cameraadd"></text></view>
+      </view>
+    </view>
   </view>
 </template>
 <script>
 import Emitter from '../../static/js/mixins/emitter.js';
 import QSPickerCustom from '@/components/QS-inputs-split/elements/QS-picker-custom/index.vue';
-import hTimePicker from "@/components/h-timePicker/h-timePicker.vue";
+import hTimePicker from '@/components/h-timePicker/h-timePicker.vue';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
 import edit from '@/components/qiyue-richtext/uni-richtext.vue';
 export default {
@@ -142,7 +119,7 @@ export default {
     uniPopup,
     edit,
     QSPickerCustom,
-    hTimePicker 
+    hTimePicker
   },
   computed: {
     startDate() {
@@ -151,9 +128,6 @@ export default {
     endDate() {
       return this.getDate('end');
     },
-    // formValidators: function (reg, val) {
-    //   console.log('校验信息', reg, val)
-    // }
     fkSelectList: function(e) {
       let cond = [];
       let a = {
@@ -174,6 +148,11 @@ export default {
   data() {
     let currentDate = '请选择';
     return {
+      index: -1,
+      picker: ['喵喵喵', '汪汪汪', '哼唧哼唧'],
+      imgList: [],
+      imgPathList: [],
+      query: {}, //url参数
       date: currentDate,
       oldColData: {},
       Fileddatas: {},
@@ -215,24 +194,15 @@ export default {
       },
       options: {
         getThumbBoundsFn(index) {
-          // find thumbnail element
           let thumbnail = document.querySelectorAll('.weui-uploader__file')[index];
-          // get window scroll Y
           let pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
-          // optionally get horizontal scroll
-          // get position of element relative to viewport
           let rect = thumbnail.getBoundingClientRect();
-          // w = width
           return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
-          // Good guide on how to get element coordinates:
-          // http://javascript.info/tutorial/coordinates
         }
       },
       imagePreviewer: [],
       ins: null,
       DeptAct: null
-      // srvCols: this.$store.getters.getSrvCol,
-      // type: this.pathQuery.colType
     };
   },
   created() {
@@ -251,7 +221,8 @@ export default {
     this.toCols();
   },
   mounted() {
-    if (this.Fileddatas.columns === 'nation') {
+    // if (this.Fileddatas.columns === 'nation') {
+    if (this.Fileddatas.bx_col_type === 'enum' || this.Fileddatas.col_type === 'Enum') {
       let arr = this.Fileddatas.option_list_v2;
       let nationArr = [];
       arr.map(items => {
@@ -267,21 +238,79 @@ export default {
     if (this.prop) {
       this.dispatch('iForm', 'on-form-item-add', this);
     }
-    // this.formValidators(this.fromColData.column, this.fromColData._formItemValidators)
   },
-  beforeDestroy() {
-    // this.dispatch('iForm', 'on-form-item-remove', this)
-  },
+
   methods: {
-    changePicker() {
-      this.Fileddatas.column = this.Fileddatas.column.data[0];
-       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
+    PickerChange(e) {
+      this.index = e.detail.value;
+      this.Fileddatas.column = this.picker[this.index];
+      this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
       console.log('选择了：', this.Fileddatas.column);
     },
-    changeTime(e){
-      console.log(e)
-      this.Fileddatas.column = e
-       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
+    ChooseImage() {
+      uni.chooseImage({
+        count: 1, //默认9
+        sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album'], //从相册选择
+        success: res => {
+          if (this.imgList.length != 0) {
+            this.imgList = this.imgList.concat(res.tempFilePaths);
+          } else {
+            this.imgList = res.tempFilePaths;
+          }
+          let temp = res.tempFilePaths;
+          //图片上传至服务器
+          let bxAuthTicket = uni.getStorageSync('bxAuthTicket');
+          // let appNo = that.appNo;
+          var uploadTask = uni.uploadFile({
+            url: 'http://39.98.203.134:8081/file/upload', //上传文件的接口地址
+            filePath: temp[0],
+            header: { bx_auth_ticket: bxAuthTicket },
+            name: 'file',
+            formData: {
+              serviceName: 'srv_bxfile_service',
+              interfaceName: 'add',
+              app_no: this.query.app_no
+            },
+            success: e => {
+              var data = JSON.parse(e.data);
+              this.imgPathList = this.imgPathList.concat(data.fileurl);
+              this.imgList = [this.$api.select + '/file/download?filePath=' + data.fileurl];
+              console.log(data, this.imgList, this.imgPathList);
+              this.Fileddatas.column = data.file_no;
+              this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
+              console.log('file_no：', this.Fileddatas.column);
+            },
+            complete: e => {
+              // uni.hideLoading()
+            }
+          });
+        }
+      });
+    },
+    ViewImage(e) {
+      uni.previewImage({
+        urls: this.imgList,
+        current: e.currentTarget.dataset.url
+      });
+    },
+    DelImg(e) {
+      uni.showModal({
+        title: '提示',
+        content: '确定要删除这段回忆吗？',
+        cancelText: '再看看',
+        confirmText: '再见',
+        success: res => {
+          if (res.confirm) {
+            this.imgList.splice(e.currentTarget.dataset.index, 1);
+          }
+        }
+      });
+    },
+    changeTime(e) {
+      console.log(e);
+      this.Fileddatas.column = e;
+      this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
     },
     choose(item, i) {
       this.ins = i;
@@ -376,8 +405,9 @@ export default {
       this.getDept();
     },
     setPickerData(nationArr) {
-      const data1 = [nationArr];
-      this.setPickerDataFc('nationPicker', data1);
+      let data1 = [nationArr];
+      this.picker = nationArr;
+      // this.setPickerDataFc('nationPicker', data1);
     },
     setPickerDataFc(name, data) {
       console.log('准备 调用setData', this.$refs);
@@ -458,41 +488,9 @@ export default {
       // console.log('xifFun===:::>'+ eval(xif))
       return eval(xif);
     },
-    // getPopupList (pin) {
-    //   let self = this
-    //   let options = this.fromColData.option_list_v2
-    //   let CallbackGo = function (response) {
-    //     if (response.data !== '') {
-    //       let sData = response.data.data
-    //       // self.fkPopupModel.Fileddatas = sData
-    //       self.fkPopupModel.data = sData.map((item) => {
-    //         let a = {}
-    //         a.label = item[options.key_disp_col]
-    //         a.key = item[options.refed_col]
-    //         return a
-    //       })
-    //     }
-    //   }
-    //   let req = {}
-    //   if (this.fromColData.bx_col_type === 'fk') {
-    //     req.serviceName = options.serviceName
-    //     req.colNames = [options.refed_col, options.key_disp_col]
-    //     req.condition = [{
-    //       'colName': options.key_disp_col,
-    //       'ruleType': 'like',
-    //       'value': self.fkPopupModel.search
-    //     }]
-    //   }
-    //   req.page = {
-    //     pageNo: 1,
-    //     rownumber: 20
-    //   }
-    //   this.crosAjaxData(this.$api.select, 'post', req, CallbackGo)
-    // },
 
     handleInput(columns, val, regs, data) {
       let self = this;
-
       setTimeout(() => {
         let a = {
           columns: self.Fileddatas.columns,
@@ -502,7 +500,6 @@ export default {
         this.dispatch('iForm', 'on-form-blur', a);
         this.dispatch('iForm', 'currentValue-update', a);
       }, 40);
-      // console.log(this)
     },
     async toCols() {
       let self = this;
@@ -514,12 +511,12 @@ export default {
       }
 
       self.dispatch('iForm', 'iForm-Item-Loaded', true);
-      // this.Fileddatas = JSON.parse(JSON.stringify(this.oldColData))
+
       if (!('column' in self.Fileddatas)) {
         self.Fileddatas.column = '';
       }
       let isType = self.oldColData._formItemValidators;
-      // let isType = self.isType()
+
       console.log('isType====', isType);
       self.Fileddatas._formItemValidators = isType;
       if (self.Fileddatas.bx_col_type === 'enum' || self.Fileddatas.col_type === 'Enum') {
@@ -579,10 +576,7 @@ export default {
       this.$on('on-form-blur', this.onFieldBlur);
       this.$on('on-form-change', this.onFieldChange);
     },
-    showMessage(text) {
-      // console.log(text)
-      // window.alert(text)
-    },
+    showMessage(text) {},
     onSubmit() {
       this.formValidators(this.Fileddatas.column, this.Fileddatas._formItemValidators);
     },
@@ -606,10 +600,6 @@ export default {
       if (this.Fileddatas.col_type === 'Note') {
         this.$refs.note.reset();
       }
-      // this.fkPopupModel.selected = {
-      //   label: '',
-      //   key: ''
-      // }
     },
     show(data) {
       console.log('data', data);
@@ -647,18 +637,7 @@ export default {
       console.log('添加图片');
     },
     uploadImage(res) {
-      // let fData = new FormData(res)
-      // let formdatas = {
-      //   filePath: res.get('photo'),
-      //   name: 'file',
-      //   formData: {
-      //     'serviceName': 'srv_bxfile_service',
-      //     'interfaceName': 'add',
-      //     'file': res
-      //   }
-      // }
       let self = this;
-
       this.$http.post(self.$api.upload, res).then(res => {
         console.log('', res, res.body);
         let imgUrl = {
@@ -704,6 +683,11 @@ export default {
       }
     }
   },
+  onLoad(option) {
+    if (option.query) {
+      this.query = JSON.parse(decodeURIComponent(option.query));
+    }
+  },
   watch: {
     formValids: {
       handler: function(val, oldval) {
@@ -731,20 +715,6 @@ export default {
     fromColData: {
       handler: function(newV, oldV) {
         let self = this;
-        // console.log('formitem更新2', newV)
-        // self.Fileddatas.column = newV.column
-        // self.Fileddatas = JSON.parse(JSON.stringify(self.oldColData))
-        // if ('column' in newV) {
-        //   console.log('formitem更新', oldV, newV)
-        //   self.Fileddatas.column = newV.column
-        // } else {
-        //   self.Fileddatas.column = newV.column
-        // }
-        // if (this.Fileddatas.bx_col_type === 'date') {
-        //   this.$refs.dateSelect.valueSync = '请选择';
-        //   this.Fileddatas.column = '请选择';
-        //   console.log('日期子组件', this.$refs.dateSelect.valueSync, this);
-        // }
         this.Fileddatas['_formItemValidators'] = newV._formItemValidators;
         self._tableValid = self.fromColData._tableValid;
         self.toCols();
@@ -758,16 +728,7 @@ export default {
         let self = this;
         if (!newV.valid) {
         }
-        // self.Fileddatas.column = newV.column
-        // self.Fileddatas = JSON.parse(JSON.stringify(self.oldColData))
-        // if ('column' in newV) {
-        //   console.log('formitem更新', oldV, newV)
-        //   self.Fileddatas.column = newV.column
-        // } else {
-        //   self.Fileddatas.column = newV.column
-        // }
         self.toCols();
-        // this.dispatch('iForm', 'on-form-item-valid', b)
       },
       deep: true // 是否深度监听
     }
@@ -775,10 +736,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.form-item-inputs {
+  // flex: 1;
+}
 .form-item-editer {
   display: flex;
   align-items: center;
-  
+  background-color: #fff;
+  width: 100%;
   .label {
     width: 5rem;
     color: #c5464a;
@@ -815,7 +780,7 @@ export default {
     }
   }
 }
-.changeTime{
+.changeTime {
   font-size: 30upx;
   text-indent: 30upx;
 }

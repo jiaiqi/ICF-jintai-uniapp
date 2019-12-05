@@ -239,19 +239,23 @@ export default {
   border-radius: 50upx;
   font-size: 16px;
   color: #fff;
-  background: linear-gradient(to right, #88a1f9, #9ac6ff);
+  background: rgb(229, 28, 35);
+  /* background: linear-gradient(to right, #88a1f9, #9ac6ff); */
 }
 
 .btn-register-active {
-  background: linear-gradient(to right, #365fff, #36bbff);
+  background: rgb(229, 28, 35);
+  /* background: linear-gradient(to right, #365fff, #36bbff); */
 }
 
 .btn-register-hover {
-  background: linear-gradient(to right, #365fdd, #36bbfa);
+  background: rgb(229, 28, 35);
+  /* background: linear-gradient(to right, #365fdd, #36bbfa); */
 }
 
 button[disabled] {
   color: #fff;
+  background-color:rgba(229, 28, 35,.5) ;
 }
 
 .register-mode {

@@ -13,7 +13,7 @@
 <script>
 </script>
 
-<style>
+<style scoped>
 	.content{
 		width: 100%;
 		padding: 30upx;
