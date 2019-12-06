@@ -1,8 +1,8 @@
 <template>
 	<view class="swiperContent">
+		<!-- :indicator-dots="indicatorDots" -->
 		<swiper  @change="change"
 		@animationfinish="animationfinish"
-		:indicator-dots="indicatorDots"
 		:indicator-active-color="indicatorActiveColor"
 		:indicator-color="indicatorColor"
 		:autoplay="(autoplay && flag)"
@@ -31,7 +31,7 @@
 					}">{{item[textKey]}}</text>
 				</view>
 				<view v-if="item[videoKey]">
-				<video :src="item[videoKey]" @play="play" @pause="pause" :style="{'height':swiperHeight+'px'}" autoplay loop muted :autoplay="videoAutoplay" objectFit="cover"></video>
+				<video :src="item[videoKey]" @play="play" @pause="pause"  autoplay loop muted :autoplay="videoAutoplay" objectFit="cover"></video>
 				</view>
 			</swiper-item>
 		</swiper>
@@ -155,7 +155,7 @@
 			},
 			autoplay:{ // 是否自动切换
 				type:Boolean,
-				default:true
+				default:false
 			},
 			indicatorColor:{ // 指示点颜色
 				type:String,
@@ -212,7 +212,7 @@
 .cardSwiper .swiper-item view{
 	width: 100%;
 	display: block;
-	height: 75%;
+	height: 65%;
 	border-radius: 10upx;
 	transform: scale(0.93,0.8);
 	opacity: 0.7;
@@ -225,6 +225,7 @@
 	transform:  initial;
 	opacity: 1;
 	transition: all 0.1s ease-in 0s;
+	height: 23vh !important;
 }
 .swiper-item view{
 	height:100%;
@@ -251,6 +252,7 @@
 } 
 .swiperContent{
 	width:100%;
+	height: 25vh !important;
 }
 .screen-swiper{
 	height: 30vh !important;

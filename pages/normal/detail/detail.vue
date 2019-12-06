@@ -30,40 +30,41 @@
       </view>
       <view>
         <view class="little_title">项目概况：</view>
-        <view class="content" v-html="detail.sxmxx_js" v-if="detail.sxmxx_js"></view>
+        
+        <view class="content" v-html="JSON.parse(JSON.stringify(detail.sxmxx_js).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.sxmxx_js"></view>
       </view>
     </view>
-    <view v-if="detail.title">
+    <!-- <view v-if="detail.title"> -->
       <!-- 便民服务 -->
-      <view class="title">{{ detail.title }}</view>
+<!--      <view class="title">{{ detail.title }}</view>
       <view class="subtitle">发布时间：{{ detail.create_time }}</view>
       <view class="content" v-html="detail.content" v-if="detail.content"></view>
-    </view>
+    </view> -->
     <view v-if="detail.title && detail.ssp_no">
       <!-- 数字城管 -->
       <view class="title">{{ detail.title }}</view>
       <view class="subtitle">发布时间：{{ detail.create_time }}</view>
-      <view class="content" v-html="detail.content" v-if="detail.content"></view>
-      <view class="content" v-html="detail.nr" v-if="detail.nr"></view>
+      <view class="content" v-html="JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.content"></view>
+      <view class="content" v-html="JSON.parse(JSON.stringify(detail.nr).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.nr"></view>
     </view>
     <view v-if="detail.pxbt">
       <!-- 党建培训 -->
       <view class="title">{{ detail.pxbt }}</view>
       <view class="subtitle">发布时间：{{ detail.create_time }}</view>
-      <view class="content" v-html="detail.pxjj" v-if="detail.pxjj"></view>
-      <view class="content" v-html="detail.nr" v-if="detail.nr"></view>
+      <view class="content" v-html="JSON.parse(JSON.stringify(detail.pxjj).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.pxjj"></view>
+      <view class="content" v-html="JSON.parse(JSON.stringify(detail.nr).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.nr"></view>
     </view>
     <view v-if="detail.note_title">
       <!-- 论贴帖子详情 -->
       <view class="title">{{ detail.note_title }}</view>
       <view class="subtitle">发贴时间：{{ detail.create_time }}</view>
-      <view class="content" v-html="detail.content" v-if="detail.content"></view>
+      <view class="content" v-html="JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.content"></view>
     </view>
     <view v-if="detail.opinion_title">
       <!-- 论贴帖子详情 -->
       <view class="title">{{ detail.opinion_title }}</view>
       <view class="subtitle">发贴时间：{{ detail.create_time }}</view>
-      <view class="content" v-html="detail.content" v-if="detail.content"></view>
+      <view class="content" v-html="JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.content"></view>
     </view>
   </view>
 </template>
@@ -102,6 +103,7 @@ export default {
   width: 100%;
   box-sizing: border-box;
   padding: 0 10px;
+  background-color: #fff;
 }
 .title {
   width: 100%;

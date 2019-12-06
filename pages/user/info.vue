@@ -6,14 +6,14 @@
         <view>
           <cmd-cel-item title="头像" slot-right arrow>
             <!-- <cmd-avatar src="https://avatar.bbs.miui.com/images/noavatar_small.gif"></cmd-avatar> -->
-            <cmd-avatar :src="userInfo.head_img_path"></cmd-avatar>
+            <cmd-avatar :src="userInfo.head_img_path?userInfo.head_img_path:''"></cmd-avatar>
           </cmd-cel-item>
-          <cmd-cel-item title="ID" :addon="userInfo.user_no" arrow></cmd-cel-item>
-          <cmd-cel-item title="邮箱" :addon="userInfo.email" arrow></cmd-cel-item>
-          <cmd-cel-item title="姓名" :addon="userInfo.real_name" arrow></cmd-cel-item>
-          <cmd-cel-item title="联系方式" addon="12345678912" arrow></cmd-cel-item>
-          <cmd-cel-item title="证件号码" :addon="userInfo.id_card" arrow></cmd-cel-item>
-          <cmd-cel-item title="我的地址" addon="xxxxxxxxx" arrow></cmd-cel-item>
+          <cmd-cel-item title="ID" :addon="userInfo&&userInfo.user_no?userInfo.user_no:''" arrow></cmd-cel-item>
+          <cmd-cel-item title="邮箱" :addon="userInfo&&userInfo.email?userInfo.email:' - '" arrow></cmd-cel-item>
+          <cmd-cel-item title="姓名" :addon="userInfo&&userInfo.real_name?userInfo.real_name:' - '" arrow></cmd-cel-item>
+          <cmd-cel-item title="联系方式" :addon="userInfo&&userInfo.mobile?userInfo.mobile:' - '" arrow></cmd-cel-item>
+          <cmd-cel-item title="证件号码" :addon="userInfo&&userInfo.id_card?userInfo.id_card:' '" arrow></cmd-cel-item>
+          <cmd-cel-item title="我的地址" addon="---" arrow></cmd-cel-item>
           <cmd-cel-item title="修改密码" @click="fnClick('modify')" arrow></cmd-cel-item>
           <button class="btn-logout" @click="logout">退出登录</button>
         </view>

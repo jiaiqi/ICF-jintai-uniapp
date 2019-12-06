@@ -4,6 +4,7 @@
       <view class="list_title">
         <view class="title_left">{{ title }}</view>
         <view class="title_right" @tap="toAdd" v-if="showAddButton"><button class="title_btn">添加</button></view>
+        <view class="title_right" @tap="toAdd" v-if="showApplyButton"><button class="title_btn">申请</button></view>
       </view>
       <view class="loadAnimation" v-if="listData.length < 1 && !nodata">
         <view class="loadAnimItem" v-for="i in 14" :key="i"><view class="loadAnimContent"></view></view>
@@ -119,6 +120,7 @@ export default {
       columnData: {},
       showAddButton: false,
       showDeleteButton: false,
+      showApplyButton:false,
       selectList: [
         {
           serviceName: 'srvzhsq_pxap_select', // 党建培训查询
@@ -358,6 +360,7 @@ export default {
         this.query = query;
         let url = this.$api.select + '/' + query.app_name + '/select/' + query.service_name;
         let req = { serviceName: query.service_name, colNames: ['*'], condition: [], page: { pageNo: this.currentPage, rownumber: 14 }, order: [] };
+        if(query.menu_url.includes('proc')){req.proc_data_type = "myall"}
         this.$http.post(url, req).then(res => {
           if (res.data.data && res.data.data.length > 0) {
             this.listData = res.data.data;
@@ -388,13 +391,13 @@ export default {
     if (options.query||options.data) {
       query = JSON.parse(options.query?options.query:options.data?options.data:[]);
       console.log('query,qieur.label', query, query.label);
-      const app = query.menu_url.match(/menuapp=(\S*)/)[1];
+      const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
       query.app_name = app;
       console.log('app', app, query.menu_url);
       this.query = query;
       this.title = query.label;
       this.getListData(query);
-      this.getColumnsData(app, query.service_name, 'list')
+      this.getColumnsData(app, query.service_name, query.menu_url.includes('proc')?"proclist":'list')
         .then(cols => {
           console.log('cols', cols);
           this.columnData = cols;
@@ -405,6 +408,9 @@ export default {
               }
               if (btn.permission == true && btn.button_type === 'delete') {
                 this.showDeleteButton = true;
+              }
+              if (btn.permission == true && btn.button_type === 'apply') {
+                this.showApplyButton = true;
               }
             });
           }

@@ -2,7 +2,10 @@
   <view class="selectView">
     <view class="search">
       <!-- <text class="label">身份证号：</text> -->
-       <icon type="search" size="26" class="search_icon"/>
+       <!-- <icon type="search" size="26" class="search_icon"/> -->
+       <view class="search-form round search_icon">
+       	<text class="cuIcon-search"></text>
+       </view>
       <input type="idcard" v-model="idCard" placeholder="请输入身份证号" class="text"/>
     </view>
     <view class="bottom">
@@ -116,17 +119,18 @@ export default {
 
 <style lang="scss">
 .selectView {
-  width: 90%;
-  height: 60vh;
+  width: 100%;
+  // height: 60vh;
+  background-color: #fff;
   font-size: 32upx;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   .search {
     display: flex;
+    width: 90%;
     height: 80upx;
     align-items: center;
+    margin: 150upx auto 30upx;
     // flex-direction: column;
     border-radius: 10upx;
     border: 2px solid #F1505C;  

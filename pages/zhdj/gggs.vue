@@ -77,7 +77,7 @@
 				classes:'/zhdj',
 				src:'../../static/img/dj.png',
 				titletwo:'',
-				numberpage:8,
+				numberpage:7,
 				datalisttwost:[],
 				titlebar:'',
 				titletop:''

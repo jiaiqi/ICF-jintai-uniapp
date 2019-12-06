@@ -165,7 +165,6 @@ export default {
 			rownumber: this.numberlist
 		};
 		this.$http.post(url, req).then(res => {
-			console.error("res222",res)
 			this.listhome =res.data.data
 			this.shows=false
 		})
@@ -191,7 +190,7 @@ export default {
 	},
 	onLoad(option){
 			let listdatas  = (JSON.parse(decodeURIComponent(option.data||option.query)))
-			console.error(listdatas)
+			console.log(listdatas)
 			this.label = (listdatas.label)
 			if(listdatas.label=="社会组织"){
 				this.listtar='shzzlist'

@@ -68,7 +68,7 @@ fly.interceptors.request.use((request) => {
     return request
   } else {
     uni.reLaunch({
-      // url: '../login/login'
+      url: '/pages/login/login'
     });
   }
 })
@@ -77,9 +77,9 @@ fly.interceptors.request.use((request) => {
 fly.interceptors.response.use((res) => {
   // 对响应数据做些事
   if (res.data.resultCode === "0011") {
-    uni.reLaunch({
-      url: '../login/login'
-    })
+    // uni.reLaunch({
+    //   url: '../login/login'
+    // })
     // uni.showModal({
     //   showCancel:false,
     //   title:"警告",

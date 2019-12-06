@@ -43,9 +43,14 @@
         v-model="Fileddatas.column"
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入活动名称'"
       />
-      <hTimePicker sTime="0" cTime="24" interval="1" @changeTime="changeTime" v-if="Fileddatas.col_type === 'Date'">
+   <!--   <hTimePicker sTime="0" cTime="24" interval="1" @changeTime="changeTime" v-if="Fileddatas.col_type === 'Date'||Fileddatas.col_type === 'DateTime'">
         <view slot="pCon" class="changeTime">{{ Fileddatas.column ? Fileddatas.column : '点击选择时间' }}</view>
-      </hTimePicker>
+      </hTimePicker> -->
+      <picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="DateChange"  v-if="Fileddatas.col_type === 'Date'||Fileddatas.col_type === 'DateTime'">
+      	<view class="picker">
+      		{{date}}
+      	</view>
+      </picker>
       <input
         class="input"
         readonly

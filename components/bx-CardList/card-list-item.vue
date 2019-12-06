@@ -4,9 +4,13 @@
       <view class="title">{{dataItem.title}}</view>
       <view class="subtitle"></view>
     </view>
-    <view class="content">
+    <view class="contents">
       <view class="top"></view>
-      <view class="center" @click="toNewPage" v-if="type==='menu'">{{dataItem.text}}</view>
+	  <view class="flexbox">
+	  	<view class="phopt" :style="{backgroundImage: 'url('+img[Math.round(Math.random()*5)].imgs+')'}"></view>
+	  	<view class="textcenter" @click="toNewPage" v-if="type==='menu'">{{dataItem.text}}</view>
+	  </view>
+	  
       <view class="bottom"></view>
     </view>
     <view class="footer" v-if="type!='menu'">
@@ -37,7 +41,15 @@ export default {
         create_time: '', //创建时间
         url:'', //跳转链接
         serviceName:"",// 服务名称
-      }
+      },
+	  img:[
+		  {"imgs":"../../static/img/00.png"},
+		  {"imgs":"../../static/img/11.png"},
+		  {"imgs":"../../static/img/22.png"},
+		  {"imgs":"../../static/img/33.png"},
+		  {"imgs":"../../static/img/44.png"},
+		   {"imgs":"../../static/img/55.png"}
+	  ]
     };
   },
   methods:{
@@ -67,6 +79,7 @@ export default {
 
 <style lang="scss" scopeds>
 .card-list-item {
+	box-shadow: 0 0 26px 0 rgba(0,0,0,.15) !important;
   display: flex;
   flex-direction: column;
   width: 90%;
@@ -87,22 +100,23 @@ export default {
       font-size: 28upx;
     }
   }
-  .content {
-    width: 100%;
-    height: 200upx;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: #fff;
-    background-color:#F76260 ;
-    .center{
-      width: 100%;
-      font-weight: 400;
-      font-family: '楷体';
-      font-size: 60upx;
-      text-align: center;
-    }
-  }
+  // .content {
+  //   width: 100%;
+  //   height: 200upx;
+  //   display: flex;
+  //   flex-direction: column;
+  //   justify-content: center;
+  //   color: #000;
+  //   background-color:#FFFFFF ;
+  //   .center{
+	
+  //     width: 100%;
+  //     font-weight: 400;
+  //     font-family: '楷体';
+  //     font-size: 60upx;
+  //     text-align: center;
+  //   }
+  // }
   .footer {
     border-top: 1px solid #F76260;
     display: flex;
@@ -138,4 +152,27 @@ export default {
     }
   }
 }
+  .contents{
+		  background: #FFFFFF;
+		
+		 height: 200upx;
+		 width: 95vw !important;
+	  }
+	  .phopt{
+		  height: 150upx;
+		  width: 150upx;
+		  background-size:cover ;
+		  margin-top: 25upx;
+		  margin-left: 30upx;
+	  }
+	  .flexbox{
+		  display: flex;
+	  }
+	  .textcenter{
+		  font-size: 17px;
+		  font-weight: 600;
+		  text-align: center;
+		  line-height:200upx ;
+		   margin-left: 100upx;
+	  }
 </style>

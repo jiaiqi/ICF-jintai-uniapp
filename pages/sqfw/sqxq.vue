@@ -5,7 +5,7 @@
 		
 		<view class="">
 			<view class="titlea">
-				<text v-if="datalist.lb" space="nbsp" style="color: red;font-size: 18px;">[{{datalist.lb}}]</text space="nbsp">
+				<text v-if="datalist.lb" space="nbsp" style="color: red;font-size: 18px;">[{{datalist.lb}}]</text>
 
 				<text v-if="datalist.activity_title" style="font-size: 18px;">{{datalist.activity_title }} </text>
 				<text v-else style="font-size: 18px;">{{datalist.bt || datalist.hdbt }} </text>
@@ -27,19 +27,19 @@
 			
 			
 			
-			<view class="contents-box" v-if="datalist.hdnr" v-html=" datalist.hdnr ">
+			<view class="contents-box" v-if="datalist.hdnr" v-html=" JSON.parse(JSON.stringify(datalist.hdnr).replace(/\<img/gi, '<img width=100% height=100%')) ">
 				<!-- .replace(/\<img/gi,'<img width=100% height=230px ' ) -->
 			</view>
 
-			<view class="contents-box" v-else-if="datalist.nr" v-html="datalist.nr ">
+			<view class="contents-box" v-else-if="datalist.nr" v-html="JSON.parse(JSON.stringify(datalist.nr).replace(/\<img/gi, '<img width=100% height=100% ')) ">
 				<!-- JSON.parse((JSON.stringify(datalist.nr).replace(/\<img/gi,'<img width=100% height=230px ' ))) -->
 			</view>
 
-			<view class="contents-box" v-else-if="datalist.activity_content" v-html=" datalist.activity_content ">
+			<view class="contents-box" v-else-if="datalist.activity_content" v-html="JSON.parse(JSON.stringify(datalist.activity_content).replace(/\<img/gi, '<img width=100% height=100% ')) ">
 				<!-- JSON.parse((JSON.stringify(datalist.activity_content).replace(/\width:650px;/gi,'width:100%;height:230px' ).replace(/\<img/gi,'<img width=100% height=230px ' ))) -->
 			</view>
 				
-			<view class="contents-box" v-else-if="datalist.content" v-html=" datalist.content ">
+			<view class="contents-box" v-else-if="datalist.content" v-html=" JSON.parse(JSON.stringify(datalist.content).replace(/\<img/gi, '<img width=100% height=100% '))">
 				<!-- JSON.parse((JSON.stringify(datalist.activity_content).replace(/\width:650px;/gi,'width:100%;height:230px' ).replace(/\<img/gi,'<img width=100% height=230px ' ))) -->
 			</view>
 				
@@ -71,10 +71,9 @@
 			uni.setNavigationBarTitle({
 				title: '详情'
 			});
-
 			this.datalist = (JSON.parse(decodeURIComponent(options.query)))
 
-			console.log(this.datalist)
+			console.log("vvvvvvvvvv",this.datalist)
 			// this.rich =  JSON.parse((JSON.stringify(this.datalist.hdnr).replace(/\<img/gi,'<img width=100% height=230px ' )))
 			//  this.richs =  JSON.parse((JSON.stringify(this.datalist.nr).replace(/\<img/gi,'<img width=100% height=230px ' )))
 		}

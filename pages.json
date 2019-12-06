@@ -2,22 +2,18 @@
   "pages": [
     //pages数组中第一项表示应用启动页,
     {
-      // "path": "pages/CommunityServices/CommunityServices",
       "path": "pages/SmartCity/smartcity",
       "style": {
         "navigationBarTitleText": "首页",
-		 "navigationBarBackgroundColor": "#ED292A"
-        // "app-plus": {
-        //   "titleNView": {
-        //     "type": "transparent"
-        //   }
-        // }
+        "navigationBarBackgroundColor": "#ED292A"
       }
     },
     {
       "path": "pages/login/login",
       "style": {
-		"app-plus":{"titleNView":false}
+        "app-plus": {
+          "titleNView": false
+        }
       }
     },
     {
@@ -121,7 +117,7 @@
     }, {
       "path": "pages/shzz/zzhome",
       "style": {
-        
+
       }
     },
     {
@@ -444,7 +440,7 @@
       "path": "pages/SecondaryPage/SecondaryPage",
       "style": {}
     }
-    ],
+  ],
   "tabBar": {
     "color": "#7a7e83",
     "selectedColor": "#E51C23",

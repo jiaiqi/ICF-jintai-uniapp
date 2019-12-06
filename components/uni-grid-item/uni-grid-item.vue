@@ -167,7 +167,7 @@ export default {
 	background-color: $uni-bg-color-hover;
 }
 .menu_icon {
-	width: 80upx;
-	height: 80upx;
+	width: 100upx;
+	height: 100upx;
 }
 </style>

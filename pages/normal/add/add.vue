@@ -2,8 +2,8 @@
   <view class="addView">
     <from-view v-if="showChild" :pathQuery="query" :pageType="query.type" ref="iForms"></from-view>
     <view class="bottom-flex" style="padding:10px">
-      <view class="bottom">
-        <view v-for="(item, index) in pageBtns" :key="index">
+      <view class="bottom" >
+        <view v-for="(item, index) in pageBtns" :key="index" v-if="query.cols">
           <button v-if="item.button_type === 'reset'" type="warn" @click.native="onReset">{{ item.button_name }}</button>
           <button v-else-if="item.button_type === 'submit'" type="primary" @click.native="submitForm">{{ item.button_name }}</button>
         </view>
@@ -76,7 +76,7 @@ export default {
           }
         });
       } else {
-        const app = query.menu_url.match(/menuapp=(\S*)/)[1]
+        const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
         self.query.cols = await self.getColumnsData(app,query.service_name)
         console.log(self.query.cols);
         self.query.serviceName = query.serviceName;

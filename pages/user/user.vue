@@ -45,9 +45,9 @@
                  * 如果需要强制登录跳转回登录页面
                  */
                 if (this.forcedLogin) {
-                    uni.reLaunch({
-                        url: '../login/login',
-                    });
+                    // uni.navigateTo({
+                    //     url: '../login/login',
+                    // });
                 }
             }
         }

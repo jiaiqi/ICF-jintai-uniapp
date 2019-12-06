@@ -1,15 +1,32 @@
 <template>
   <view class="wrap">
-	  <view class="">
-	  	        <bw-swiper :swiperList="swiperList" style="width:100%;"></bw-swiper>
+	  <!-- //菜单 -->
+	  <view class="bannerlun" >
+	  	        <bw-swiper :swiperList="swperboole?swiperList:swiperLists" style="width:100%;"></bw-swiper>
 	  </view>
-    <uni-grid :column="4" :showBorder="showBorder">
-        <uni-grid-item v-for="(item,index) in menuData" :key="index" :url="item.app_temp_col_map?item.app_temp_col_map:''" :treeData="item">
-            <text class="text">{{item.label}}</text>
-            
-        </uni-grid-item>
-    </uni-grid>
-	<view class="banner" >
+	  <!-- 轮播 -->
+	  <view class="" >
+	  	<uni-grid :column="4" :showBorder="showBorder">
+	  	    <uni-grid-item v-for="(item,index) in menuData" :key="index" :url="item.app_temp_col_map?item.app_temp_col_map:''" :treeData="item">
+	  	        <text class="text">{{item.label}}</text>
+	  	        
+	  	    </uni-grid-item>
+	  	</uni-grid>
+	  </view>
+    
+	<!-- 插图 -->
+	<view class="banner" v-if="!swperboole" :style="{backgroundImage: 'url('+imageURL+')'}">
+		
+	</view>
+	<!-- 活动 -->
+	<view class="">
+		<text class="titleall"  v-if="!swperboole" >热门活动</text>
+		<view class="contenthot">
+			<view class="hot" v-for="(item,index) in xqpage" :key="index">
+				<view class="phopos" @tap="detaile(item)" :style="{backgroundImage: 'url('+imageURL+')'}"></view>
+				<view class="textline">{{item.hdbt}}</view>	
+			</view>
+		</view>
 		
 	</view>
   </view>
@@ -26,7 +43,16 @@ export default {
       userInfo: {},
       menuData:[],
       showBorder:false,
-	  swiperList:	[] 	
+	  swiperList:[
+		  {'img':'../../static/img/dj.png'},
+		  {'img':'../../static/img/dj.png'},
+		  {'img':'../../static/img/dj.png'},
+	  ] ,
+	  swperboole:true,
+	  swiperLists:[],
+	  phoarr:[],
+	  xqpage:Object,
+	  imageURL:'../../static/img/bannertwo.png'
     };
   },
   methods: {
@@ -75,6 +101,11 @@ export default {
         }
       });
     },
+	detaile(item,val){
+		uni.navigateTo({
+			url:'../sqfw/sqxq?query='+ encodeURIComponent((JSON.stringify(item)).replace(/%/g, '%25'))+'&num=1'
+		})
+	},
 	// 获取轮播图路径
 	getBannerList() {
 		// 获取轮播图编号
@@ -104,6 +135,7 @@ export default {
 				picUrlCode.map(item => {
 					let path = 'http://39.98.203.134:8081/file/download?filePath=';
 					let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+					console.log("ggggggggggggggg",item)
 					let req = {
 						colNames: ['*'],
 						condition: [
@@ -118,14 +150,57 @@ export default {
 						serviceName: 'srvfile_attachment_select'
 					};
 					this.$http.post(url, req).then(res => {
-						console.error(res.data.data)
 						let picUrlList = []
-						this.swiperList.push({'img':path + res.data.data[0].fileurl});
-						console.log('picUrlList:', picUrlList);
+						this.swiperLists.push({'img':path + res.data.data[0].fileurl});
+						this.swperboole=false
 					});
 				});
 			}
 		});
+	},
+	//活动列表
+	hotlist(serve){
+		let url =this.$api.select +"/zhdj"+ "/select/"+serve
+		let req = {};
+		req.serviceName =serve;
+		req.colNames = ['*'];
+		req.condition = [];
+		req.order = [];
+		
+		req['page'] = {
+			pageNo: 1,
+			rownumber: 7
+		};
+		this.$http.post(url, req).then(res => {
+			console.log("..................",res.data.data)
+			this.xqpage=res.data.data
+			let path = 'http://39.98.203.134:8081/file/download?filePath=';
+			let listr= []
+			for(let i in  res.data.data){
+				listr.push(res.data.data[i].slt)
+				
+				// let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+				// let req = {
+				// 	colNames: ['*'],
+				// 	condition: [
+				// 		{
+				// 			colName: 'file_no',
+				// 			ruleType: 'eq',
+				// 			value: listr[i] // 图编号
+				// 		}
+				// 	],
+				// 	order: null,
+				// 	page: null,
+				// 	serviceName: 'srvfile_attachment_select'
+				// };
+				// let phoarr = []
+				// this.$http.post(url, req).then(resppo => {
+				// 	console.log(resppo)
+				// 	this.phoarr.push({"title":res.data.data[i].hdbt, "img":path+"/20191206/20191206145040958100/20191206145040958101.png"})
+				// })
+			}
+			// console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiii",this.phoarr)
+		})
 	},
     async getImagePath(imgId){
       if(imgId){
@@ -163,6 +238,7 @@ export default {
     this.userInfo = uni.getStorageSync('userInfo');
     this.getMenusList();
 	this.getBannerList()
+	this.hotlist("srvzhsq_djhdjl_djhd_select")
   }
 };
 </script>
@@ -170,14 +246,55 @@ export default {
 <style lang="scss">
   .wrap{
     width: 100%;
-    background: #fff;
+	background: #FFFFFF;
+	.text{
+	  line-height: 60upx;
+	}
   }
   .banner{
 	  height: 10vh;
-	 width: calc(100% - 80upx);
-	  background: url(../../static/img/bannertwo.png);
+	 width: calc(100% - 60upx);
+	  // background: url();
 	  background-size: cover;
-	  margin: 0 40upx;
+	  margin: 0 30upx 10px 30upx;
 	  border-radius: 5px;
+  }
+  .titleall{
+	  font-size: 15px;
+	  font-weight: 600;
+	  border-left: 2px solid red;
+	  padding-left: 8px;
+	  margin-left:30upx ;
+  }
+  .phopos{
+	  height: 160upx;
+	  width: 210upx;
+	  // background: #00B26A;
+	  background-size: cover;
+	  border-radius:8px ;
+  }
+  .hot{
+	  width: 210upx;
+	  margin-right: 20upx;
+  }
+  .contenthot{
+	  margin-top: 15upx;
+	  display: flex;
+	  margin-left: 30upx;
+	  overflow-x: scroll;
+  }
+  .textline{
+	  margin-top: 5px;
+	  line-height: 18px;
+	  font-size: 13px;
+	  -webkit-line-clamp:2; 
+	  display: -webkit-box;
+	  -webkit-box-orient:vertical;
+	  overflow:hidden;
+	  text-overflow: ellipsis;
+  }
+  .bannerlun{
+	  height: 25vh !important;
+	  overflow: hidden;
   }
 </style>
