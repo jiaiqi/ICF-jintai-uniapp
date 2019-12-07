@@ -80,7 +80,8 @@
 				numberpage:7,
 				datalisttwost:[],
 				titlebar:'',
-				titletop:''
+				titletop:'',
+        query:'',
 			}
 		},
 		methods:{
@@ -111,12 +112,12 @@
 			},
 			toMore() {
 				uni.navigateTo({
-					url: '../normal/list/list?to='+this.titlebar 
+					url: '../normal/list/list?query='+ encodeURIComponent(JSON.stringify(this.query))
 				});
 			},
 			toMoretwo() {
 				uni.navigateTo({
-					url: '../normal/list/list?to=hdap'
+					url: '../normal/list/list?query='+ encodeURIComponent(JSON.stringify(this.query))
 				});
 			}
 		},
@@ -125,6 +126,7 @@
 			 let listdatas  = (JSON.parse(decodeURIComponent(option.data||option.query)))
 			 let liststr=''
 			console.log(listdatas)
+      this.query = listdatas
 			 if(listdatas.label=="党建活动"){
 				  liststr = (listdatas.children[2].service_name)
 			 }else if(listdatas.label=="公示公告"){

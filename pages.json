@@ -60,8 +60,18 @@
     }, {
       "path": "pages/normal/list/list",
       "style": {
-        // "enablePullDownRefresh":true,
-        // "onReachBottomDistance":20
+        "enablePullDownRefresh":true,
+        "onReachBottomDistance":20,
+        "app-plus": {
+          "titleNView": {
+            // "type": "transparent"
+            "buttons": [{
+              "text": "+",
+              "fontSize": "28px",
+              "function":"add"
+            }]
+          }
+        }
       }
     }, {
       "path": "pages/normal/detail/detail",

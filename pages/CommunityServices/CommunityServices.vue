@@ -86,6 +86,11 @@ export default {
           this.menuData = parents;
           console.log(parents);
         }
+      }).catch(err=>{
+        console.log('err',err)
+        if(err.status==0){
+          this.getMenusList()
+        }
       });
     },
     detaile(item, val) {
@@ -144,7 +149,12 @@ export default {
             });
           });
         }
-      });
+      }).catch(err=>{
+        console.log('err',err)
+        if(err.message===''){
+          
+        }
+      });;
     },
     //活动列表
     hotlist(serve) {
@@ -196,7 +206,12 @@ export default {
           }
           this.xqpage = res.data.data;
         }
-      });
+      }).catch(err=>{
+        console.log('err',err)
+        if(err.message===''){
+          
+        }
+      });;
     },
     async getImagePath(imgId) {
       if (imgId) {

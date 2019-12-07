@@ -75,27 +75,41 @@ fly.interceptors.request.use((request) => {
 
 // 添加响应拦截器
 fly.interceptors.response.use((res) => {
-  // 对响应数据做些事
-  if (res.data.resultCode === "0011") {
-    // uni.reLaunch({
-    //   url: '../login/login'
-    // })
-    // uni.showModal({
-    //   showCancel:false,
-    //   title:"警告",
-    //   content:res.data.resultMessage + '即将跳转到登录页面',
-    //   success: (response) => {
-    //     if(response.confirm){
-
-    //     }
-    //   }
-    // })
-  }
-  // if (res.data.response && res.data.response.length > 0) {
-  //   let bxAuthTicket = res.data.response[0].response.bx_auth_ticket
-  //   uni.setStorageSync('bxAuthTicket', bxAuthTicket)
-  // }
-  return res
-}, (error) => {
-  return Promise.reject(error)
-})
+    // 对响应数据做些事
+    if (res.data.resultCode === "0011") {
+      // return res
+    }
+  },
+  (error) => {
+    // 对响应错误做处理
+    let config = error.config;
+    // 判断是否配置了重试
+    if (!config || !config.retry) return Promise.reject(error);
+    if (!config.shouldRetry || typeof config.shouldRetry != "function") {
+      return Promise.reject(error);
+    }
+    //判断是否满足重试条件
+    if (!config.shouldRetry(error)) {
+      return Promise.reject(error);
+    }
+    // 设置重置次数，默认为0
+    config.__retryCount = config.__retryCount || 0;
+    // 判断是否超过了重试次数
+    if (config.__retryCount >= config.retry) {
+      return Promise.reject(error);
+    }
+    //重试次数自增
+    config.__retryCount += 1;
+    //延时处理
+    let backoff = new Promise(function(resolve) {
+      setTimeout(function() {
+        resolve();
+      }, config.retryDelay || 1);
+    });
+    //重新发起axios请求
+    return backoff.then(function() {
+      console.log('请求失败,重新发送请求')
+      return fly(config);
+    });
+    // return Promise.reject(error)
+  })
