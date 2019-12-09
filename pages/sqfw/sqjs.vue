@@ -223,7 +223,7 @@
 			</view>
 		</view>
 		<view @click="orders()">
-					<uni-loading :status="status"  :content-text="contentText" color="#007aff"  />
+					<uni-loading :status="status"  :content-text="contentText" color="#888"  />
 		</view>
 	</view>
 </template>
@@ -275,7 +275,7 @@
 				this.$http.post(url, req).then(res => {
 					console.log(	res) 
 					if(index==0){
-						this.listhome =    res.data.data
+						this.listhome =res.data.data
 					}else{
 						if(res.data.data.length==0){
 							this.status="noMore"

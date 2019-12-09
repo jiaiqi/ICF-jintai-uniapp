@@ -7,7 +7,7 @@
     </uni-grid> -->
     
     <view class="card_box" v-if="treeData.children">
-		<ListItem :itemData="item" v-for="(item, index) in treeData.children" :key="index" type="menu"></ListItem>
+		<ListItem :itemData="item" v-for="(item, index) in treeData.children" :key="index"  :indexs="index" type="menu"></ListItem>
     </view>
   </view>
 </template>

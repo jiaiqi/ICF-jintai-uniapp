@@ -64,8 +64,39 @@ export default {
       title: '详情'
     });
     this.datalist = JSON.parse(decodeURIComponent(options.query));
-
-    console.log('vvvvvvvvvv', this.datalist);
+    if (this.datalist.hdnr) {
+      try {
+        this.datalist.hdnr = JSON.parse(JSON.stringify(this.datalist.hdnr.replace(/\<img/gi, '<img width=100% height=100% style="width:100%"')));
+      } catch (e) {
+        //TODO handle the exception
+        console.log('error:', e);
+      }
+    }
+    if (this.datalist.nr) {
+      try {
+        this.datalist.nr = JSON.parse(JSON.stringify(this.datalist.nr.replace(/\<img/gi, '<img width=100% height=100% style="width:100%"')));
+      } catch (e) {
+        //TODO handle the exception
+        console.log('error:', e);
+      }
+    }
+    if (this.datalist.activity_content) {
+      try {
+        this.datalist.activity_content = JSON.parse(JSON.stringify(this.datalist.activity_content.replace(/\<img/gi, '<img width=100% height=100% style="width:100%"')));
+      } catch (e) {
+        //TODO handle the exception
+        console.log('error:', e);
+      }
+    }
+    if (this.datalist.content) {
+      try {
+        this.datalist.content = JSON.parse(JSON.stringify(this.datalist.content.replace(/\<img/gi, '<img width=100% height=100% style="width:100%"')));
+      } catch (e) {
+        //TODO handle the exception
+        console.log('error:', e);
+      }
+    }
+    console.log('datalist:', this.datalist);
     // this.rich =  JSON.parse((JSON.stringify(this.datalist.hdnr).replace(/\<img/gi,'<img width=100% height=230px ' )))
     //  this.richs =  JSON.parse((JSON.stringify(this.datalist.nr).replace(/\<img/gi,'<img width=100% height=230px ' )))
   }
@@ -74,6 +105,7 @@ export default {
 
 <style lang="scss">
 .contentdat {
+  background-color: #fff;
   width: 100%;
 }
 .titlea {

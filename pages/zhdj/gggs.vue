@@ -1,7 +1,12 @@
 <template>
 	<view class="content-gggs">
-		<image :src="src" mode="" class="banners"></image>
-		<view class="titleone" >{{titletop}}</view>
+		<image :src="src" mode="" class="banners"></image>、
+		<view class="" style="display: flex;justify-content: space-between;">
+			<view class="titleone" >{{titletop}}</view>
+			<view class="btn" @click="audit()">待我审批</view>
+		</view>
+		
+		
 		<view class="" v-if="listshow"> 
 			<view class="" style="display: flex;padding: 8px 10px;justify-content: space-between;">
 				<view class="" style="width:200px ; height: 25px; background: rgba(150, 150, 150, 0.1);"></view>
@@ -98,7 +103,7 @@
 				req.colNames = ['*'];
 				req.condition = [];
 				req.order = [];
-				
+				req.proc_data_type="processed"
 				req['page'] = {
 					pageNo: 1,
 					rownumber: this.numberpage
@@ -109,6 +114,11 @@
 					console.log(res.data.data)
 					this.listshow=false
 				})
+			},
+			audit(){
+				uni.navigateTo({
+					url: '../audit/auditList?serve='+"srvzhsq_activity_arrange_select"
+				});
 			},
 			toMore() {
 				uni.navigateTo({
@@ -202,6 +212,7 @@
 		padding: 0 10upx;
 		border-left: 2px solid red;
 		font-weight: 600;
+		vertical-align: middle;
 	}
 	.contentBox text {
 		display: table-cell;
@@ -249,5 +260,20 @@
 		border-radius: 5px;
 		margin-left: 7px !important;
 		color: red;
+	}
+	.btn{
+		width: 80uxp;
+		height: 25px;
+		line-height: 20px;
+		background: #E51C23;
+		color: #FFFFFF;
+		/* font-weight: 600; */
+		font-size: 13px;
+		letter-spacing: 2upx;
+		padding: 3px;
+		border-radius: 10upx;
+		vertical-align: middle;
+		margin-top: 15upx;
+		margin-right: 20upx;
 	}
 </style>

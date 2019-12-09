@@ -60,22 +60,24 @@
     }, {
       "path": "pages/normal/list/list",
       "style": {
-        "enablePullDownRefresh":true,
-        "onReachBottomDistance":20,
+        "navigationBarTitleText": "列表",
+        "enablePullDownRefresh": true,
+        "onReachBottomDistance": 20,
         "app-plus": {
           "titleNView": {
             // "type": "transparent"
-            "buttons": [{
-              "text": "+",
-              "fontSize": "28px",
-              "function":"add"
-            }]
+            // "buttons": [{
+            //   "text": "+",
+            //   "fontSize": "28px",
+            //   "function":"add"
+            // }]
           }
         }
       }
     }, {
       "path": "pages/normal/detail/detail",
       "style": {
+        "navigationBarTitleText": "详情",
         "onReachBottomDistance": 100, // 页面上拉触底事件触发时距页面底部距离, 默认 50
         "app-plus": {
           "bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消)
@@ -143,8 +145,20 @@
         "navigationBarTitleText": "服务",
         "navigationBarBackgroundColor": "#FB6A6A"
       }
-
     },
+	{
+	  "path": "pages/audit/audit",
+	  "style": {
+	    "navigationBarTitleText": "审核"
+	  }
+	},
+	{
+	  "path": "pages/audit/auditList",
+	  "style": {
+	    "navigationBarTitleText": "待审核",
+		"enablePullDownRefresh": true
+	  }
+	},
     {
       "path": "pages/sqfw/dsftwo",
       "style": {

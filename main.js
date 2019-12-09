@@ -78,6 +78,18 @@ fly.interceptors.response.use((res) => {
     // 对响应数据做些事
     if (res.data.resultCode === "0011") {
       // return res
+    }else if(res.data.resultCode === '0000'&&res.data.state==='FAILURE'){
+      uni.showModal({
+        title:"警告",
+        content:"您没有访问此页面或者进行此操作的权限,点击确认返回上一级页面",
+        success: (res) => {
+         if(res.confirm){
+           uni.navigateBack();
+         } else if(res.cancel){
+           
+         }
+        }
+      })
     }
   },
   (error) => {

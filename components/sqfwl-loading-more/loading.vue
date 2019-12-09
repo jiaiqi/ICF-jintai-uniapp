@@ -4,7 +4,7 @@
 			<view class="load1">
 				<view :style="{background:color}" />
 				<view :style="{background:color}" />
-				<view :style="{background:color}" />
+				<view :style="{background:color}" /> 
 				<view :style="{background:color}" />
 			</view>
 			<view class="load2">

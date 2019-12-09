@@ -164,7 +164,7 @@ export default {
       req.colNames = ['*'];
       req.condition = [];
       req.order = [];
-
+		req.proc_data_type="processed"
       req['page'] = {
         pageNo: 1,
         rownumber: 7

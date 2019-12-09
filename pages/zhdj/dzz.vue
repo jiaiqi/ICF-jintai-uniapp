@@ -225,6 +225,11 @@
 		font-size: 16px;
 	}
 	.dressin{
+		display: block;
 		margin: 20upx 0;
+		width:440upx;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: normal;
 	}
 </style>

@@ -4,15 +4,16 @@
       <view class="title">{{dataItem.title}}</view>
       <view class="subtitle"></view>
     </view>
+	
     <view class="contents">
       <view class="top"></view>
 	  <view class="flexbox">
-	  	<view class="phopt" :style="{backgroundImage: 'url('+img[Math.round(Math.random()*5)].imgs+')'}"></view>
+	  	<view class="phopt" :style="{backgroundImage: 'url('+img[indexs].imgs+')'}"></view>
 	  	<view class="textcenter" @click="toNewPage" v-if="type==='menu'">{{dataItem.text}}</view>
 	  </view>
-	  
       <view class="bottom"></view>
     </view>
+	
     <view class="footer" v-if="type!='menu'">
       <div class="foot_item">
         <image src="" class="avator"></image>
@@ -63,7 +64,8 @@ export default {
   },
   props: {
     itemData: Object,
-    type:String, //卡片类型 menu-菜单、news-新闻、post-帖子
+    type:String, //卡片类型 menu-菜单、news-新闻、post-帖子,
+	indexs:Number
   },
   mounted() {
     this.dataItem.create_time = this.itemData.create_time;

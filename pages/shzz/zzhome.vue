@@ -12,7 +12,7 @@
 			<view class="gray-tab">
 				<view class="textbar">
 					<text class="leftborder">{{label}}</text>
-					<!-- <text class="btnmenu" @tap="join(selectList[0])" >申请加入</text> -->
+					<text class="btnmenu" @click="audiobtn(serves)" >待我审批</text>
 				</view>
 			</view>
 			<view class="" v-if="shows">
@@ -42,7 +42,37 @@
 				<text style="color:red;font-size: 16px;">更多>></text>
 			</view>
 		</view>
+		
+		<!-- <view class="conent-gray">
+			<view class="gray-tab">
+				<view class="textbar">
+					<text class="leftborder">社会组织</text>
+					<text class="btnmenu" @tap="join(selectList[1])" >申请加入</text>
+					
+				</view>
+			</view>
+			<view class="" v-if="shows">
+				<view class="" style="margin: 20px 15px;">
+					<view class="loadAnimItem yangPeople"><view class="loadAnimContent"></view></view>
+				</view>
+				<view class="" style="margin: 20px 15px;">
+					<view class="loadAnimItem yangPeople"><view class="loadAnimContent"></view></view>
+				</view><view class="" style="margin: 20px 15px;">
+					<view class="loadAnimItem yangPeople"><view class="loadAnimContent"></view></view>
+				</view>
+			</view>
+			<view v-else class="contentla" v-for="(item,index) in listhomeall" :key="index">
+				<view class="yangPeople"  @click="detail(item.proc_status,item.organize_name,item.address,item.remark)">
+					<text>{{item.organize_name}}</text>
+					<text :class="item.proc_status=='完成'?'colortext': 'colortext-red' ">{{item.proc_status=='完成'?'已审批':'未审批'}}</text>
+				</view> 
+			</view>
+			<view class="more" @click="mores(bordermores)">
+				<text>{{bordermores?'更多>>':'收起<<'}}</text>
+			</view>
+		</view> -->
 	
+		<!-- <button class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">新增组织</button> -->
 	</view>
 	
 	
@@ -94,7 +124,11 @@ export default {
 			});
 			
 		},
-	
+		audiobtn(val){
+			uni.navigateTo({
+				url: '../audit/auditList?serve='+val
+			});
+		},
 		join(e){
 			uni.navigateTo({
 				url: '../normal/add/add?query=' + encodeURIComponent(JSON.stringify(this.query))
@@ -140,21 +174,7 @@ export default {
 			this.shows=false
 		})
 	},
-	async getColumnsData(app,service_name,use_type,list) { //获取字段信息
-	  let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
-	  let req = {
-	    serviceName: 'srvsys_service_columnex_v2_select',
-	    colNames: ['*'],
-	    condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
-	    order: [{ colName: 'seq', orderType: 'asc' }]
-	  };
-	  let res = await this.$http.post(url, req)
-	  if (res.data.data) {
-	    let cols = res.data.data
-		console.log(cols)
-	    // return cols
-	  }
-	}
+	
  },
 	mounted(){
 		// this.getdataall()
@@ -169,14 +189,11 @@ export default {
 			}else if(listdatas.label=="志愿者组织"){
 				this.listtar='zyzzz'
 			}
-			console.log(listdatas.service_name)
+			this.serves=(listdatas.service_name)
 			this.getdata(listdatas.service_name)
 			uni.setNavigationBarTitle({
 				title: listdatas.label
 			});
-			
-			
-			this.getColumnsData('sqfw','srvzhsq_social_organizie_select','add','list')
 		}
 	}
 
@@ -267,6 +284,8 @@ export default {
 	}
 	.btnmenu{
 		width: 80uxp;
+		height: 40upx;
+		line-height: 40upx;
 		background: #E51C23;
 		color: #FFFFFF;
 		/* font-weight: 600; */

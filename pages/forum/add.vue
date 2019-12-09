@@ -62,10 +62,10 @@ export default {
       index1: -1, //分类下标
       index2: -1, //栏目下标
       multiIndex: [0, 0], //栏目下标
-      multiArray: [['无脊柱动物', '脊柱动物'], ['扁性动物', '线形动物', '环节动物', '软体动物', '节肢动物']],
+      multiArray: [[' - '], [' - ']],
       query: '', //url参数
       // classify: {}, // 类型
-      classify: ['喵喵喵', '汪汪汪', '哼唧哼唧'],
+      classify: ['学术', '政治', '军事'],
       columnsList: [], //栏目分类
       parentsList: [], //父栏目
       paddingBottom: 20,
@@ -352,7 +352,7 @@ export default {
           nr: textareaVal
         };
       }
-      let url = this.$api.add + '/' + this.appName + '/operate/' + serviceName;
+      let url = this.$api.add + '/' + this.appName + '/apply/' + serviceName;
       let req = [
         {
           serviceName: serviceName,
@@ -370,7 +370,7 @@ export default {
           }
           let id = res.data.response[0].response.ids[0];
           console.log(id);
-          let url2 = this.$api.select + '/sqfw/select/'+serviceName;
+          let url2 = this.$api.select + '/sqfw/select/' + serviceName;
           let req2 = {
             serviceName: serviceName,
             colNames: ['*'],
@@ -381,12 +381,19 @@ export default {
             if (res2.data.data) {
               uni.showModal({
                 title: '提示',
-                content: '提交成功，即将跳转到详情',
+                content: '提交成功，审核通过后将会展示在论坛，点击确认返回帖子列表页',
                 showCancel: false,
                 success: function(res) {
-                  uni.redirectTo({
-                    url: '../detail?no=' + res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno
-                  });
+                  if (res.confirm) {
+                    // uni.navigateBack(2);
+                    // console.log(`即将跳转到： ./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`)
+                    uni.redirectTo({
+                      url: '/pages/normal/list/list?query=' + encodeURIComponent(JSON.stringify(item))
+                    });
+                    // uni.navigateTo({
+                    //   url: `./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`
+                    // });
+                  }
                 }
               });
             }

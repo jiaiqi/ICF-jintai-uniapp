@@ -1,32 +1,15 @@
 <template>
   <view class="content_wrap">
+    <view class="shenhe activity" v-if="title === '社区论坛' || title === '党建论坛'">待我审核</view>
+
     <view class="px_list">
-      <!-- <mix-pulldown-refresh ref="mixPulldownRefresh" :top="0" @refresh="onPulldownReresh"> -->
       <view class="buttons">
-        <view class="title_right" @tap="toAdd" v-if="showAddButton">
-          <button class="title_btn">{{ addButtonText }}</button>
-        </view>
-        <view class="title_right" @tap="toAdd" v-if="showApplyButton">
-          <button class="title_btn">{{ applyButtonText }}</button>
-        </view>
+        <view class="title_right title_btn" @tap="toAdd" v-if="showAddButton || showApplyButton"><text class="lg  cuIcon-add "></text></view>
       </view>
-      <view class="loadAnimation" v-if="listData.length < 1 && !nodata">
-        <view class="loadAnimItem" v-for="i in 8" :key="i"><view class="loadAnimContent"></view></view>
-      </view>
-      <view class="loadAnimation" v-if="listData.length < 1 && nodata">暂无数据</view>
       <transition name="slide-fade">
-        <!-- <view class="scroll-view_H" v-if="listData.length > 0 && title == '社区论坛'"> -->
-          <view class="cu-list menu-avatar"  v-if="listData.length > 0 && title == '社区论坛'">
-            <view
-              class="cu-item"
-              :class="modalName == 'move-box-' + index ? 'move-cur' : ''"
-              v-for="(item, index) in listData"
-              :key="index"
-              @touchstart="ListTouchStart"
-              @touchmove="ListTouchMove"
-              @touchend="ListTouchEnd"
-              :data-target="'move-box-' + index"
-            >
+        <uni-swipe-action v-if="listData.length > 0 && title == '社区论坛'" class="cu-list">
+          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+            <view class="cont">
               <view class="list_item" @tap="toForumDetail(item)">
                 <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
               </view>
@@ -34,34 +17,19 @@
                 <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
                 <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
               </view>
-              <view class="move" v-if="!showDeleteButton">
-                <view class="bg-grey">{{ deleteButtonText }}</view>
-              </view>
-              <view class="move" v-if="showDeleteButton">
-                <!-- <view class="bg-grey" >置顶</view> -->
-                <view class="bg-red" @tap="deleteItem(item)">{{ deleteButtonText }}</view>
-              </view>
             </view>
-          <!-- </view> -->
-        </view>
-        <view
-          class="scroll-view_H"
+          </uni-swipe-action-item>
+        </uni-swipe-action>
+
+        <uni-swipe-action
           v-if="
             listData.length > 0 &&
               (title == '党建培训' || title == '学习心得' || title === '培训安排' || title == '我为社区献策' || title == '创投项目' || title == '便民信息' || title == '数字城管')
           "
+          class="cu-list"
         >
-          <view class="cu-list menu-avatar">
-            <view
-              class="cu-item"
-              :class="modalName == 'move-box-' + index ? 'move-cur' : ''"
-              v-for="(item, index) in listData"
-              :key="index"
-              @touchstart="ListTouchStart"
-              @touchmove="ListTouchMove"
-              @touchend="ListTouchEnd"
-              :data-target="'move-box-' + index"
-            >
+          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+            <view class="cont">
               <view class="list_item" @tap="toDetail(item)">
                 <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
                 <view class="item_title" v-if="item.title">{{ item.title }}</view>
@@ -72,17 +40,11 @@
                 <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
                 <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
               </view>
-              <view class="move" v-if="!showDeleteButton">
-                <view class="bg-grey">{{ deleteButtonText }}</view>
-              </view>
-              <view class="move" v-if="showDeleteButton">
-                <view class="bg-red" @tap="deleteItem(item)">{{ deleteButtonText }}</view>
-              </view>
             </view>
-          </view>
-        </view>
-        <view
-          class="scroll-view_H"
+          </uni-swipe-action-item>
+        </uni-swipe-action>
+
+        <uni-swipe-action
           v-if="
             listData.length > 0 &&
               (title === '社区活动' ||
@@ -95,18 +57,10 @@
                 title == '党建活动记录' ||
                 title == '公告公示')
           "
+          class="cu-list"
         >
-          <view class="cu-list menu-avatar">
-            <view
-              class="cu-item"
-              :class="modalName == 'move-box-' + index ? 'move-cur' : ''"
-              v-for="(item, index) in listData"
-              :key="index"
-              @touchstart="ListTouchStart"
-              @touchmove="ListTouchMove"
-              @touchend="ListTouchEnd"
-              :data-target="'move-box-' + index"
-            >
+          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+            <view class="cont">
               <view class="list_item" @tap="detaile(item)">
                 <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
                 <view class="item_title" v-if="item.hdbt">{{ item.hdbt }}</view>
@@ -116,56 +70,26 @@
                 <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
                 <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
               </view>
-              <view class="move" v-if="!showDeleteButton">
-                <view class="bg-grey">{{ deleteButtonText }}</view>
-              </view>
-              <view class="move" v-if="showDeleteButton">
-                <view class="bg-red" @tap="deleteItem(item)">{{ deleteButtonText }}</view>
-              </view>
             </view>
-          </view>
-        </view>
-        <view v-if="listData.length > 0 && (title == '社会组织' || title == '志愿者组织')">
-          <view class="cu-list menu-avatar">
-            <view
-              class="cu-item"
-              :class="modalName == 'move-box-' + index ? 'move-cur' : ''"
-              v-for="(item, index) in listData"
-              :key="index"
-              @touchstart="ListTouchStart"
-              @touchmove="ListTouchMove"
-              @touchend="ListTouchEnd"
-              :data-target="'move-box-' + index"
-            >
+          </uni-swipe-action-item>
+        </uni-swipe-action>
+
+        <uni-swipe-action v-if="listData.length > 0 && (title == '社会组织' || title == '志愿者组织')" class="cu-list">
+          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+            <view class="cont">
               <view class="list_item" @tap="details(item)">
                 <view class="item_title" v-if="item.organize_name">{{ item.organize_name }}</view>
                 <view class="item_title" v-if="item.zuzhi_name">{{ item.zuzhi_name }}</view>
               </view>
               <view class="data_time">
                 <view :class="item.proc_status == '完成' ? 'colortext' : 'colortext-red'">{{ item.proc_status == '完成' ? '已审批' : '未审批' }}</view>
-                <!-- <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
-                <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view> -->
-              </view>
-              <view class="move" v-if="!showDeleteButton">
-                <view class="bg-grey">{{ deleteButtonText }}</view>
-              </view>
-              <view class="move" v-if="showDeleteButton">
-                <view class="bg-red" @tap="deleteItem(item)">{{ deleteButtonText }}</view>
               </view>
             </view>
-          </view>
-        </view>
+          </uni-swipe-action-item>
+        </uni-swipe-action>
       </transition>
-
-      <!-- <view>{{ loadText }}</view>
-      <view class="list_bottom" v-if="listData && listData.length >= 14">
-        <button class="btn" @click="previousPage()" :disabled="currentPage <= 1">上一页</button>
-        <button class="btn" @click="nextPage()">下一页</button>
-      </view> -->
-      <!-- </mix-pulldown-refresh> -->
     </view>
     <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click="loadData('refresh')"></mix-load-more>
-    <!-- <uni-load-more :loadingType="1"></uni-load-more> -->
   </view>
 </template>
 
@@ -175,18 +99,37 @@ import mixPulldownRefresh from '@/components/mix-pulldown-refresh/mix-pulldown-r
 import mixLoadMore from '@/components/mix-load-more/mix-load-more';
 import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import uniIcons from '@/components/uni-icons/uni-icons.vue';
+import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
+import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue';
 export default {
   components: {
     mixPulldownRefresh,
     mixLoadMore,
     uniLoadMore,
-    uniIcons
+    uniIcons,
+    uniSwipeAction,
+    uniSwipeActionItem
   },
   data() {
     return {
       currentPage: 1, //当前页
       rownumber: 8, //每页条数
-
+      totalListItem: 0, //总条数
+      options: [
+        //左滑选项
+        {
+          text: '取消',
+          style: {
+            backgroundColor: '#007aff'
+          }
+        },
+        {
+          text: '删除',
+          style: {
+            backgroundColor: '#dd524d'
+          }
+        }
+      ],
       title: '',
       loadMoreStatus: 0,
       loadText: '',
@@ -197,31 +140,6 @@ export default {
       applyButtonText: '申请',
       deleteButtonText: '删除',
       addButtonText: '新增',
-      modalName: null,
-      listTouchStart: 0,
-      selectList: [
-        {
-          serviceName: 'srvzhsq_pxap_select', // 党建培训查询
-          title: '党建培训',
-          appType: 'zhdj',
-          pageType: 'add',
-          resDatas: []
-        },
-        {
-          serviceName: 'srvzhsq_xxxd_select', // 学习心得查询
-          title: '学习心得',
-          appType: 'zhdj',
-          pageType: 'add',
-          resDatas: []
-        },
-        {
-          serviceName: 'srvzhsq_bmfw_infomation_select', // 便民信息查询
-          title: '便民信息',
-          appType: 'sqfw',
-          pageType: 'select',
-          resDatas: []
-        }
-      ],
       listData: [],
       nodata: false,
       query: {}, //url携带的参数
@@ -229,29 +147,20 @@ export default {
     };
   },
   methods: {
-    // ListTouch触摸开始
-    ListTouchStart(e) {
-      this.listTouchStart = e.touches[0].pageX;
-    },
-
-    // ListTouch计算方向
-    ListTouchMove(e) {
-      this.listTouchDirection = e.touches[0].pageX - this.listTouchStart > 0 ? 'right' : 'left';
-    },
-
-    // ListTouch计算滚动
-    ListTouchEnd(e) {
-      if (this.listTouchDirection == 'left') {
-        this.modalName = e.currentTarget.dataset.target;
-      } else {
-        this.modalName = null;
+    swipeOptionClick(e, item) {
+      //点击左滑选项
+      console.log('当前点击的是第' + e.index + '个按钮，点击内容是' + e.content.text);
+      if (e.content.text === '删除') {
+        this.deleteItem(item);
       }
-      this.listTouchDirection = null;
+    },
+    swipeChange(open) {
+      console.log('是否左滑状态：' + open);
     },
     toAdd(e) {
       uni.showModal({
         title: '提示',
-        content: '点击确定跳转到新增页面',
+        content: this.title === '社区论坛' ? '点击确定跳转到发帖页面' : this.title === '党建论坛' ? '点击确定跳转到发帖页面' : '点击确定跳转到新增页面',
         success: res => {
           if (res.confirm) {
             let serviceName = '';
@@ -326,10 +235,17 @@ export default {
               console.log(res);
               if (res.resultCode === 'SUCCESS') {
                 uni.showToast({
-                  title: '删除成功',
-                  icon: 'success'
+                  title: '正在删除',
+                  icon: 'loading',
+                  duration: 2000
                 });
-                this.getListData(this.query);
+                this.loadData('refresh');
+                // this.getListData(this.query).then(data => {
+                //   console.log(data);
+                //   if (data && data.length > 0) {
+                //     this.listData = this.listData.concat(data);
+                //   }
+                // });
               } else {
                 uni.showToast({
                   title: res.resultMessage,
@@ -359,14 +275,21 @@ export default {
       let url = this.$api.select + '/' + query.app_name + '/operate/' + serviceName;
       let req = [{ serviceName: serviceName, condition: [{ colName: 'id', ruleType: 'in', value: e.id }] }];
       let res = await this.$http.post(url, req);
-
       if (res.data) {
         return res.data;
+      } else {
+        uni.showToast({
+          title: '操作失败！',
+          duration: 1000
+        });
       }
     },
     // 加载数据
     loadData(type) {
       if (type === 'add') {
+        if (this.loadMoreStatus === 2) {
+          return;
+        }
         this.loadMoreStatus = 1;
       }
       let dataList = this.listData;
@@ -389,9 +312,14 @@ export default {
           });
           uni.stopPullDownRefresh();
         }
-        
+        //下拉刷新 关闭刷新动画
         if (type === 'refresh') {
           this.$refs.mixPulldownRefresh && this.$refs.mixPulldownRefresh.endPulldownRefresh();
+          this.loadMoreStatus = 0;
+        }
+        //上滑加载 处理状态
+        if (type === 'add') {
+          this.loadMoreStatus = this.listData.length >= this.totalListItem ? 2 : 0;
         }
       }, 1000);
     },
@@ -410,6 +338,10 @@ export default {
         this.loadMoreStatus = 1;
         console.log('query:', query);
         this.query = query;
+        let serviceName = query.service_name;
+        if (serviceName.includes('add')) {
+          serviceName = serviceName.replace('add', 'select');
+        }
         let url = this.$api.select + '/' + query.app_name + '/select/' + query.service_name;
         let req = {
           serviceName: query.service_name,
@@ -418,19 +350,23 @@ export default {
           page: { pageNo: this.currentPage, rownumber: this.rownumber },
           order: [{ colName: 'create_time', orderType: 'desc' }]
         };
-        if (query.menu_url.includes('proc')) {
-          req.proc_data_type = 'myall';
+        // if (query.menu_url.includes('proc')) {
+        //   req.proc_data_type = 'myall';
+        // }
+        if (this.title === '党建论坛' || this.title === '社区论坛') {
+          req.condition = [{ colName: 'proc_status', value: '完成', ruleType: 'eq' }];
         }
         let res = await this.$http.post(url, req);
         if (res.data.data && res.data.data.length > 0) {
           if (res.data.page) {
             let page = res.data.page;
-            console.log('11111111111111111',page, page.pageNo * page.rownumber > page.total);
-            if (parseInt(page.pageNo * page.rownumber) > page.total) {
-              this.loadMoreStatus = 2;
-            } else {
-              this.loadMoreStatus = 0;
-            }
+            this.totalListItem = page.total;
+            console.log('11111111111111111', page, page.pageNo * page.rownumber > page.total);
+            // if (parseInt(page.pageNo * page.rownumber) > page.total) {
+            //   this.loadMoreStatus = 2;
+            // } else {
+            //   this.loadMoreStatus = 0;
+            // }
           }
           return res.data.data;
         } else {
@@ -438,7 +374,7 @@ export default {
         }
       }
     },
-    async getColumnsData(app = 'sqfw', service_name, use_type = 'add') {
+    async getColumnsData(app = 'sqfw', service_name, use_type = 'proclist') {
       //获取字段信息
       let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
       let req = {
@@ -447,6 +383,7 @@ export default {
         condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
         order: [{ colName: 'seq', orderType: 'asc' }]
       };
+
       let res = await this.$http.post(url, req);
       if (res.data.data) {
         let cols = res.data.data;
@@ -466,7 +403,8 @@ export default {
         this.title = query.label;
         // this.getListData(query);
         this.loadData('refresh');
-        this.getColumnsData(app, query.service_name, query.menu_url.includes('proc') ? 'proclist' : 'list')
+
+        this.getColumnsData(app, query.service_name, query.menu_url.includes('proc') ? 'proclist' : query.menu_no === 'bxsqlt_sqlt' ? 'proclist' : 'list')
           .then(cols => {
             console.log('cols', cols);
             this.columnData = cols;
@@ -502,26 +440,61 @@ export default {
   },
   onLoad(options) {
     this.initPages(options);
+  },
+  watch: {
+    // showDeleteButton(val) {
+    //   console.log('showDeleteButton', val);
+    //   if (val === true) {
+    //     this.options = [
+    //       {
+    //         text: '删除',
+    //         style: {
+    //           backgroundColor: '#dd524d'
+    //         }
+    //       }
+    //     ];
+    //   }
+    // }
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .content_wrap {
   width: 100%;
   height: 100vh;
   overflow: scroll;
+  background-color: #fff;
+  position: relative;
+}
+.uni-swipe {
+  overflow: hidden;
+  border-radius: 10upx;
+  margin: 0 20upx 20upx;
+  // &:first-child {
+  //   margin-top: 20upx;
+  // }
+}
+.cont {
+  width: 100%;
+  display: flex;
+  height: 120upx;
+  align-items: center;
+  // border-radius: 10upx;
+  // margin: 0 20upx 20upx;
+  border-bottom: 1px solid #efefef;
   // background-color: #fff;
 }
-.scroll-view_H {
-  // height: 100vh;
+.shenhe {
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  line-height: 80upx;
+  background-color: #007aff;
+  color: #fff;
 }
-.mix-load-more {
-  // background-color: #fff;
-}
-.cu-list.menu-avatar {
-  overflow: scroll;
-}
+
 .px_list {
   box-sizing: border-box;
   display: flex;
@@ -546,17 +519,19 @@ export default {
     justify-content: center;
     position: fixed;
     bottom: 150upx;
-    width: 100%;
+    // width: 100%;
+    left: calc(50% - 50upx);
     z-index: 99;
     .title_btn {
       border-radius: 50%;
       box-shadow: 0 0 26px 0 rgba(255, 0, 0, 0.15);
-      width: 120upx;
-      height: 120upx;
-      line-height: 120upx;
+      width: 100upx;
+      height: 100upx;
+      line-height: 100upx;
+      text-align: center;
       background-color: #e54d42;
       color: #ffffff;
-      font-size: 30upx;
+      font-size: 80upx;
     }
   }
   .list_item {

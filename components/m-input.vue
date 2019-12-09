@@ -10,6 +10,7 @@
       :password="type === 'password' && !showPassword"
       @focus="onFocus"
       @blur="onBlur"
+      autocomplete="off" 
     />
     <!-- 优先显示密码可见按钮 -->
     <view v-if="clearable_ && !displayable_ && value.length" class="m-input-icon"><m-icon color="#666666" type="clear" size="20" @click="clear"></m-icon></view>

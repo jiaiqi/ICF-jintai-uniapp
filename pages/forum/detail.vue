@@ -150,6 +150,8 @@ export default {
 			this.$http.post(url, req).then(res => {
 				if (res.data.state === 'SUCCESS' && res.data.data) {
 					this.query = res.data.data[0];
+          this.query.content = JSON.parse(JSON.stringify(this.query.content).replace(/\<img/gi, '<img width=100% height=100% '))
+          
 					this.getNoteUserInfo(); //查找此贴发帖人信息
 					this.getTouxiangPath(); // 查找发帖人头像
 					this.getAgreePeopleList(this.note_no);
@@ -466,6 +468,7 @@ export default {
 	width: 100%;
 	position: relative;
 	background-color: #f1f1f1;
+  overflow: hidden;
 }
 .forum_detail {
 	animation: 1.2s ease 0s 1 normal none running show;
@@ -492,7 +495,6 @@ export default {
 		margin: 30upx auto;
 		.title_text {
 			width: calc(100% - 40upx);
-
 			padding: 0 40upx;
 			// line-height: 80upx;
 			// font-weight: normal;
@@ -530,14 +532,14 @@ export default {
 	.content_view {
 		background-color: #fff;
 		box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-		width: calc(100% - 40upx);
+		// width: calc(100% - 20upx);
 		min-height: 200upx;
-		margin: 10upx auto;
+		margin: 10upx 0;
 		padding: 20upx;
 		border-radius: 5px;
-		/deep/ img {
-			height: 230px;
-		}
+		// /deep/ img {
+		// 	height: 230px;
+		// }
 	}
 	.main_agree {
 		display: flex;

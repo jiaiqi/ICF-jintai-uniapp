@@ -99,7 +99,12 @@ export default {
           // console.log('data',parents)
           this.menuData = parents
         }
-      });
+      }).catch(error=>{
+        console.log('error:',error)
+      if(error.status==0){
+        this.getMenusList()
+      }
+    })
     },
 	detaile(item,val){
 		uni.navigateTo({
@@ -166,7 +171,7 @@ export default {
 		req.colNames = ['*'];
 		req.condition = [];
 		req.order = [];
-		
+		req.proc_data_type="processed"
 		req['page'] = {
 			pageNo: 1,
 			rownumber: 7

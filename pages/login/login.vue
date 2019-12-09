@@ -223,6 +223,7 @@ export default {
     },
     visitorAccess() {
       // 游客访问
+      uni.setStorageSync('userInfo',null)
       let url = this.$api.select + '/sso/operate/srvuser_login';
       let req = [{ serviceName: 'srvuser_login', data: [{ user_no: 'niming', pwd: '1' }] }];
       this.$http.post(url, req).then(res => {
@@ -238,7 +239,6 @@ export default {
           uni.setStorageSync('userInfo', userInfo); //保存用户信息
           uni.setStorageSync('expireTime', response.expire_time); //保存时效
           uni.setStorageSync('outTime', loginTime); //保存时效
-         
         }
       }).then(()=>{
         uni.switchTab({
