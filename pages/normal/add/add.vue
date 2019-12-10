@@ -1,5 +1,9 @@
 <template>
   <view class="addView">
+    <view class="cu-load load-modal" v-if="!showChild">
+    	<view class="cuIcon-emoji text-yellow"></view>
+    	<view class="gray-text">加载中...</view>
+    </view>
     <from-view v-if="showChild" :pathQuery="query" :pageType="query.type" ref="iForms"></from-view>
     <view class="bottom-flex" style="padding:10px">
       <view class="bottom" >
@@ -228,6 +232,7 @@ export default {
 <style lang="scss">
 .addView {
   width: 100%;
+  position: relative;
 }
 .scroll {
   height: 500px;

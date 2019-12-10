@@ -1,9 +1,11 @@
 
 <template>
   <form>
+
    <div v-for="(itema, key) in fields" :key="key">
 		<formItems :fromColData='itema' v-if="fieldsIsUpload" v-show="onXifFun(itemVal,itema)" :key="key"></formItems>
    </div>
+
    </form>
 </template>
 <script>

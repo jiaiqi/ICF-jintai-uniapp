@@ -2,7 +2,7 @@
 	<view class="content">
 <!-- 		<view class="topbar">
 			<text class="fontstext">志愿者与社会组织</text>
-			<button type="default" size="mini" class="btn">新增</button>
+			<button type="default" size="mini" class="btn">新增</button> 
 		</view> -->
 		<view class="">
 			<image src="../../static/img/sszz.png" class="banner" mode=""></image>
@@ -33,7 +33,8 @@
 			</view>
 			
 			<view v-else class="contentla" v-for="(item,index) in listhome" :key="index">
-				<view class="yangPeople"  @click="detail(item.proc_status,item.zuzhi_name||item.organize_name,item.zuzhi_address||item.address,item.zuzhi_jj||item.remark)">
+				<view class="yangPeople"  @click="detail(item.proc_status,item.zuzhi_name||
+				item.organize_name,item.zuzhi_address||item.address,item.zuzhi_jj||item.remark)">
 					<text>{{item.organize_name||item.zuzhi_name}}</text>
 					<text :class="item.proc_status=='完成'?'colortext': 'colortext-red' ">{{item.proc_status=='完成'?'已审批':'未审批'}}</text>
 				</view>
@@ -115,9 +116,26 @@ export default {
       query:{},
 			listhome:[],
 			listhomeall:[],
+			columns:[]
 		}
 	},
 	methods:{
+		async getColumnsData(app = 'sqfw', service_name, use_type = 'proclist') {
+		  //获取字段信息
+		  let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
+		  let req = {
+		    serviceName: 'srvsys_service_columnex_v2_select',
+		    colNames: ['*'],
+		    condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
+		    order: [{ colName: 'seq', orderType: 'asc' }]
+		  };
+		  let res = await this.$http.post(url, req);
+		  if (res.data.data) {
+			  
+		    let cols = res.data.data;
+		    return cols;
+		  }
+		},
 		more(val){
 			uni.navigateTo({
 				url: '../normal/list/list?query='+encodeURIComponent(JSON.stringify(this.query))
@@ -182,6 +200,12 @@ export default {
 	onLoad(option){
 			let listdatas  = (JSON.parse(decodeURIComponent(option.data||option.query)))
       this.query = listdatas
+	  this.getColumnsData('sqfw',listdatas.service_name).then(data=>{
+		  console.log(data)
+		  if(data){
+			  this.columns = data
+		  }
+	  })
 			console.log(listdatas)
 			this.label = (listdatas.label)
 			if(listdatas.label=="社会组织"){

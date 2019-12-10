@@ -1,36 +1,53 @@
 <template>
+	
 	<view class="content">
-		<view class="box" v-for="(item,index) in listhome" :key="index">
+		<view class="tobar">
+			<image class="fanhui" @click="inpage()" src="../../static/img/fanhui.png" mode=""></image>
+			<text class="textline">待审核</text>
+		</view>
+		<view class="" style="padding: 40upx;">
 			<view class="">
-				<view class="nametitle" style="">
-				{{item.zuzhi_name||item.organize_name||item.activity_title||item.note_title}}</view>
-				<text>状态:{{item.proc_status}}</text>
-			</view>
-			<view class="but"  v-if="booe(item.proc_status)"  @click="audio(item)">
-				审批
-			</view>
-			<view class="buts" v-else >
-				审批
-			</view>
-		</view>
-		<view class="kapian" v-if="contentBoole">
-			<view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无待审核内容</view> 
-			
-		</view>
-		<!-- //加载中 -->
-		<view class="kapian" v-if="menubtn">
-			<view class="" style="color: #BEBEBE;text-align: center;">
-				<image style="height: 25px;width: 25px;" src="../../static/img/loading.gif" mode=""></image>
-				<view class="">	数据加载中</view>
+				<view class="box" v-for="(item,index) in listhome" :key="index">
+					<view class="">
+						<view class="nametitle" style="">
+						{{item.zuzhi_name||item.organize_name||item.activity_title||item.note_title||item.opinion_title}}</view>
+						<text>状态:{{item.proc_status}}</text>
+					</view>
+					<view class="but"  v-if="booe(item.proc_status)"  @click="audio(item)">
+						审批
+					</view>
 					
-			</view> 
+					<view class="buts" v-else >
+						审批
+					</view>
+					
+					<view class="xq" @click="xqpages(item)">
+						详情
+					</view>
+				</view>
+				<view class="kapian" v-if="contentBoole">
+					<view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无待审核内容</view> 
+					
+				</view>
+				<!-- //加载中 -->
+				<view class="kapian" v-if="menubtn">
+					<view class="" style="color: #BEBEBE;text-align: center;">
+						<image style="height: 25px;width: 25px;" src="../../static/img/loading.gif" mode=""></image>
+						<view class="">	数据加载中</view>
+							
+					</view> 
+				</view>
+					<uni-loading :status="status"  color="#888"  />
+			</view>
 		</view>
-			<uni-loading :status="status"  color="#888"  />
+		
+	<!-- 	<view class="" style="height: 50vh;">
+		</view> -->
 	</view>
 </template>
 
 <script>
-	import uniLoading from '@/components/mix-load-more/mix-load-more'
+	import uniLoading from '@/components/mix-load-more/mix-load-more';
 	export default{
 		data(){
 			return{
@@ -38,30 +55,16 @@
 				contentBoole:false,
 				menubtn:true,
 				servenameat:'',
-				statusTypes: [{
-					value: 'more',
-					text: '加载前'
-				}, {
-					value: 'loading',
-					text: '加载中'
-				}, {
-					value: 'noMore',
-					text: '没有更多'
-				}],
-				contentText: {
-					contentdown: '上拉/点击加载更多',
-					contentrefresh: '加载中',
-					contentnomore: '没有更多'
-				},
 				numberlist:8,
 				pageno:1,
 				status: 0,
+				apps:"sqfw"
 			}
 		},
 		components:{uniLoading},
 		methods:{
 			getlist(val,num){
-				let url = this.$api.select +"/sqfw/select/" +val
+				let url = this.$api.select +"/"+this.apps+"/select/" +val
 				let req = {};
 				req.serviceName = val;
 				req.colNames = ['*'];
@@ -82,6 +85,8 @@
 						this.listhome =res.data.data
 						if(res.data.data.length==0){
 							this.contentBoole=true
+						}else if(res.data.data.length<8){
+							this.status=2
 						}
 					}else{
 						if(res.data.data.length==0){
@@ -93,6 +98,9 @@
 					
 					console.log(res.data.data)
 				})
+			},
+			inpage(){
+				window.history.go(-2) //后退
 			},
 			onPullDownRefresh() {
 					// this.numberlist= this.listhome.length
@@ -121,10 +129,46 @@
 				uni.navigateTo({
 					url: './audit?query='+encodeURIComponent(JSON.stringify(val).replace(/%/g, '%25'))
 				});
+			},
+			xqpages(item){
+				console.error(item,this.servenameat)
+				// debugger
+				if(this.servenameat=="srvzhsq_social_organizie_select" ||this.servenameat=="srvzhsq_zyz_zuzhi_select" ){
+					uni.setStorage({
+						key:'zuzhi',
+					   data:{
+						   'names':item.zuzhi_name||item.organize_name,
+						   'dress':item.zuzhi_address||item.address,
+						   'session':item.zuzhi_jj||item.remark
+					   },
+					    success: function () {
+					       uni.navigateTo({
+					       	url: '../shzz/fromtext?state=1'
+					       });
+					    }
+					});
+					// "T_FORUM_OPINION_1" "return_to_start" 
+				}else if(this.servenameat=="srvzhsq_activity_arrange_select"){
+					// sqfw/sqxq?query=
+					uni.navigateTo({
+						url: '../sqfw/sqxq?query='+encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
+					});
+				}else if(this.servenameat=="srvzhsq_forum_note_list_num_select"){
+					uni.navigateTo({
+						url: '../forum/detail?no=' + item.note_no
+					});
+				}else if(this.servenameat=="srvzhsq_forum_opinion_select"){
+					uni.navigateTo({
+						url: '../normal/detail/detail?query='+encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
+					});
+				}
 			}
 		},
 		onLoad(option){
 			this.servenameat=option.serve
+			if(option.serve=="srvzhsq_djlt_ftxx_select"){
+				this.apps="zhdj"
+			}
 			this.getlist(option.serve,0)
 		}
 	}
@@ -134,7 +178,7 @@
 	.content{
 		width: 100%;
 		background: #FFFFFF;
-		padding: 40upx;
+		
 	}
 	.box{
 		height: 150upx;
@@ -142,7 +186,7 @@
 		border-radius: 8px;
 		box-shadow: 0 0 26px 0 rgba(0,0,0,.15);
 		margin-bottom: 15px;
-		padding: 12px 25px 12px 12px;
+		padding: 12px 12px 12px 12px;
 		display: flex;
 		justify-content: space-between;
 	}
@@ -155,6 +199,21 @@
 		line-height: 100upx;
 		text-align: center;
 	}
+	.textline{
+		line-height: 88upx;
+		color: #FFFFFF;
+		font-weight: 600;
+		font-size: 16px;
+		
+	}
+	.fanhui{
+		display: inline-block;
+		height: 40upx;
+		width: 40upx;
+		position: absolute;
+		left: 5px;
+		top: 20upx;
+	}
 	.buts{
 		width: 100upx;
 		height: 100upx;
@@ -163,6 +222,25 @@
 		color: #FFFFFF;
 		line-height: 100upx;
 		text-align: center;
+	}
+	.xq{
+		width: 100upx;
+		height: 100upx;
+		background: #96ca50;
+		border-radius: 50%;
+		color: #FFFFFF;
+		line-height: 100upx;
+		text-align: center;
+		
+	}
+	.tobar{
+		height: 88upx;
+		width: 100vw;
+		background: red;
+		position: fixed;
+		top: 0;
+		text-align: center;
+		position: relative;
 	}
 	.kapian{
 		box-shadow: 0 0 26px 0 rgba(0,0,0,0.12);

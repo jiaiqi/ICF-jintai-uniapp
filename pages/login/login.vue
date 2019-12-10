@@ -232,13 +232,13 @@ export default {
           console.log('res,', response);
           let bx_auth_ticket = response.bx_auth_ticket;
           let userInfo = response.login_user_info;
-          this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
           let loginTime = new Date().getTime() + response.expire_time * 1000;
           let expire_time = response.expire_time;
           uni.setStorageSync('bxAuthTicket', bx_auth_ticket); //保存凭证
           uni.setStorageSync('userInfo', userInfo); //保存用户信息
           uni.setStorageSync('expireTime', response.expire_time); //保存时效
           uni.setStorageSync('outTime', loginTime); //保存时效
+          this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
         }
       }).then(()=>{
         uni.switchTab({
@@ -376,13 +376,13 @@ export default {
               // 绑定登录成功，设置登录状态
               let bx_auth_ticket = res.data.response[0].response.bx_auth_ticket;
               let userInfo = res.data.response[0].response.login_user_info;
-              this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
               let loginTime = new Date().getTime() + res.data.response[0].response.expire_time * 1000;
               let expire_time = res.data.response[0].response.expire_time;
               uni.setStorageSync('bxAuthTicket', bx_auth_ticket); //保存凭证
               uni.setStorageSync('userInfo', userInfo); //保存用户信息
               uni.setStorageSync('expireTime', res.data.response[0].response.expire_time); //保存时效
               uni.setStorageSync('outTime', loginTime); //保存时效
+              this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
               let use = {
                 logined: true,
                 user_info: {

@@ -73,8 +73,9 @@ export default {
       }
     },
     selectInfo(id) {
-      let serviceName = this.query.serviceName;
-      let url = this.$api.select + '/' + this.query.appType + '/select/' + serviceName;
+      let serviceName = this.query.service_name;
+      const app = this.query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
+      let url = this.$api.select + '/' + app + '/select/' + serviceName;
       let req = {
         serviceName: serviceName,
         colNames: ['*'],

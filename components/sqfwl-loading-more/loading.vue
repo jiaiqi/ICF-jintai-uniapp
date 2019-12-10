@@ -1,5 +1,5 @@
 <template>
-	<view class="uni-load-more">
+	<view class="uni-load-more" v-if="false">
 		<view v-show="status === 'loading' && showIcon" class="uni-load-more__img">
 			<view class="load1">
 				<view :style="{background:color}" />
@@ -20,7 +20,7 @@
 				<view :style="{background:color}" />
 			</view>
 		</view>
-		<text :style="{color:color}" class="uni-load-more__text">{{ status === 'more' ? contentText.contentdown : (status === 'loading' ? contentText.contentrefresh : contentText.contentnomore) }}</text>
+		<!-- <text :style="{color:color}" class="uni-load-more__text">{{ status === 'more' ? contentText.contentdown : (status === 'loading' ? contentText.contentrefresh : contentText.contentnomore) }}</text> -->
 	</view>
 </template>
 
@@ -45,7 +45,7 @@
 				type: Object,
 				default () {
 					return {
-						contentdown: '上拉显示更多',
+						contentdown: ' ',
 						contentrefresh: '正在加载...',
 						contentnomore: '没有更多数据了'
 					}

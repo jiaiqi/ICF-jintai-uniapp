@@ -5,11 +5,11 @@
       <view class="subtitle"></view>
     </view>
 	
-    <view class="contents">
+    <view class="contents"  @click="toNewPage" >
       <view class="top"></view>
 	  <view class="flexbox">
 	  	<view class="phopt" :style="{backgroundImage: 'url('+img[indexs].imgs+')'}"></view>
-	  	<view class="textcenter" @click="toNewPage" v-if="type==='menu'">{{dataItem.text}}</view>
+	  	<view class="textcenter"v-if="type==='menu'">{{dataItem.text}}</view>
 	  </view>
       <view class="bottom"></view>
     </view>

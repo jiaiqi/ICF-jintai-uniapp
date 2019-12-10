@@ -1,7 +1,5 @@
 <template>
   <view class="content_wrap">
-    <view class="shenhe activity" v-if="title === '社区论坛' || title === '党建论坛'">待我审核</view>
-
     <view class="px_list">
       <view class="buttons">
         <view class="title_right title_btn" @tap="toAdd" v-if="showAddButton || showApplyButton"><text class="lg  cuIcon-add "></text></view>
@@ -88,8 +86,10 @@
           </uni-swipe-action-item>
         </uni-swipe-action>
       </transition>
+      <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click.native="loadData('refresh')"></mix-load-more>
     </view>
-    <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click="loadData('refresh')"></mix-load-more>
+    <view class="xxx"></view>
+    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛'|| title === '我为社区献策'">待我审核</view>
   </view>
 </template>
 
@@ -113,7 +113,7 @@ export default {
   data() {
     return {
       currentPage: 1, //当前页
-      rownumber: 8, //每页条数
+      rownumber: 10, //每页条数
       totalListItem: 0, //总条数
       options: [
         //左滑选项
@@ -131,7 +131,7 @@ export default {
         }
       ],
       title: '',
-      loadMoreStatus: 0,
+      loadMoreStatus: 1,
       loadText: '',
       columnData: {},
       showAddButton: false,
@@ -157,6 +157,11 @@ export default {
     swipeChange(open) {
       console.log('是否左滑状态：' + open);
     },
+    topagexq(val) {
+      uni.navigateTo({
+        url: '../../audit/auditList?serve=' + val
+      });
+    },
     toAdd(e) {
       uni.showModal({
         title: '提示',
@@ -168,7 +173,7 @@ export default {
               let query = this.query;
               serviceName = this.query.service_name.replace('select', 'add');
               query.service_name = serviceName;
-              console.log('--------------------\n', query);
+              console.log('----------\n', query);
               if (query.menu_no === 'bxsqlt_sqlt' || query.menu_no === 'bxzhsq_djlt') {
                 uni.navigateTo({
                   url: '../../forum/add?query=' + encodeURIComponent(JSON.stringify(query))
@@ -240,12 +245,6 @@ export default {
                   duration: 2000
                 });
                 this.loadData('refresh');
-                // this.getListData(this.query).then(data => {
-                //   console.log(data);
-                //   if (data && data.length > 0) {
-                //     this.listData = this.listData.concat(data);
-                //   }
-                // });
               } else {
                 uni.showToast({
                   title: res.resultMessage,
@@ -299,32 +298,28 @@ export default {
           this.getListData(this.query).then(data => {
             console.log(data);
             if (data && data.length > 0) {
+              this.loadMoreStatus = 0;
               this.listData = this.listData.concat(data);
+            } else {
+              this.loadMoreStatus = 2;
             }
           });
         } else if (type === 'refresh') {
+          this.loadMoreStatus = 1;
+          this.listData = [];
+          this.currentPage = 1;
           this.getListData(this.query).then(data => {
             console.log(data);
+            this.loadMoreStatus = 0;
             if (data && data.length > 0) {
-              this.listData = data;
-              this.currentPage = 1;
+              this.listData = this.listData.concat(data);
             }
           });
           uni.stopPullDownRefresh();
         }
-        //下拉刷新 关闭刷新动画
-        if (type === 'refresh') {
-          this.$refs.mixPulldownRefresh && this.$refs.mixPulldownRefresh.endPulldownRefresh();
-          this.loadMoreStatus = 0;
-        }
-        //上滑加载 处理状态
-        if (type === 'add') {
-          this.loadMoreStatus = this.listData.length >= this.totalListItem ? 2 : 0;
-        }
       }, 1000);
     },
     //下拉刷新
-    onPulldownReresh() {},
     onPullDownRefresh() {
       this.loadData('refresh');
     },
@@ -339,34 +334,27 @@ export default {
         console.log('query:', query);
         this.query = query;
         let serviceName = query.service_name;
+        this.serviceNames = query.service_name;
         if (serviceName.includes('add')) {
           serviceName = serviceName.replace('add', 'select');
         }
-        let url = this.$api.select + '/' + query.app_name + '/select/' + query.service_name;
+        let url = this.$api.select + '/' + query.app_name + '/select/' + serviceName;
         let req = {
-          serviceName: query.service_name,
+          serviceName: serviceName,
           colNames: ['*'],
           condition: [],
           page: { pageNo: this.currentPage, rownumber: this.rownumber },
           order: [{ colName: 'create_time', orderType: 'desc' }]
         };
-        // if (query.menu_url.includes('proc')) {
-        //   req.proc_data_type = 'myall';
-        // }
         if (this.title === '党建论坛' || this.title === '社区论坛') {
           req.condition = [{ colName: 'proc_status', value: '完成', ruleType: 'eq' }];
         }
         let res = await this.$http.post(url, req);
+        uni.stopPullDownRefresh();
         if (res.data.data && res.data.data.length > 0) {
           if (res.data.page) {
             let page = res.data.page;
             this.totalListItem = page.total;
-            console.log('11111111111111111', page, page.pageNo * page.rownumber > page.total);
-            // if (parseInt(page.pageNo * page.rownumber) > page.total) {
-            //   this.loadMoreStatus = 2;
-            // } else {
-            //   this.loadMoreStatus = 0;
-            // }
           }
           return res.data.data;
         } else {
@@ -383,7 +371,6 @@ export default {
         condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
         order: [{ colName: 'seq', orderType: 'asc' }]
       };
-
       let res = await this.$http.post(url, req);
       if (res.data.data) {
         let cols = res.data.data;
@@ -402,8 +389,8 @@ export default {
         this.app = app;
         this.title = query.label;
         // this.getListData(query);
+        // this.loadData('refresh');
         this.loadData('refresh');
-
         this.getColumnsData(app, query.service_name, query.menu_url.includes('proc') ? 'proclist' : query.menu_no === 'bxsqlt_sqlt' ? 'proclist' : 'list')
           .then(cols => {
             console.log('cols', cols);
@@ -440,21 +427,6 @@ export default {
   },
   onLoad(options) {
     this.initPages(options);
-  },
-  watch: {
-    // showDeleteButton(val) {
-    //   console.log('showDeleteButton', val);
-    //   if (val === true) {
-    //     this.options = [
-    //       {
-    //         text: '删除',
-    //         style: {
-    //           backgroundColor: '#dd524d'
-    //         }
-    //       }
-    //     ];
-    //   }
-    // }
   }
 };
 </script>
@@ -462,30 +434,26 @@ export default {
 <style lang="scss">
 .content_wrap {
   width: 100%;
-  height: 100vh;
-  overflow: scroll;
-  background-color: #fff;
+  height: 100%;
+  padding-top: 20upx;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .uni-swipe {
   overflow: hidden;
   border-radius: 10upx;
   margin: 0 20upx 20upx;
-  // &:first-child {
-  //   margin-top: 20upx;
-  // }
 }
 .cont {
   width: 100%;
   display: flex;
   height: 120upx;
   align-items: center;
-  // border-radius: 10upx;
-  // margin: 0 20upx 20upx;
   border-bottom: 1px solid #efefef;
-  // background-color: #fff;
 }
 .shenhe {
+  z-index: 99;
   position: fixed;
   bottom: 0;
   text-align: center;
@@ -494,10 +462,13 @@ export default {
   background-color: #007aff;
   color: #fff;
 }
-
+.xxx {
+  height: 100upx;
+}
 .px_list {
   box-sizing: border-box;
   display: flex;
+  flex: 1;
   flex-direction: column;
   font-size: 30upx;
   border-radius: 10upx;
@@ -597,65 +568,69 @@ export default {
   }
 }
 
-.loadAnimation {
-  width: 90%;
-  margin: 0 auto;
-  padding-top: 20upx;
-  overflow: hidden;
-  min-height: 140upx;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  .loadAnimItem {
-    width: 100%;
-    display: flex;
-    padding-top: 8upx;
-    border-bottom: 1px #f5f5f5 solid;
-    align-items: center;
-    height: 120upx;
-    .loadAnimContent {
-      box-sizing: border-box;
-      margin: 10upx 0;
-      width: 100%;
-      height: 40upx;
-      background-color: rgba(150, 150, 150, 0.1);
-      height: 40upx;
-    }
-  }
-  .loadAnimItem:nth-child(n) .loadAnimContent {
-    animation: loading 4s linear 0s infinite;
-  }
-  .loadAnimItem:nth-child(2n) .loadAnimContent {
-    animation: loading 3s linear 0s infinite;
-  }
-}
-@keyframes loading {
-  0% {
-    width: 0%;
-  }
-  50% {
-    width: 100%;
-  }
-  100% {
-    width: 0%;
-  }
-}
+// .loadAnimation {
+//   width: 90%;
+//   margin: 0 auto;
+//   padding-top: 20upx;
+//   overflow: hidden;
+//   min-height: 140upx;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   .loadAnimItem {
+//     width: 100%;
+//     display: flex;
+//     padding-top: 8upx;
+//     border-bottom: 1px #f5f5f5 solid;
+//     align-items: center;
+//     height: 120upx;
+//     .loadAnimContent {
+//       box-sizing: border-box;
+//       margin: 10upx 0;
+//       width: 100%;
+//       height: 40upx;
+//       background-color: rgba(150, 150, 150, 0.1);
+//       height: 40upx;
+//     }
+//   }
+//   .loadAnimItem:nth-child(n) .loadAnimContent {
+//     animation: loading 4s linear 0s infinite;
+//   }
+//   .loadAnimItem:nth-child(2n) .loadAnimContent {
+//     animation: loading 3s linear 0s infinite;
+//   }
+// }
+// @keyframes loading {
+//   0% {
+//     width: 0%;
+//   }
+//   50% {
+//     width: 100%;
+//   }
+//   100% {
+//     width: 0%;
+//   }
+// }
 
 /* 可以设置不同的进入和离开动画 */
 /* 设置持续时间和动画函数 */
 .slide-fade-enter-active {
-  transition: all 1s ease;
+  transition: all 2s ease;
 }
 .slide-fade-leave-active {
   transition: all 2s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.slide-fade-enter, .slide-fade-leave-to
+.slide-fade-enter
 /* .slide-fade-leave-active for below version 2.1.8 */ {
-  transform: translateX(100px);
+  transform: translateY(-1000px);
+  opacity: 0;
+}
+.slide-fade-leave-to{
+  transform: translateX(1000px);
   opacity: 0;
 }
 
-.list-enter-active,
+.list-enter-active,  
 .list-leave-active {
   transition: all 3s;
 }

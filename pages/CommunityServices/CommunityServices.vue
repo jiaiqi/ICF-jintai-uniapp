@@ -1,32 +1,39 @@
 <template>
   <view class="wrap">
-    <view class="bannerlun"><bw-swiper :swiperList="swperboole ? swiperList : swiperLists" style="width:100%;"></bw-swiper></view>
-    <uni-grid :column="4" :showBorder="false">
-      <uni-grid-item v-for="(item, index) in menuData" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="item">
-        <text class="text">{{ item.label }}</text>
-      </uni-grid-item>
-    </uni-grid>
-    <!-- 插图 -->
-    <view class="banner" v-if="!swperboole" :style="{ backgroundImage: 'url(' + imageURL + ')' }"></view>
-    <!-- 活动 -->
-    <view class="">
-      <text class="titleall"  v-if="!swperboole" >热门活动</text>
-      <view class="contenthot">
-        <view class="hot" v-for="(item, index) in xqpage" :key='index'>
-          <view class="phopos" @tap="detaile(item)" :style="{ backgroundImage: 'url(' + item.activity_img + ')' }"></view>
-          <view class="textline">{{ item.activity_title }}</view>
-        </view>
-      </view>
-    </view>
+	  <!-- loading -->
+	  <Loading v-if="successNum<2"></Loading>
+	  <view class="" v-else>
+	  	<view class="bannerlun"><bw-swiper :swiperList="swperboole ? swiperList : swiperLists" style="width:100%;"></bw-swiper></view>
+	  	<uni-grid :column="4" :showBorder="false">
+	  	  <uni-grid-item v-for="(item, index) in menuData" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="item">
+	  	    <text class="text">{{ item.label }}</text>
+	  	  </uni-grid-item>
+	  	</uni-grid>
+	  	<!-- 插图 -->
+	  	<view class="banner" v-if="!swperboole" :style="{ backgroundImage: 'url(' + imageURL + ')' }"></view>
+	  	<!-- 活动 -->
+	  	<view class="">
+	  	  <text class="titleall"  v-if="!swperboole" >热门活动</text>
+	  	  <view class="contenthot">
+	  	    <view class="hot" v-for="(item, index) in xqpage" :key='index'>
+	  	      <view class="phopos" @tap="detaile(item)" :style="{ backgroundImage: 'url(' + item.activity_img + ')' }"></view>
+	  	      <view class="textline">{{ item.activity_title }}</view>
+	  	    </view>
+	  	  </view>
+	  	</view>
+	  </view>
+	   <uni-loading   color="#888"  />
   </view>
+ 
 </template>
 
 <script>
 import uniGrid from '@/components/uni-grid/uni-grid.vue';
 import uniGridItem from '@/components/uni-grid-item/uni-grid-item.vue';
 import bwSwiper from '@/components/kp-swper/bw-swiper.vue';
+	import uniLoading from '@/components/sqfwl-loading-more/loading.vue'
 export default {
-  components: { uniGrid, uniGridItem, bwSwiper },
+  components: { uniGrid, uniGridItem, bwSwiper ,uniLoading},
   data() {
     return {
       userInfo: {},
@@ -37,7 +44,9 @@ export default {
       swiperLists: [],
       phoarr: [],
       xqpage: Object,
-      imageURL: '../../static/img/bannerthree.jpg'
+      imageURL: '../../static/img/bannerthree.jpg',
+	  successNum:0 ,//请求成功次数
+	  status:0
     };
   },
   methods: {
@@ -50,6 +59,8 @@ export default {
         condition: [{ colName: 'client_type', ruleType: 'like', value: 'APP' }]
       };
       this.$http.post(url, req).then(res => {
+		  this.successNum++
+		  console.log(this.successNum,"____________________")
         if (res.data.data) {
           let menuData = res.data.data;
           let children = [];
@@ -93,6 +104,17 @@ export default {
         }
       });
     },
+	onPullDownRefresh() {
+			// this.numberlist= this.listhome.length
+			let _self =this
+			setTimeout(function() {
+				uni.stopPullDownRefresh();
+				_self.userInfo = uni.getStorageSync('userInfo');
+				_self.getMenusList(_self.appserve);
+				_self.getBannerList();
+				_self.hotlist('srvzhsq_activity_record_select');
+			}, 1000);
+		},
     detaile(item, val) {
       uni.navigateTo({
         url: '../sqfw/sqxq?query=' + encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25')) + '&num=1'
@@ -112,6 +134,7 @@ export default {
         rownumber: 10
       };
       this.$http.post(url, req).then(res => {
+		 
         // console.log(res);
         let picUrlCode = [];
         if (res.data.data && res.data.data instanceof Array) {
@@ -141,6 +164,7 @@ export default {
               serviceName: 'srvfile_attachment_select'
             };
             this.$http.post(url, req).then(res => {
+			
               console.log(res.data.data);
               let picUrlList = [];
               this.swiperLists.push({ img: path + res.data.data[0].fileurl });
@@ -170,6 +194,8 @@ export default {
         rownumber: 7
       };
       this.$http.post(url, req).then(res => {
+		  this.successNum++
+		   console.log(this.successNum,"____________________")
         console.log('..................', res.data.data);
         let path = 'http://39.98.203.134:8081/file/download?filePath=';
         let listr = [];
@@ -244,6 +270,7 @@ export default {
   },
   onLoad(option) {
     this.userInfo = uni.getStorageSync('userInfo');
+	this.appserve = option.app
     this.getMenusList(option.app);
     this.getBannerList();
     this.hotlist('srvzhsq_activity_record_select');

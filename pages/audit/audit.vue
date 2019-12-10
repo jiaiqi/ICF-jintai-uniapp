@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="allbox" >
 			<text class="title">名称：</text><text v-if="datalist" style="font-weight: 600;font-size: 15px;">
-			{{datalist.zuzhi_name||datalist.organize_name||datalist.activity_title||datalist.note_title}}</text>
+			{{datalist.zuzhi_name||datalist.organize_name||datalist.activity_title||datalist.note_title||datalist.opinion_title}}</text>
 		</view>
 		<view class="allbox" >
 			<text class="title">状态：</text><text v-if="datalist" style="font-weight: 600;font-size: 15px;">{{datalist.proc_status}}</text>
@@ -68,17 +68,20 @@
 			submit(val){
 				let authority = ""
 				let num = 0
-				if(val=="srvzhsq_zyz_zuzhi_select"){
+				if(val=="srvzhsq_zyz_zuzhi_select"){  //志愿者
 					authority="volunteer_org_ process_"
-				}else if(val=="srvzhsq_social_organizie_select"){
+				}else if(val=="srvzhsq_social_organizie_select"){ //社会组hi
 						authority="T_ORGANIZE_"
-				}else if(val=="srvzhsq_activity_arrange_select"){
+				}else if(val=="srvzhsq_activity_arrange_select"){ //活动安排
 					authority="community_services0"
 					num=1
-				}else if(val=="srvzhsq_forum_note_select"){
+				}else if(val=="srvzhsq_forum_note_list_num_select"){  //社区论坛
 					authority="T_FORUM_NOTE_"
-				}else if(val=="srvzhsq_djlt_ftxx_select"){
+				}else if(val=="srvzhsq_djlt_ftxx_select"){  
 					authority="zhsq_ltft_0"
+					num=1
+				}else if(val=="srvzhsq_forum_opinion_select"){  //社区献策
+					authority="T_FORUM_OPINION_"
 					num=1
 				}
 				let url = 'http://39.98.203.134:8081/sqfw/process/approval';

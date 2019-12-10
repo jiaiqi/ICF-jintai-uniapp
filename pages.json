@@ -5,7 +5,8 @@
       "path": "pages/SmartCity/smartcity",
       "style": {
         "navigationBarTitleText": "首页",
-        "navigationBarBackgroundColor": "#ED292A"
+        "navigationBarBackgroundColor": "#ED292A",
+		"enablePullDownRefresh": true
       }
     },
     {
@@ -65,12 +66,6 @@
         "onReachBottomDistance": 20,
         "app-plus": {
           "titleNView": {
-            // "type": "transparent"
-            // "buttons": [{
-            //   "text": "+",
-            //   "fontSize": "28px",
-            //   "function":"add"
-            // }]
           }
         }
       }
@@ -156,7 +151,10 @@
 	  "path": "pages/audit/auditList",
 	  "style": {
 	    "navigationBarTitleText": "待审核",
-		"enablePullDownRefresh": true
+		"enablePullDownRefresh": true,
+		"app-plus": {
+		  "titleNView": false
+		}
 	  }
 	},
     {
@@ -304,17 +302,10 @@
     },
     {
       "path": "pages/bmfw/peopleInfo/peopleInfo",
-      "style": {}
-    }, {
-      "path": "pages/bmfw/ctxm/ctxm", //创投项目
       "style": {
-        "navigationBarTitleText": "创投项目",
-        "app-plus": {
-          "animationType": "fade-in",
-          "animationDuration": 300
-        }
+        "navigationBarTitleText": "居民信息详情"
       }
-    }, {
+    },  {
       "path": "pages/forum/forum",
       "style": {
         "navigationBarTitleText": "社区论坛",
@@ -449,16 +440,11 @@
         "navigationBarTitleText": "栏目"
       }
     }
-    // ,{ 
-    //     "path" : "pages/forum/list", //帖子列表
-    //    "style" : {
-    //      "navigationBarTitleText": "论坛"
-    //    }
-    // }
     , {
       "path": "pages/CommunityServices/CommunityServices",
       "style": {
-        "navigationBarTitleText": "社区服务"
+        "navigationBarTitleText": "社区服务",
+		"enablePullDownRefresh": true
       }
     }, {
       "path": "pages/SecondaryPage/SecondaryPage",

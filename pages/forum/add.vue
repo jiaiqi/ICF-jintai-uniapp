@@ -359,47 +359,71 @@ export default {
           data: [content]
         }
       ];
-      this.$http.post(url, req).then(res => {
-        console.log(res);
-        if (res.data.resultCode === 'SUCCESS' && res.data.response) {
-          let serviceName = '';
-          if (this.appName === 'sqfw') {
-            serviceName = 'srvzhsq_forum_note_select';
-          } else if (this.appName === 'zhdj') {
-            serviceName = 'srvzhsq_djlt_ftxx_select';
-          }
-          let id = res.data.response[0].response.ids[0];
-          console.log(id);
-          let url2 = this.$api.select + '/sqfw/select/' + serviceName;
-          let req2 = {
-            serviceName: serviceName,
-            colNames: ['*'],
-            condition: [{ colName: 'id', ruleType: 'eq', value: id }],
-            order: []
-          };
-          this.$http.post(url2, req2).then(res2 => {
-            if (res2.data.data) {
-              uni.showModal({
-                title: '提示',
-                content: '提交成功，审核通过后将会展示在论坛，点击确认返回帖子列表页',
-                showCancel: false,
-                success: function(res) {
-                  if (res.confirm) {
-                    // uni.navigateBack(2);
-                    // console.log(`即将跳转到： ./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`)
-                    uni.redirectTo({
-                      url: '/pages/normal/list/list?query=' + encodeURIComponent(JSON.stringify(item))
-                    });
-                    // uni.navigateTo({
-                    //   url: `./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`
-                    // });
-                  }
+      this.$http
+        .post(url, req)
+        .then(res => {
+          console.log(res);
+          if (res.data.resultCode === 'SUCCESS' && res.data.response) {
+            uni.showModal({
+              title: '提示',
+              content: '提交成功，审核通过后将会展示在论坛，点击确认返回帖子列表页',
+              showCancel: false,
+              success: function(res) {
+                if (res.confirm) {
+                  uni.navigateBack();
+                  // console.log(`即将跳转到： ./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`)
+                  // uni.redirectTo({
+                  //   url: '/pages/normal/list/list?query=' + encodeURIComponent(JSON.stringify(this.query))
+                  // });
+                  // uni.navigateTo({
+                  //   url: `./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`
+                  // });
                 }
-              });
-            }
-          });
-        }
-      });
+              }
+            });
+            // let serviceName = '';
+            // if (this.appName === 'sqfw') {
+            //   serviceName = 'srvzhsq_forum_note_select';
+            // } else if (this.appName === 'zhdj') {
+            //   serviceName = 'srvzhsq_djlt_ftxx_select';
+            // }
+            // let id = res.data.response[0].response.ids[0];
+            // console.log(id);
+            // let url2 = this.$api.select + '/sqfw/select/' + serviceName;
+            // let req2 = {
+            //   serviceName: serviceName,
+            //   colNames: ['*'],
+            //   condition: [{ colName: 'id', ruleType: 'eq', value: id }],
+            //   order: []
+            // };
+            // this.$http.post(url2, req2).then(res2 => {
+            //   if (res2.data.data) {
+            //     uni.showModal({
+            //       title: '提示',
+            //       content: '提交成功，审核通过后将会展示在论坛，点击确认返回帖子列表页',
+            //       showCancel: false,
+            //       success: function(res) {
+            //         if (res.confirm) {
+            //           uni.navigateBack();
+            //           // console.log(`即将跳转到： ./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`)
+            //           // uni.redirectTo({
+            //           //   url: '/pages/normal/list/list?query=' + encodeURIComponent(JSON.stringify(this.query))
+            //           // });
+            //           // uni.navigateTo({
+            //           //   url: `./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`
+            //           // });
+            //         }
+            //       }
+            //     });
+            //   }
+            // }).catch(error=>{
+            //   console.log("error:",error)
+            // })
+          }
+        })
+        .catch(error => {
+          console.log('error:', error);
+        });
       // }
       // })
     },

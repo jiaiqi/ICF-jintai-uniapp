@@ -56,7 +56,7 @@ export default {
       let req = {
         serviceName: 'srvsys_service_columnex_v2_select',
         colNames: ['*'],
-        condition: [{ colName: 'service_name', value: query.serviceName, ruleType: 'eq' }, { colName: 'use_type', value: 'detail', ruleType: 'eq' }],
+        condition: [{ colName: 'service_name', value: query.service_name, ruleType: 'eq' }, { colName: 'use_type', value: 'detail', ruleType: 'eq' }],
         order: [{ colName: 'seq', orderType: 'asc' }]
       };
       this.$http.post(url, req).then(res => {
@@ -89,7 +89,7 @@ export default {
     },
     toHome(){
       uni.switchTab({
-        url:'../../home/home'
+        url:'../../SmartCity/smartcity'
       })
     }
   }
@@ -100,6 +100,7 @@ export default {
 .selectView {
   width: 100%;
   margin: 0 auto;
+  background: #fff;
   display: flex;
   flex-direction: column;
   .info_item {

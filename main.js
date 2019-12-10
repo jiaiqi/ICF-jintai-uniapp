@@ -8,8 +8,12 @@ import flyioh from 'flyio' // 引入flyio 其他h5 使用
 import store from '@/store/index.js' // 引入vuex 管理数据状态
 // import config from '@/common/config' // flyio 请求公共配置
 import uniNavBar from "@/components/uni-nav-bar/uni-nav-bar.vue"
-let fly = new flyio
 
+//loading  gif
+import Loading from '@/components/loading/loading.vue'
+
+let fly = new flyio
+Vue.component("Loading",Loading)
 Vue.config.productionTip = false
 
 Vue.prototype.$api = api // api挂载到vue的proto对象上原型属性
@@ -82,6 +86,7 @@ fly.interceptors.response.use((res) => {
       uni.showModal({
         title:"警告",
         content:"您没有访问此页面或者进行此操作的权限,点击确认返回上一级页面",
+        showCancel:false,
         success: (res) => {
          if(res.confirm){
            uni.navigateBack();

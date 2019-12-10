@@ -6,10 +6,6 @@
 		</div>
 		<div class="form_content">
 		  <radio-group name="" v-if="formItemData.columns === 'gender'" class="radio_group" @change="changeSex">
-		   <!-- <label v-for="(item2, index) in genderItems" :key="item2.value">
-		      <text><radio :value="item2.value" :checked="index === current" /></text>
-		      <text>{{ item2.name }}</text>
-		    </label> -->
 		  </radio-group>
 		  <view v-else-if="formItemData.columns === 'nation'">
 		    <div class="mpvue-picer"><QSPickerCustom ref="nationPicker" :name="formName" :variableName="formName" title="选择民族:"  @pickerChange	="changeNation"/></div>
