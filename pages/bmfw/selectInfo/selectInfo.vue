@@ -65,7 +65,7 @@ export default {
           } else {
             uni.showToast({
               icon: 'loading',
-              title: '查找成功，正在跳转到详情页...',
+              title: '正在查找...',
               duration: 1000
             });
             self.selectInfo(self.idCard);
@@ -92,6 +92,11 @@ export default {
         if (res.data.data) {
           let data = res.data.data;
           if (data && data.length > 0) {
+            uni.showToast({
+              icon: 'success',
+              title: '查找成功，正在跳转。。。',
+              duration: 1000
+            });
             this.toDetail(data);
           } else {
             uni.showToast({

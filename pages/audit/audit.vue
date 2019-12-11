@@ -148,7 +148,7 @@
 									})
 										if(res.data.resultMessage=="审批成功"){
 											uni.showLoading({
-											    title: '审批成功，正在回到审批列表，请稍等~'
+											    title: '审批成功，正在回到审批列表~'
 											});
 											setTimeout(()=>{
 												 uni.hideLoading();

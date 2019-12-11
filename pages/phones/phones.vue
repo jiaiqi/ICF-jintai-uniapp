@@ -14,23 +14,7 @@
 		data() {
 			return {
 				phones:{
-					"党组织通讯录": [{
-						"id":1,
-						"spell":"a",
-						"name":"金台区党委"
-					},{
-						"id":2,
-						"spell":"a",
-						"name":"陈仓镇党委"
-					},{
-						"id":3,
-						"spell":"a",
-						"name":"东岭村党委"
-					},{
-						"id":4,
-						"spell":"a",
-						"name":"团结村党委"
-					}]
+					"党组织通讯录": []
 				}
 			
 			}
@@ -59,7 +43,7 @@
 					req.colNames = ["*"];
 					req.condition = [];
 					req.order=[]
-					req.page={pageNo: 1, rownumber: 60}
+					// req.page={pageNo: 1, rownumber: 60}
 					this.$http.post(url, req).then(res => {
 						
 						let listserve = (res.data.data)

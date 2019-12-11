@@ -3,7 +3,7 @@
 		<image :src="src" mode="" class="banners"></image>、
 		<view class="" style="display: flex;justify-content: space-between;">
 			<view class="titleone" >{{titletop}}</view>
-			<view class="btn" @click="audit()">待我审批</view>
+			<view class="btn" v-if="titlebar=='hdap'" @click="audit()">待我审批</view>
 		</view>
 		
 		

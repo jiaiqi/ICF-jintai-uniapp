@@ -1,5 +1,5 @@
 <template>
-	<view class="phone-main" :style="{height: winHeight + 'px'}">
+	<view class="phone-main" style="width: 100vw;" :style="{height: winHeight + 'px'}">
 		<view class="phone-main-search">
 			<navigator :url="'phone-search?phones=' + phonesEscape" hover-class="none">
 				<input disabled="false" class="phone-main-input" type="text" placeholder="请输入要搜索的联系人"/>
@@ -112,12 +112,14 @@
 	flex-direction: row;
 }
 .phone-main-search{
+	
 	background-color: #fff;
 	padding: 10upx 20upx;
 	border-bottom: 1px solid #e5e5e5;
 }
 
 .phone-main-input{
+	height: 60upx;
 	font-size:28upx;
 	border: 1px solid #e5e5e5;
 	border-radius: 3px;

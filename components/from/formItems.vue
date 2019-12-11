@@ -36,20 +36,47 @@
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入序号'"
       />
       <input
-        v-if="Fileddatas.col_type === 'bxzhsq_activity_arrange' || Fileddatas.bx_col_type === 'fk'"
+        v-if="Fileddatas.col_type === 'TelNo'"
+        class="uni-form-item uni-column input"
+        :maxlength="Fileddatas._formItemValidators.max"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        type="number"
+        v-model="Fileddatas.column"
+        :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入手机号'"
+      />
+      <input
+        v-if="Fileddatas.col_type === 'IdNo'"
+        class="uni-form-item uni-column input"
+        :maxlength="Fileddatas._formItemValidators.max"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        type="number"
+        v-model="Fileddatas.column"
+        :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入身份证号'"
+      />
+      <input
+        v-if="Fileddatas.col_type === 'Email'"
+        class="uni-form-item uni-column input"
+        :maxlength="Fileddatas._formItemValidators.max"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        v-model="Fileddatas.column"
+        :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入邮箱'"
+      />
+      <input
+        v-if="Fileddatas.col_type === 'bxzhsq_activity_arrange' && Fileddatas.bx_col_type === 'fk'"
         class="input"
         :maxlength="Fileddatas._formItemValidators.max"
         @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
         v-model="Fileddatas.column"
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入活动名称'"
       />
-   <!--   <hTimePicker sTime="0" cTime="24" interval="1" @changeTime="changeTime" v-if="Fileddatas.col_type === 'Date'||Fileddatas.col_type === 'DateTime'">
+      <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.bx_col_type === 'fk' && (Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||Fileddatas.col_type==='bxzhsq_social_organizie')">
+        <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
+      </picker>
+      <!--   <hTimePicker sTime="0" cTime="24" interval="1" @changeTime="changeTime" v-if="Fileddatas.col_type === 'Date'||Fileddatas.col_type === 'DateTime'">
         <view slot="pCon" class="changeTime">{{ Fileddatas.column ? Fileddatas.column : '点击选择时间' }}</view>
       </hTimePicker> -->
-      <picker mode="date" :value="date" start="2015-09-01" end="2020-09-01" @change="DateChange"  v-if="Fileddatas.col_type === 'Date'||Fileddatas.col_type === 'DateTime'">
-      	<view class="picker">
-      		{{date}}
-      	</view>
+      <picker mode="date" :value="date" start="2015-09-01" end="2050-09-01" @change="DateChange" v-if="Fileddatas.col_type === 'Date' || Fileddatas.col_type === 'DateTime'">
+        <view class="picker">{{ date}}</view>
       </picker>
       <input
         class="input"
@@ -151,14 +178,14 @@ export default {
   },
   mixins: [Emitter],
   data() {
-    let currentDate = '请选择';
     return {
       index: -1,
       picker: ['喵喵喵', '汪汪汪', '哼唧哼唧'],
+      originPicker:null,
       imgList: [],
       imgPathList: [],
       query: {}, //url参数
-      date: currentDate,
+      date: "请选择",
       oldColData: {},
       Fileddatas: {},
       currentValue: '',
@@ -236,6 +263,8 @@ export default {
       setTimeout(() => {
         this.setPickerData(nationArr);
       }, 500);
+    } else if (this.Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||this.Fileddatas.col_type==='bxzhsq_social_organizie') {
+      this.getOptionList();
     }
   },
   onShow() {
@@ -246,11 +275,30 @@ export default {
   },
 
   methods: {
+    DateChange(e){
+      // console.log(e)
+      this.Fileddatas.column = e.detail.value
+      this.date = e.detail.value
+      this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
+      console.log('选择了：', this.Fileddatas.column);
+    },
     PickerChange(e) {
       this.index = e.detail.value;
       this.Fileddatas.column = this.picker[this.index];
+      if(this.originPicker){
+        this.originPicker.map(or=>{
+          this.picker.map(picker=>{
+            if(picker===or.organize_name){
+              this.Fileddatas.column = or.organize_no
+            }
+            if(picker===or.zuzhi_name){
+              this.Fileddatas.column = or.zuzhi_no
+            }
+          })
+        })
+      }
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
-      console.log('选择了：', this.Fileddatas.column);
+      console.log('选择了：', this.Fileddatas.column,e);
     },
     ChooseImage() {
       uni.chooseImage({
@@ -412,11 +460,6 @@ export default {
     setPickerData(nationArr) {
       let data1 = [nationArr];
       this.picker = nationArr;
-      // this.setPickerDataFc('nationPicker', data1);
-    },
-    setPickerDataFc(name, data) {
-      console.log('准备 调用setData', this.$refs);
-      this.$refs['nationPicker'].setData(data);
     },
     getUser() {
       let url = this.$api.select + '/sso/select/srvsso_user_select';
@@ -471,6 +514,29 @@ export default {
       return `${year}-${month}-${day}`;
     },
     onCancel() {},
+    getOptionList() {
+      // 查找option_list_v2
+      let serviceName = this.Fileddatas.option_list_v2.serviceName;
+      if (serviceName) {
+        let url = this.$api.select + '/sqfw/select/' + serviceName;
+        let req = {
+          serviceName: serviceName,
+          queryMethod: 'select',
+          distinct: false,
+          colNames: ['*'],
+          condition: [{ colName: 'proc_status', ruleType: 'eq', value: '完成' }],
+        };
+        this.$http.post(url, req).then(res => {
+          console.log('111111111111111111111111111111', res.data.data);
+          if(res.data.data){
+            let data = res.data.data
+            let arr = data.map(item=>item.zuzhi_name?item.zuzhi_name:item.organize_name?item.organize_name:'')
+            this.picker = arr,
+            this.originPicker = data
+          }
+        });
+      }
+    },
     onFocus() {},
     resultClick() {},
     openFile() {},

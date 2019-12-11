@@ -2,7 +2,7 @@
     "name" : "智慧社区",
     "appid" : "__UNI__1EABD0E",
     "description" : "金台市智慧社区",
-    "versionName" : "1.12.30915",
+    "versionName" : "1.12.11",
     "versionCode" : 1,
     "transformPx" : false,
     "app-plus" : {
@@ -47,9 +47,9 @@
             "sdkConfigs" : {},
             "splashscreen" : {
                 "android" : {
-                    "xxhdpi" : "static/img/d1j.png",
-                    "xhdpi" : "static/img/d1j.png",
-                    "hdpi" : "static/img/d1j.png"
+                    "xxhdpi" : "",
+                    "xhdpi" : "",
+                    "hdpi" : ""
                 }
             },
             "icons" : {
@@ -84,6 +84,9 @@
                     }
                 }
             }
+        },
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : false
         }
     }
 }

@@ -7,19 +7,20 @@
 		</view>
 		<view class="" style="padding: 40upx;">
 			<view class="">
-				<view class="box" v-for="(item,index) in listhome" :key="index">
+				<view class="box" v-for="(item,index) in listhome" :key="index"   >
 					<view class="">
 						<view class="nametitle" style="">
 						{{item.zuzhi_name||item.organize_name||item.activity_title||item.note_title||item.opinion_title}}</view>
 						<text>状态:{{item.proc_status}}</text>
 					</view>
-					<view class="but"  v-if="booe(item.proc_status)"  @click="audio(item)">
+					<view class="but"  @click="audio(item)">
 						审批
 					</view>
 					
-					<view class="buts" v-else >
+				<!-- 	<view class="buts" v-else >
 						审批
-					</view>
+					</view> -->
+					<!-- v-if="booe(item.proc_status)" -->
 					
 					<view class="xq" @click="xqpages(item)">
 						详情
@@ -37,7 +38,7 @@
 							
 					</view> 
 				</view>
-					<uni-loading :status="status"  color="#888"  />
+					<uni-loading v-if="!contentBoole" :status="status"  color="#888"  />
 			</view>
 		</view>
 		
@@ -78,25 +79,35 @@
 				this.$http.post(url, req).then(res => {
 					console.log("ddddddddddd",res)
 					this.menubtn=false
-					for(let i in res.data.data){
-						this.$set(res.data.data[i],["servename"],val)
+					let numarr = res.data.data
+					let arrbar=[]
+					for(let i  in numarr){
+						this.$set(numarr[i],["servename"],val)
+						if (numarr[i].proc_status.indexOf("提交")!==-1){
+						     delete numarr[i];
+							}
+					}
+					for(let i in numarr){
+					    if(numarr[i].proc_status!= ""){
+					        arrbar.push(numarr[i])
+					    }
 					}
 					if(num==0){
-						this.listhome =res.data.data
-						if(res.data.data.length==0){
+						this.listhome =arrbar
+						if(arrbar.length==0){
 							this.contentBoole=true
-						}else if(res.data.data.length<8){
+						}else if(arrbar.length<8){
 							this.status=2
 						}
 					}else{
-						if(res.data.data.length==0){
+						if(arrbar.length==0){
 							this.status=2
 						}
-						this.listhome =   this.listhome.concat(res.data.data)
+						this.listhome =   this.listhome.concat(arrbar)
 					}
 					
 					
-					console.log(res.data.data)
+					console.log(arrbar)
 				})
 			},
 			inpage(){
@@ -240,7 +251,7 @@
 		position: fixed;
 		top: 0;
 		text-align: center;
-		position: relative;
+		/* position: relative; */
 	}
 	.kapian{
 		box-shadow: 0 0 26px 0 rgba(0,0,0,0.12);

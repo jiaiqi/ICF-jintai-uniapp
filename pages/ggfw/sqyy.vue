@@ -30,8 +30,8 @@
 			   <radio-group @change="change">
 					<label class="uni-list-cell uni-list-cell-pd" >
 						<view>
-							<radio style="transform:scale(0.7);"  value="男" checked="" /><text style="margin-right: 40px;">男</text>
-							<radio style="transform:scale(0.7)" value="女" checked="" /><text >女</text>
+							<radio style="transform:scale(0.7);"  value="男"  /><text style="margin-right: 40px;">男</text>
+							<radio style="transform:scale(0.7)" value="女"  /><text >女</text>
 						</view>
 						<!-- <view>{{item.name}}</view> -->
 					</label>
@@ -41,27 +41,27 @@
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">籍贯：</text>
 			</view>
-			<input type="text" value="" />
+			<input type="text" v-model="place" value="" />
 		</view>
 		
 		<view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">身份证号：</text>
 			</view>
-			<input type="text" value="" />
+			<input type="text" v-model="idcart" value="" />
 		</view>
 		
 		<view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">联系电话：</text>
 			</view>
-			<input type="text" value="" />
+			<input type="text" v-model="phone" value="" />
 		</view>
 		<view class="content-box">
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">现居地：</text>
 			</view>
-			<input type="text" value="" />
+			<input type="text" v-model="dresss" value="" />
 		</view>
 		
 		
@@ -95,7 +95,13 @@
 				 titlename:'' ,//房屋名称
 				 pinck:'',
 				 people:'' ,//申请人信息
-				 peadmin:'admin', //用户编号
+				 peadmin:'admin', //用户编号,
+				 place:"",//籍贯
+				 idcart:'',//身份证号码
+				 phone:'',//电话号码
+				 dresss:'',//现居地
+				 sex:"" ,//性别
+				 homeServe:''  , //服务
 			}
 		},
 		components: {
@@ -107,51 +113,50 @@
 			  console.log(val)
 			},
 			change(e){
-				console.log(e)
+				this.sex=e.target.value
 			},
 			toadd(){
-				// if(this.dateValue==''||this.valueadmin==''||this.baominvalue==''||this.pinck==''||this.phone==''){
-				// 	uni.showToast({
-				// 	    title: '请填写完整再提交',
-				// 	    duration: 2000,
-				// 		icon:"none"
-				// 	});
-				// }else if(!(/^1[3456789]\d{9}$/.test(this.phone))){
-				// 	  uni.showToast({
-				// 	      title: '手机号码填写有误',
-				// 	      duration: 2000,
-				// 		icon:"none"
-				// 	  }); 
-				// }else
+				if(this.people==''||this.place==''||this.idcart==''||this.phone==''||this.dresss==''){
+					uni.showToast({
+					    title: '请填写完整再提交',
+					    duration: 2000,
+						icon:"none"
+					});
+				}else if(!(/^1[3456789]\d{9}$/.test(this.phone))){
+					  uni.showToast({
+					      title: '手机号码填写有误',
+					      duration: 2000,
+						icon:"none"
+					  }); 
+				}else{
+					
 				
-				// if{
-					let url =this.$api.select + "/sqfw/apply/srvzhsq_tenement_lzfsq_add?srvzhsq_tenement_lzfsq_add"
+				uni.showLoading({
+					title:"提交中..." ,
+					icon:"loading"
+				});
+			// srvzhsq_tenement_gzfsq_add
+					let url =this.$api.select + "/sqfw/apply/"+this.homeServe
 					let req =[
-						{"serviceName":"srvzhsq_tenement_lzfsq_add",
+						{"serviceName":this.homeServe,
 						"data":[{
-							"sq_name":"申请人",
-							"user_no":"admin",
-							"garden":"男",
+							"sq_name":this.people,  //申请人
+							"user_no":this.peadmin, //用户
+							"garden":this.sex,
 							"nation":"汉族",
-							"native":null,
-							"card_id":"610326199610041632",
-							"phone":"110",
-							"address":"现居地",
-							"title":"廉租房测试数据",
-							"materials":"材料",
-							"files":null,
-							"pohoto":null,
+							"native":this.place, //籍贯
+							"card_id":this.idcart,
+							"phone":this.phone,
+							"address":this.dresss,
+							"title":this.titlename,
 							"child_data_list":[],
 							}]}]
-					uni.showToast({
-						title:"提交中..." ,
-						icon:"loading"
-					});
+				
 					
 					this.$http.post(url, req).then(res => {
 						console.log(res)
 						if(res.status==200){
-							uni.hideToast();
+							uni.hideLoading();
 							if(res.data.resultCode!=="SUCCESS"){
 								uni.showToast({
 								    title:res.data.resultMessage ,
@@ -164,12 +169,11 @@
 								    duration: 2000,
 									icon:"success"
 								});
-								
 							}
 						}
 					})
 								
-				// }
+				}
 				
 				
 				
@@ -178,7 +182,26 @@
 		},
 		onLoad(option){
 			this.titlename=(JSON.parse(decodeURIComponent(option.query)))
-			this.change()
+			
+			
+			let that =this
+			uni.getStorage({
+				key:"homeMessage",
+				success(e){
+					
+					if(e.data.homename.indexOf("公租房")!==-1){
+						that.homeServe="srvzhsq_tenement_gzfsq_add"
+					}else{
+						that.homeServe="srvzhsq_tenement_lzfsq_add"
+					}
+				}
+			})
+			uni.getStorage({
+				key:"userInfo",
+				success(e){
+					that.peadmin=(e.data.user_no)
+				}
+			})
 		}
 		
 	}

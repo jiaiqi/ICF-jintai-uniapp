@@ -223,35 +223,20 @@
 			</view>
 		</view>
 		<view @click="orders()">
-					<uni-loading :status="status"  :content-text="contentText" color="#888"  />
+					<uni-loading :status="status"   color="#888"  />
 		</view>
 	</view>
 </template>
 
 <script>
-	import uniLoading from '@/components/sqfwl-loading-more/loading.vue'
+	import uniLoading from '@/components/mix-load-more/mix-load-more';
 	export default {
-		data(){
+		data(){ 
 			return{
 				loadingView:true,
 				listhome:[],
 				url: 'https://m.amap.com',
-				status: 'more',
-				statusTypes: [{
-					value: 'more',
-					text: '加载前'
-				}, {
-					value: 'loading',
-					text: '加载中'
-				}, {
-					value: 'noMore',
-					text: '没有更多'
-				}],
-				contentText: {
-					contentdown: '上拉/点击查看更多',
-					contentrefresh: '加载中',
-					contentnomore: '没有更多'
-				},
+				status: 0,
 				numberlist:7,
 				pageno:1
 			}
@@ -278,7 +263,7 @@
 						this.listhome =res.data.data
 					}else{
 						if(res.data.data.length==0){
-							this.status="noMore"
+							this.status=2
 						}
 						this.listhome =   this.listhome.concat(res.data.data)
 					}
@@ -297,14 +282,14 @@
 					
 						onReachBottom() {
 								let _self = this
-								_self.status = 'loading'
+								_self.status = 1
 								_self.pageno++
 								uni.showNavigationBarLoading()
 								
 								console.log('reach');
 								setTimeout(function() {
 									_self.getdata(1)
-									_self.status = 'more'
+									_self.status = 0
 									uni.hideNavigationBarLoading()
 								}, 1000);
 							},

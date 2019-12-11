@@ -1,5 +1,5 @@
 <template>
-	<view style="width: 667px;">
+	<view style="">
 		<view class="search">
 			<input 
 			@input="handleInput"
@@ -72,7 +72,21 @@
 				this.keyword = e.detail.value
 			},
 			handleClick (e) {
+				console.error(e)
 				this.$emit('paramClick',e.target.dataset)
+				uni.showModal({
+				    title: '提示',
+				    content: '拨打电话给'+e.target.dataset.name+"？",
+				    success: function (res) {
+				        if (res.confirm) {
+				            	uni.makePhoneCall({
+				            	    phoneNumber: e.target.dataset.phonenumber
+				            	});
+				        } else if (res.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});
 			}
 		}
 	}
@@ -85,11 +99,13 @@
 	.search{
 		background-color: #fff;
 		padding: 10upx 20upx;
+		width: 100vw !important;
 		border-bottom: 1px solid #e5e5e5;
 	}
 
 	.search-input{
 		font-size:28upx;
+		height: 60upx;
 		border: 1px solid #e5e5e5;
 		border-radius: 3px;
 		padding: 10upx 20upx 10upx 20upx;

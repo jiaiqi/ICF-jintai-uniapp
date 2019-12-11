@@ -127,11 +127,11 @@
 			},
 			nextMargin:{ // 后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值 头条小程序不支持
 				type:String,
-				default:'0px'
+				default:'-5px'
 			},
 			previousMargin:{//前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值头条小程序不支持
 				type:String,
-				default:'0px'
+				default:'-5px'
 			},
 			vertical:{ //滑动方向是否为纵向 卡牌  不支持纵向以及同时显示的2块以上滑块数量
 				type:Boolean,
@@ -155,7 +155,7 @@
 			},
 			autoplay:{ // 是否自动切换
 				type:Boolean,
-				default:false
+				default:true
 			},
 			indicatorColor:{ // 指示点颜色
 				type:String,
@@ -205,7 +205,7 @@
 
 <style>
 .cardSwiper .swiper-item{
-	width:87%!important; 
+	width:86%!important; 
 	overflow: initial;
 	margin-top: 10px ;
 }

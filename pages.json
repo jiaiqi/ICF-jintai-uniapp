@@ -1,6 +1,27 @@
 {
   "pages": [
     //pages数组中第一项表示应用启动页,
+	{
+	  "path": "pages/guide/index",
+	  "style": {
+	      "navigationBarTitleText": "启动页",
+	      "app-plus": {
+	          "titleNView": false
+	      },
+	      "navigationStyle": "custom"
+	  }
+	},
+	{
+	    "path": "pages/guide/list",
+	    "style": {
+	        "navigationBarTitleText": "启动介绍页",
+	        "app-plus": {
+	            "titleNView": false,
+	            "bounce": "none"
+	        },
+	        "navigationStyle": "custom"
+	    }
+	},
     {
       "path": "pages/SmartCity/smartcity",
       "style": {

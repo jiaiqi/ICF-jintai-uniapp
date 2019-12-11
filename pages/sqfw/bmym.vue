@@ -155,7 +155,7 @@
 					that.valueadmin=(e.data.user_no)
 				}
 			})
-		}
+		} 
 	}
 </script >
 

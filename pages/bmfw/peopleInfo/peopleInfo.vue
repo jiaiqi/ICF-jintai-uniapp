@@ -1,11 +1,15 @@
 <template>
   <view class="selectView">
+    <view class="cu-load load-modal" v-if="!formDataArr||formDataArr.length==0">
+    	<view class="cuIcon-emoji text-yellow"></view>
+    	<view class="gray-text">加载中...</view>
+    </view>
     <view class="info_item" v-for="item in formDataArr" :key="item.id">
       <text class="label">{{ item.label }}:</text>
       <text class="value">{{ item.value }}</text>
     </view>
     <view class="back_btn">
-      <button type="primary" @click="toHome">返回主页面</button>
+      <button type="primary" @click="toHome" >返回主页面</button>
     </view>
   </view>
 </template>

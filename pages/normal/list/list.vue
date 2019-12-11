@@ -2,14 +2,16 @@
   <view class="content_wrap">
     <view class="px_list">
       <view class="buttons">
-        <view class="title_right title_btn" @tap="toAdd" v-if="showAddButton || showApplyButton"><text class="lg  cuIcon-add "></text></view>
+        <view class="title_right title_btn" @tap="toAdd" v-if="showAddButton || showApplyButton || title === '公租房列表'"><text class="lg  cuIcon-add "></text></view>
       </view>
       <transition name="slide-fade">
-        <uni-swipe-action v-if="listData.length > 0 && title == '社区论坛'" class="cu-list">
+        <uni-swipe-action v-if="listData.length > 0 && (title == '社区论坛'||
+                title == '党建论坛')" class="cu-list">
           <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
             <view class="cont">
               <view class="list_item" @tap="toForumDetail(item)">
                 <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
+                <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
               </view>
               <view class="data_time">
                 <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
@@ -22,7 +24,15 @@
         <uni-swipe-action
           v-if="
             listData.length > 0 &&
-              (title == '党建培训' || title == '学习心得' || title === '培训安排' || title == '我为社区献策' || title == '创投项目' || title == '便民信息' || title == '数字城管')
+              (title == '党建培训' ||
+                title == '学习心得' ||
+                title === '培训安排' ||
+                title == '我为社区献策' ||
+                title == '创投项目' ||
+                title == '便民信息' ||
+                title == '数字城管' ||
+                title == '公租房列表' ||
+                this.title === '廉租房列表')
           "
           class="cu-list"
         >
@@ -47,8 +57,7 @@
             listData.length > 0 &&
               (title === '社区活动' ||
                 title === '社会组织活动' ||
-                title === '活动记录' ||
-                title == '党建论坛' ||
+                title === '活动记录'  ||
                 title == '党建活动' ||
                 title == '公示公告' ||
                 title == '活动安排' ||
@@ -89,7 +98,7 @@
       <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click.native="loadData('refresh')"></mix-load-more>
     </view>
     <view class="xxx"></view>
-    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛'|| title === '我为社区献策'">待我审核</view>
+    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区献策'">待我审核</view>
   </view>
 </template>
 
@@ -214,14 +223,22 @@ export default {
     },
 
     toDetail(item) {
-      uni.navigateTo({
-        url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
-      });
+      if (this.title === '公租房列表' || this.title === '廉租房列表') {
+        uni.navigateTo({
+          url: '../../ggfw/fwxq?info=' + encodeURIComponent(JSON.stringify(item)) + '&query=' + encodeURIComponent(JSON.stringify(this.query))
+        });
+      } else {
+        uni.navigateTo({
+          url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
+        });
+      }
     },
     toForumDetail(item) {
-      console.log(JSON.stringify(item));
+      console.log(item.ftno);
+      let no = ''
+      if(item.note_no){no=item.note_no}else if(item.ftno){no = item.ftno}
       uni.navigateTo({
-        url: '../../forum/detail?no=' + item.note_no
+        url: '/pages/forum/detail?no=' + no
       });
     },
     detaile(item) {
@@ -232,7 +249,7 @@ export default {
     deleteItem(item) {
       uni.showModal({
         title: '提示',
-        content: '确定删除此条帖子?',
+        content: '确定删除?',
         success: res => {
           console.log(item, this.query);
           if (res.confirm) {
@@ -332,6 +349,7 @@ export default {
       if (query) {
         this.loadMoreStatus = 1;
         console.log('query:', query);
+	
         this.query = query;
         let serviceName = query.service_name;
         this.serviceNames = query.service_name;
@@ -417,6 +435,12 @@ export default {
               title: this.title ? this.title : '列表'
             });
             console.log('title：', this.title);
+			uni.setStorage({
+				key:"homeMessage",
+					data:{
+					   'homename':this.title
+					},
+			})
           });
       }
     },
@@ -622,15 +646,15 @@ export default {
 }
 .slide-fade-enter
 /* .slide-fade-leave-active for below version 2.1.8 */ {
-  transform: translateY(-1000px);
+  // transform: translateY(-1000px);
   opacity: 0;
 }
-.slide-fade-leave-to{
+.slide-fade-leave-to {
   transform: translateX(1000px);
   opacity: 0;
 }
 
-.list-enter-active,  
+.list-enter-active,
 .list-leave-active {
   transition: all 3s;
 }

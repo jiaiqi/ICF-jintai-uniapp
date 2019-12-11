@@ -1,12 +1,12 @@
 <template>
   <view class="addView">
     <view class="cu-load load-modal" v-if="!showChild">
-    	<view class="cuIcon-emoji text-yellow"></view>
-    	<view class="gray-text">加载中...</view>
+      <view class="cuIcon-emoji text-yellow"></view>
+      <view class="gray-text">加载中...</view>
     </view>
     <from-view v-if="showChild" :pathQuery="query" :pageType="query.type" ref="iForms"></from-view>
     <view class="bottom-flex" style="padding:10px">
-      <view class="bottom" >
+      <view class="bottom">
         <view v-for="(item, index) in pageBtns" :key="index" v-if="query.cols">
           <button v-if="item.button_type === 'reset'" type="warn" @click.native="onReset">{{ item.button_name }}</button>
           <button v-else-if="item.button_type === 'submit'" type="primary" @click.native="submitForm">{{ item.button_name }}</button>
@@ -36,11 +36,11 @@ export default {
       },
       showChild: false,
       pageBtns: [],
-      foreignKey: []
+      foreignKey: [],
+      houseInfo: {}
       // foreignKey: this.$route.query.foreignKey,
     };
   },
-
   mixins: [Emitter],
   onLoad: function(option) {
     let query = '';
@@ -50,10 +50,13 @@ export default {
     if (option.data) {
       query = JSON.parse(option.data);
     }
-    console.log('query',query.label, query);
+    if (option.info) {
+      this.houseInfo = JSON.parse(option.info);
+    }
+    console.log('query', query.label, query);
     uni.setNavigationBarTitle({
-      title:query.label?query.label:"添加"
-    })
+      title: query.label ? query.label : '添加'
+    });
     this.getCols(query);
   },
   methods: {
@@ -80,8 +83,11 @@ export default {
           }
         });
       } else {
+        if (query.service_name.indexOf('select') != -1) {
+          query.service_name = query.service_name.replace('select', 'add');
+        }
         const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
-        self.query.cols = await self.getColumnsData(app,query.service_name)
+        self.query.cols = await self.getColumnsData(app, query.service_name);
         console.log(self.query.cols);
         self.query.serviceName = query.serviceName;
         self.pageBtns = self.query.cols.formButton;
@@ -93,7 +99,7 @@ export default {
         this.showChild = true;
       }
     },
-    async getColumnsData(app='sqfw', service_name, use_type='add') {
+    async getColumnsData(app = 'sqfw', service_name, use_type = 'add') {
       let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
       let req = {
         serviceName: 'srvsys_service_columnex_v2_select',
@@ -101,10 +107,10 @@ export default {
         condition: [{ colName: 'service_name', value: service_name, ruleType: 'eq' }, { colName: 'use_type', value: use_type, ruleType: 'eq' }],
         order: [{ colName: 'seq', orderType: 'asc' }]
       };
-      let res = await this.$http.post(url, req)
+      let res = await this.$http.post(url, req);
       if (res.data.data) {
-        let cols = res.data.data
-        return cols
+        let cols = res.data.data;
+        return cols;
       }
     },
     submitForm() {
@@ -138,7 +144,7 @@ export default {
       console.log(a);
     },
     async submint(nData) {
-      let userInfo = uni.getStorageSync('userInfo')
+      let userInfo = uni.getStorageSync('userInfo');
       let self = this;
       let params = [
         {
@@ -153,7 +159,6 @@ export default {
         let a = {};
         data = nData.map(item => {
           a[item.columns] = item.column;
-          
         });
         if (this.foreignKey.length > 0) {
           a[this.foreignKey[0].colName] = this.foreignKey[0].value;
@@ -178,12 +183,14 @@ export default {
           uni.showToast({
             title: response.data.resultMessage
           });
-          // self.$router.push({ name: 'bxoa_issue' })
-          uni.redirectTo({
-            url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(params[0].data[0]))
+          uni.navigateBack({
+            delta: 1,
+            animationType: 'pop-out',
+            animationDuration: 200
           });
-          // this.$router.push({path: '/', query: {serviceName: self.query.serviceName, key: 'id', val: response.body.response[0].respons.ids[0]}})
-          // self.$router.push({ name: 'list', params: { serviceName: self.serviceName } })//普通列表
+          // uni.redirectTo({
+          //   url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(params[0].data[0]))
+          // });
         } else {
           uni.showToast({
             title: response.data.resultMessage
@@ -201,17 +208,23 @@ export default {
         });
         params[0].data.push(a);
         const response = await self.$http.post(self.$api.startProc, params); // 流程开启
-        // const response = await self.$http.post(self.$api.startProc, params) //新增
         if (response.data.state === 'SUCCESS') {
           uni.showToast({
             title: response.data.resultMessage
           });
-          self.$router.go(-1);
-          // self.$router.push({ name: 'bxoa_issue' })// 流程列表
-          // self.$router.push({ name: 'list', params: { serviceName: self.serviceName } })//普通列表
+          uni.navigateBack({
+            delta: 1,
+            animationType: 'pop-out',
+            animationDuration: 200
+          });
         } else {
           uni.showToast({
             title: response.data.resultMessage
+          });
+          uni.navigateBack({
+            delta: 1,
+            animationType: 'pop-out',
+            animationDuration: 200
           });
           self.$vux.toast.show({
             type: 'text',

@@ -15,18 +15,17 @@
         </view>
         <view class="guanzhu"></view>
       </div>
-      
-      
+
       <!-- 标题 -->
       <div class="title_view">
-        <text class="title_text bold_text">{{ query.note_title }}</text>
+        <text class="title_text bold_text" v-if="query.note_title">{{ query.note_title }}</text>
+        <text class="title_text bold_text" v-if="query.bt">{{ query.bt }}</text>
         <!-- <span class="time_date">时间：{{ query.create_time }}</span> -->
       </div>
 
-    
-
       <!-- 内容 -->
       <div v-if="query.content" class="content_view" v-html="JSON.parse(JSON.stringify(query.content).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
+      <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
       <!-- 主贴点赞 -->
 
       <!-- 回复 -->
@@ -46,7 +45,8 @@
                 <uni-badge text="99+" type="error" v-else></uni-badge>
               </div>
             </div>
-            <div class="content_box" v-html="item.remark"></div>
+            <div class="content_box" v-html="item.remark" v-if="item.remark"></div>
+            <div class="content_box" v-html="item.nr" v-if="item.nr"></div>
             <div class="time_date_box">
               <div class="time_date">{{ item.create_time }}</div>
               <div class="settings_icon" v-if="item.create_user === userInfo.user_no">
@@ -80,6 +80,8 @@ export default {
   name: 'ForumDetail', // 论坛详情
   data() {
     return {
+      appName: 'sqfw', //app
+      serviceName: '', //select服务
       userInfo: {}, //账号用户信息
       userImage: '',
       note_user_info: {}, //发帖用户信息
@@ -100,7 +102,14 @@ export default {
     uni.setNavigationBarTitle({
       title: '详情'
     });
-    if (option) {
+    if (option.no) {
+      if (option.no.includes('LTFT')) {
+        this.appName = 'zhdj';
+        this.serviceName = 'srvzhsq_djlt_ftxx_select';
+      } else {
+        this.appName = 'sqfw';
+        this.serviceName = 'srvzhsq_forum_note_select';
+      }
       this.note_no = option.no;
       this.getMainInfo();
       this.getWriteBackList(); // 获取留言列表
@@ -154,13 +163,18 @@ export default {
     getMainInfo() {
       // 查找主贴相关数据
       let note_no = this.note_no;
-      let url = this.$api.select + '/sqfw/select/srvzhsq_forum_note_select';
-      let req = { serviceName: 'srvzhsq_forum_note_select', colNames: ['*'], condition: [{ colName: 'note_no', ruleType: 'like', value: note_no }], order: [] };
+      let url = this.$api.select + '/' + this.appName + '/select/' + this.serviceName;
+      let colName = '';
+      if (this.appName === 'zhdj') {
+        colName = 'ftno';
+      } else {
+        colName = 'note_no';
+      }
+      let req = { serviceName: this.serviceName, colNames: ['*'], condition: [{ colName: colName, ruleType: 'like', value: note_no }], order: [] };
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS' && res.data.data) {
           this.query = res.data.data[0];
           this.query.content = JSON.parse(JSON.stringify(this.query.content).replace(/\<img/gi, '<img width=100% height=100% '));
-
           this.getNoteUserInfo(); //查找此贴发帖人信息
           this.getTouxiangPath(); // 查找发帖人头像
           this.getAgreePeopleList(this.note_no);
@@ -169,8 +183,14 @@ export default {
     },
     getAgreePeopleList(note_no) {
       // 查找赞过此贴的人的列表
+      let serviceName = 'srvzhsq_forum_praise_select'
+      let colName = 'note_no'
+      if(this.app==='zhdj'){
+        serviceName = 'srvzhsq_djlt_ftxx_praise_select'
+        colName = 'ftno'
+      }
       let url = this.$api.select + '/sqfw/select/srvzhsq_forum_praise_select';
-      let req = { serviceName: 'srvzhsq_forum_praise_select', colNames: ['*'], condition: [{ colName: 'note_no', ruleType: 'like', value: note_no }] };
+      let req = { serviceName: serviceName, colNames: ['*'], condition: [{ colName: colName, ruleType: 'like', value: note_no }] };
       this.$http.post(url, req).then(res => {
         if (res.data.data) {
           this.agreePepoleList = res.data.data;
@@ -218,7 +238,13 @@ export default {
     // },
     getAgreePeopleForLeaveMessage(msgData) {
       // 获取赞过此条留言的人的列表
-      let url = this.$api.select + '/sqfw/select/srvzhsq_leaveword_praise_select';
+      let serviceName = 'srvzhsq_leaveword_praise_select'
+      let colName = 'leave_no'
+      if(this.appName === 'zhdj'){
+        serviceName = 'srvzhsq_djlt_lyjl_praise_select'
+        colName = 'lyno'
+      }
+      let url = this.$api.select + '/'+this.appName+'/select/' + serviceName;
       let req = {};
       let userInfo = this.userInfo;
       let arr = [];
@@ -228,7 +254,7 @@ export default {
           colNames: ['*'],
           condition: [
             {
-              colName: 'leave_no',
+              colName: 'colName,
               ruleType: 'eq',
               value: msg.leave_no // 留言编号
             }
@@ -259,6 +285,7 @@ export default {
     },
     addAgreePeople() {
       // 在点赞信息表中增加此账号对此贴的点赞信息
+      
       let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_praise_add';
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
@@ -371,11 +398,17 @@ export default {
     },
     async getWriteBackList() {
       // 获取留言列表
-      let url = this.$api.select + '/sqfw/select/srvzhsq_leave_word_select';
+      let leaveServiceName = 'srvzhsq_leave_word_select';
+      let colName = 'note_no';
+      if (this.appName === 'zhdj') {
+        leaveServiceName = 'srvzhsq_djlt_lyjl_select';
+        colName = 'ftno';
+      }
+      let url = this.$api.select + '/' + this.appName + '/select/' + leaveServiceName;
       let req = {
-        serviceName: 'srvzhsq_leave_word_select',
+        serviceName: leaveServiceName,
         colNames: ['*'],
-        condition: [{ colName: 'note_no', ruleType: 'eq', value: this.note_no }],
+        condition: [{ colName: colName, ruleType: 'eq', value: this.note_no }],
         page: { pageNo: 1, rownumber: 10 },
         order: [{ colName: 'create_time', orderType: 'desc' }]
       };
@@ -404,10 +437,14 @@ export default {
         this.remark = '';
         return;
       }
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_add';
+      let serviceName = 'srvzhsq_leave_word_add';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_lyjl_add';
+      }
+      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let req = [
         {
-          serviceName: 'srvzhsq_leave_word_add',
+          serviceName: serviceName,
           condition: [],
           data: [
             {
@@ -425,7 +462,27 @@ export default {
           ]
         }
       ];
-
+      if (this.appName === 'zhdj') {
+        req = [
+          {
+            serviceName: serviceName,
+            condition: [],
+            data: [
+              {
+                bt: this.getDateTime(),
+                ftno: this.note_no,
+                lytime: this.getDateTime(),
+                lylx: '留言',
+                adopt_state: '是',
+                lyr: this.userInfo.user_no,
+                praise_num: 0,
+                head_img_path: this.userInfo.head_img_path ? this.userInfo.head_img_path : '',
+                nr: this.remark
+              }
+            ]
+          }
+        ];
+      }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           uni.showToast({
@@ -464,13 +521,19 @@ export default {
 
     async getPostLeaveMeaasgeAgreeList(PostLeaveMeaasgeList) {
       // 获取此贴下所有留言的点赞记录
-      let url = this.$api.select + '/sqfw/select/srvzhsq_leaveword_praise_select';
+      let serviceName = 'srvzhsq_leaveword_praise_select';
+      let colName = 'note_no';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_lyjl_praise_select';
+        colName = 'ftno';
+      }
+      let url = this.$api.select + '/' + this.appName + '/select/' + serviceName;
       let req = {
-        serviceName: 'srvzhsq_leaveword_praise_select',
+        serviceName: serviceName,
         colNames: ['*'],
         condition: [
           {
-            colName: 'note_no',
+            colName: colName,
             ruleType: 'eq',
             value: this.note_no // 帖子编号
           }
@@ -486,10 +549,18 @@ export default {
           item.agreePeople = [];
           item.agree_icon = '../../static/img/agreeb.png';
           PostLeaveMeaasgeAgreeList.map(item2 => {
-            if (item2.leave_no === item.leave_no && item2.note_no === item.note_no && item2.create_user === this.userInfo.user_no) {
-              // 若此条点赞记录的留言编号和帖子编号与此条留言的一致,并且此条点赞记录的创建人是当前登录用户,则此条留言已点赞状态
-              item.agree_icon = '../../static/img/agreea.png';
-              item.agreePeople.push(item2.create_user);
+            if (this.appName === 'zhdj') {
+              if (item2.lyno === item.lyno && item2.ftno === item.ftno && item2.create_user === this.userInfo.user_no) {
+                // 若此条点赞记录的留言编号和帖子编号与此条留言的一致,并且此条点赞记录的创建人是当前登录用户,则此条留言已点赞状态
+                item.agree_icon = '../../static/img/agreea.png';
+                item.agreePeople.push(item2.create_user);
+              }
+            } else {
+              if (item2.leave_no === item.leave_no && item2.note_no === item.note_no && item2.create_user === this.userInfo.user_no) {
+                // 若此条点赞记录的留言编号和帖子编号与此条留言的一致,并且此条点赞记录的创建人是当前登录用户,则此条留言已点赞状态
+                item.agree_icon = '../../static/img/agreea.png';
+                item.agreePeople.push(item2.create_user);
+              }
             }
           });
         });
@@ -509,8 +580,7 @@ export default {
       console.log(yy + '-' + mm + '-' + dd + ' ' + h + ':' + m + ':' + s);
       return yy + '-' + mm + '-' + dd + ' ' + h + ':' + m + ':' + s;
     }
-  },
-
+  }
 };
 </script>
 
@@ -590,7 +660,7 @@ export default {
     // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     // width: calc(100% - 20upx);
     min-height: 200upx;
-    margin:0 0;
+    margin: 0 0;
     padding: 20upx;
     border-radius: 5px;
     border-top-left-radius: 0;

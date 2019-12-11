@@ -65,6 +65,7 @@
 		},
 		methods:{
 			handleClick (e) {
+				
 				this.$emit('handleClick',e.target.dataset)
 			},
 			handleScroll (e){
