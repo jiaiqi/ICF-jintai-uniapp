@@ -1,7 +1,7 @@
 <template>
   <view class="wrap">
 	  <!-- loading -->
-	  <Loading v-if="successNum<2"></Loading>
+	  <Loading v-if="successNum" @tap="newtab" ></Loading>
 	  <!-- //菜单 -->
 	  <view class="" v-else>
 	  	<view class="bannerlun" >
@@ -18,15 +18,15 @@
 	  	  </view>
 	  	
 	  	<!-- 插图 -->
-	  	<view class="banner" v-if="!swperboole" :style="{backgroundImage: 'url('+imageURL+')'}">
+	  	<view class="banner"   :style="{backgroundImage: 'url('+imageURL+')'}">
 	  		
 	  	</view>
 	  	<!-- 活动 -->
-	  	<view class="">
-	  		<text class="titleall"  v-if="!swperboole" >热门活动</text>
+	  	<view class=""  >
+	  		<text class="titleall"   >热门活动</text>
 	  		<view class="contenthot">
 	  			<view class="hot" v-for="(item,index) in xqpage" :key="index">
-	  				<view class="phopos" @tap="detaile(item)" :style="{backgroundImage: 'url('+imageURL+')'}"></view>
+	  				<view class="phopos" @tap="detaile(item)" :style="{backgroundImage: 'url('+item.slt+')'}"></view>
 	  				<view class="textline">{{item.hdbt}}</view>	
 	  			</view>
 	  		</view>
@@ -59,7 +59,7 @@ export default {
 	  phoarr:[],
 	  xqpage:Object,
 	  imageURL:'../../static/img/bannertwo.png',
-	  successNum:0,
+	  successNum:true,
 	  status:0
     };
   },
@@ -69,7 +69,7 @@ export default {
       let req = { serviceName: 'srvsys_user_menu_select', colNames: ['*'], order: [{colName: "seq", orderType: "asc"}], 
       condition: [{colName:"client_type",ruleType:'like',value:"APP"}] };
       this.$http.post(url, req).then(res => {
-		  this.successNum++
+		 this.successNum=false
 		  console.log(this.successNum,"_________菜单___________")
         if (res.data.data) {
           console.log(res.data.data);
@@ -116,10 +116,15 @@ export default {
       }
     })
     },
+	newtab(){
+		uni.switchTab({
+			url: './smartcity'  
+		})
+	},
 	onPullDownRefresh() {
 			// this.numberlist= this.listhome.length
 			let _self =this
-			_self.rebuileComponents()
+			// _self.rebuileComponents()
 			setTimeout(function() {
 				uni.stopPullDownRefresh();
 				 _self.userInfo = uni.getStorageSync('userInfo');
@@ -128,14 +133,14 @@ export default {
 				_self.hotlist("srvzhsq_djhdjl_djhd_select")
 			}, 1000);
 		},
-		rebuileComponents() {
-		      // 销毁子标签
-		      this.successNum = 3;
-		      // 重新创建子标签
-		      this.$nextTick(() => {
-		        this.successNum = 0;
-		      });
-		    },
+		// rebuileComponents() {
+		//       // 销毁子标签
+		//       this.successNum = 3;
+		//       // 重新创建子标签
+		//       this.$nextTick(() => {
+		//         this.successNum = 0;
+		//       });
+		//     },
 	
 	detaile(item,val){
 		uni.navigateTo({
@@ -203,39 +208,49 @@ export default {
 		req.condition = [];
 		req.order = [];
 		req.proc_data_type="processed"
-		req['page'] = {
+		req['page'] = { 
 			pageNo: 1,
 			rownumber: 7
 		};
 		this.$http.post(url, req).then(res => {
-			this.successNum++
-			console.log(this.successNum,"__________活动__________")
+		this.xqpage = res.data.data;
 			console.log("..................",res.data.data)
-			this.xqpage=res.data.data
+			// this.xqpage=res.data.data
 			let path = 'http://39.98.203.134:8081/file/download?filePath=';
 			let listr= []
 			for(let i in  res.data.data){
 				listr.push(res.data.data[i].slt)
 				
-				// let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
-				// let req = {
-				// 	colNames: ['*'],
-				// 	condition: [
-				// 		{
-				// 			colName: 'file_no',
-				// 			ruleType: 'eq',
-				// 			value: listr[i] // 图编号
-				// 		}
-				// 	],
-				// 	order: null,
-				// 	page: null,
-				// 	serviceName: 'srvfile_attachment_select'
-				// };
-				// let phoarr = []
-				// this.$http.post(url, req).then(resppo => {
-				// 	console.log(resppo)
-				// 	this.phoarr.push({"title":res.data.data[i].hdbt, "img":path+"/20191206/20191206145040958100/20191206145040958101.png"})
-				// })
+				let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+				let req = {
+					colNames: ['*'],
+					condition: [
+						{
+							colName: 'file_no',
+							ruleType: 'eq',
+							value: listr[i] // 图编号
+						}
+					],
+					order: null,
+					page: null,
+					serviceName: 'srvfile_attachment_select'
+				};
+				let phoarr = []
+				this.$http.post(url, req).then(resppo => {
+					console.error(resppo)
+				  if (resppo.data&&resppo.data.data&&resppo.data.data.length>0) {
+				    try{
+				      this.$set(res.data.data[i], 'slt', path + resppo.data.data[0].fileurl);
+				    }catch(e){
+				      //TODO handle the exception
+				      console.log('err',e)
+				    }
+				  }
+				});
+				if (res.data.data[i].slt == null) {
+				  res.data.data[i].slt = this.imageURL;
+				}
+				this.xqpage = res.data.data;
 			}
 			// console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiii",this.phoarr)
 		})

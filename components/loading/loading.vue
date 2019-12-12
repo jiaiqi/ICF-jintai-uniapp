@@ -23,12 +23,15 @@
 				 numberi:0
 			}
 		},
+		
+		// rgba(0, 255, 198, 0.21) 虚症 rgba(0, 255, 198, 0.66)
+		// rgba(0, 253, 255, 0.21) 实证 rgba(0, 253, 255, 0.61)
 		methods:{
 			time(){
 					this.timer = setInterval(() => {
 						this.numberi++
 						console.log(this.numberi)
-						if(this.numberi==8){
+						if(this.numberi==10){
 							this.numberi=0
 							clearInterval(this.timer)
 							this.img="../../static/img/failed.png"

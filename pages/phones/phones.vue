@@ -1,6 +1,16 @@
 <template>
-	<view>
-		<phone-directory :phones="phones" @paramClick="paramClick"></phone-directory>
+	<view class="conent">
+	
+		<phone-directory  v-if="!listBoole"   :phones="phones" @paramClick="paramClick"></phone-directory>
+		
+		<view class="loadinga" v-else>
+			<input disabled="false" class="phone-main-input" type="text" placeholder="请输入要搜索的联系人"/>
+			<view class="titles">党组织通讯录</view>
+				<view class="" style="color: #BEBEBE;text-align: center;margin-top:8px">
+					<image style="height: 25px;width: 25px;" src="../../static/img/loading.gif" mode=""></image>
+					<view class="">	数据加载中</view>
+				</view> 
+		</view>
 	</view>
 </template>
 
@@ -15,7 +25,8 @@
 			return {
 				phones:{
 					"党组织通讯录": []
-				}
+				},
+				listBoole:true
 			
 			}
 		},
@@ -45,7 +56,7 @@
 					req.order=[]
 					// req.page={pageNo: 1, rownumber: 60}
 					this.$http.post(url, req).then(res => {
-						
+						this.listBoole=false
 						let listserve = (res.data.data)
 						var arrList=[]
 						for( var i=0; i<listserve.length ; i++){
@@ -70,5 +81,30 @@
 </script>
 
 <style>
-
+	.conent{
+		background: #FFFFFF;
+	}
+.loadinga{
+	height: 110upx;
+	width: 100vw;
+	background: #FFFFFF;
+}
+.phone-main-input{
+	height: 60upx;
+	font-size:28upx;
+	border: 1px solid #e5e5e5;
+	border-radius: 3px;
+	padding: 10upx 20upx 10upx 20upx;
+	margin: 5px 8px ;
+}
+.titles{
+	width: 100%;
+	    height: 46px;
+	    line-height: 46px;
+	    font-size: 16px;
+	    font-weight: bold;
+	    padding: 0 10px;
+	    border-bottom: 1px solid #e5e5e5;
+		background-color: #eee;
+}
 </style>

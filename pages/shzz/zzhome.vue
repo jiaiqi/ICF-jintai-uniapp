@@ -4,7 +4,7 @@
 			<text class="fontstext">志愿者与社会组织</text>
 			<button type="default" size="mini" class="btn">新增</button> 
 		</view> -->
-		<view class="">
+		<view class=""> 
 			<image src="../../static/img/sszz.png" class="banner" mode=""></image>
 		</view>
 
@@ -12,7 +12,7 @@
 			<view class="gray-tab">
 				<view class="textbar">
 					<text class="leftborder">{{label}}</text>
-					<text class="btnmenu" @click="audiobtn(serves)" >待我审批</text>
+					<text class="btnmenu" v-if="menuAudio>0" @click="audiobtn(serves)" >待我审批</text>
 				</view>
 			</view>
 			<view class="" v-if="shows">
@@ -85,6 +85,7 @@ export default {
 		return{
 			bordermore:true,
 			shows:true,
+			menuAudio:0,
 			bordermores:true,
 			numberlist:5,
 			listtar:'',
@@ -135,6 +136,23 @@ export default {
 		    let cols = res.data.data;
 		    return cols;
 		  }
+		},
+		getMenu(){
+			
+			let url =this.$api.select + "/sqfw/select/srvzhsq_activity_arrange_select"
+			let req = {};
+			req.serviceName ="srvzhsq_activity_arrange_select";
+			req.colNames = ['*'];
+			req.condition = [];
+			req.order = [];
+			req.proc_data_type="wait"
+			req['page'] = {
+				pageNo: 1,
+				rownumber: 10
+			};
+			this.$http.post(url, req).then(res => {
+					this.menuAudio=res.data.data.length
+			})
 		},
 		more(val){
 			uni.navigateTo({
@@ -188,7 +206,20 @@ export default {
 			rownumber: this.numberlist
 		};
 		this.$http.post(url, req).then(res => {
-			this.listhome =res.data.data
+			console.error(res)
+			
+			let newarr =[]
+			for(let i  in res.data.data ){
+				if(res.data.data[i].proc_status.indexOf("完成")==-1){
+					delete  res.data.data[i]
+				}
+			}
+			for(let i  in res.data.data ){
+				if(res.data.data[i].proc_status!==''){
+					newarr.push(res.data.data[i])
+				}
+			}
+			this.listhome =newarr
 			this.shows=false
 		})
 	},
@@ -218,6 +249,8 @@ export default {
 			uni.setNavigationBarTitle({
 				title: listdatas.label
 			});
+			
+			this.getMenu()
 		}
 	}
 

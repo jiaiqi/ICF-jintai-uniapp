@@ -58,7 +58,7 @@
       fnClick(type){
         if(type == 'modify'){
           uni.navigateTo({
-            url:'/pages/user/modify'
+            url:'./modify'
           })
         }
       },

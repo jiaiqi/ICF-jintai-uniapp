@@ -7,10 +7,10 @@
       </view>
         <view class="category-children" v-if="item.arrowDirection!=='arrowup'">
          <uni-grid class="uni-grid" :options="item.children" column-num="3" :show-border="false" :square="true" @click="toCategory"></uni-grid>
-          <!-- <view class="category-children-item" v-for="child in item.children" :key="child.id"> -->
-            <!-- <view class="category-children-title" @click="toCategory(child)">{{ child.column_title }}</view> -->
+          <view class="category-children-item" v-for="child in item.children" :key="child.id">
+            <view class="category-children-title" @click="toCategory(child)">{{ child.column_title }}</view>
             <!-- <uni-badge text="1" type="primary" style="text-align: center;"></uni-badge> -->
-          <!-- </view> -->
+          </view>
         </view>
     </view>
   </view>
@@ -27,7 +27,7 @@ export default {
   components: {uniIcons,uniBadge,uniGrid,uniGridItem},
   data() {
     return {
-      arrowDirection:'arrowdown'
+      arrowDirection:'arrowdown',
     };
   },
   methods:{
@@ -62,15 +62,17 @@ export default {
     }
   },
   props: {
-    listData: Array
+    listData: Array,
+    query:Object
   },
-  onLoad() {},
+  onLoad(option) {
+    console.log(option.query)
+    if(option.query){
+      console.log(option.query)
+      this.query = JSON.parse(option.query)
+    }
+  },
   mounted() {
-    let self = this;
-    this.$nextTick().then(function() {
-      // DOM 更新了
-      console.log('aaa', self.listData);
-    });
   }
 };
 </script>

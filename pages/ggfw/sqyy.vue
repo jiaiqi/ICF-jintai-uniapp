@@ -3,21 +3,21 @@
 		
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">公租房名称：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">公租房</text>
 			</view>
 			<text class="lineh" style="">{{titlename}}</text>
 		</view>
 		
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">申请人：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">申请人</text>
 			</view>
-			<input type="text" v-model="people" value="" />
+			<input type="text" v-model="people" value="" placeholder="请输入内容" />
 		</view>
 		
 		<view class="content-box" v-if="false">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">用户编号：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">用户编号</text>
 			</view>
 			<input type="text" v-model="peadmin" disabled="disabled" style="background: #EEEEEE;"/>
 		</view>
@@ -25,10 +25,10 @@
 		
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">性别：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">性别</text>
 			</view>
 			   <radio-group @change="change">
-					<label class="uni-list-cell uni-list-cell-pd" >
+					<label class="uni-list-cell uni-list-cell-pd" style="margin-top: 6px;" >
 						<view>
 							<radio style="transform:scale(0.7);"  value="男"  /><text style="margin-right: 40px;">男</text>
 							<radio style="transform:scale(0.7)" value="女"  /><text >女</text>
@@ -39,35 +39,35 @@
 		</view>
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">籍贯：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">籍贯</text>
 			</view>
-			<input type="text" v-model="place" value="" />
+			<input type="text" v-model="place" value="" placeholder="请输入内容" />
 		</view>
 		
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">身份证号：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">身份证号</text>
 			</view>
-			<input type="text" v-model="idcart" value="" />
+			<input type="text" v-model="idcart" value="" placeholder="请输入内容" />
 		</view>
 		
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">联系电话：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">联系电话</text>
 			</view>
-			<input type="text" v-model="phone" value="" />
+			<input type="text" v-model="phone" value="" placeholder="请输入内容" />
 		</view>
 		<view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">现居地：</text>
+				<text class="texts" style="color: red;">*</text><text class="texts">现居地</text>
 			</view>
-			<input type="text" v-model="dresss" value="" />
+			<input type="text" v-model="dresss" value="" placeholder="请输入内容" />
 		</view>
 		
 		
 		<!-- <view class="content-box">
 			<view class="content-width">
-				<text class="texts" style="opacity: 0;">*</text><text class="texts">材料清单：</text>
+				<text class="texts" style="opacity: 0;">*</text><text class="texts">材料清单</text>
 			</view>
 			<textarea value="" class="serse" placeholder="材料清单" />
 		</view>
@@ -210,27 +210,31 @@
 <style scoped>
 	.content{
 		width: 100%;
-		background: #FFFFFF;
-		padding: 35upx;
+		background: #F1F1F1;
+		color: #333;
 	}
 	input,.input{
-		border: 1px solid #c5464a;
-		border-radius: 5px 5px 5px 5px;
-		height: 22px;
+		/* border: 1px solid #c5464a; */
+		/* border-radius: 5px 5px 5px 5px; */
+		height: 30px;
 		width: 60% !important;
-		font-size: 14px;
+		font-size: 15px;
 		padding: 2px 5px;
-		margin: 10px 0;
+		margin-top: calc(60upx - 15px);
 	}
 	.lineh{
-		line-height: 96upx;
+		line-height: 120upx;
 	}
 	.content-box{
 		display: flex;
+		background: #FFFFFF;
+		padding: 0 35upx;
+		height: 120upx;
+		margin-top: 30upx;
 	}
 	.texts{
-		line-height: 48px;
-		
+		line-height: 120upx;
+			font-size: 15px;
 	}
 	.content-width{
 		width: 28%;

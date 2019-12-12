@@ -15,10 +15,7 @@
 </template>
 
 <script>
-// import Emitter from '@/static/js/mixins/emitter.js';
-import fromView from '../form/form.vue';
 export default {
-  components: { fromView },
   name: 'selectPeopleInfo',
   data() {
     return {
@@ -79,7 +76,6 @@ export default {
     },
     getColumnsData(colArr) {
       let formData = this.formData;
-      // console.log(Object.keys(formData))
       let arr = Object.keys(formData);
       arr.map(arrItem => {
         colArr.map(colArrItem => {

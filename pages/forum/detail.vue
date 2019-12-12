@@ -64,7 +64,7 @@
       <!-- 主贴点赞 -->
       <div class="main_agree">
         <div class="agree">
-          <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num, query.note_no)"></image>
+          <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num)"></image>
           <uni-badge type="error" :text="query.praise_num ? query.praise_num : '0'"></uni-badge>
         </div>
       </div>
@@ -254,7 +254,7 @@ export default {
           colNames: ['*'],
           condition: [
             {
-              colName: 'colName,
+              colName: 'colName',
               ruleType: 'eq',
               value: msg.leave_no // 留言编号
             }
@@ -285,11 +285,17 @@ export default {
     },
     addAgreePeople() {
       // 在点赞信息表中增加此账号对此贴的点赞信息
-      
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_praise_add';
+      let serviceName = 'srvzhsq_forum_praise_add'
+      if(this.appName === 'zhdj'){
+        serviceName = 'srvzhsq_djlt_ftxx_praise_add'
+      }
+      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
-      let req = [{ serviceName: 'srvzhsq_forum_praise_add', condition: [], data: [{ note_no: this.note_no, praise_user: userInfo.user_no }] }];
+      let req = [{ serviceName: serviceName, condition: [], data: [{ note_no: this.note_no, praise_user: userInfo.user_no }] }];
+      if(this.appName === 'zhdj'){
+       req = [{ serviceName: serviceName, condition: [], data: [{ ftno: this.note_no, praise_user: userInfo.user_no }] }]
+      }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
@@ -299,12 +305,18 @@ export default {
     },
     delAgreePeople() {
       // 在点赞信息表中删除此账号对此贴的点赞信息
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_praise_delete';
+      let serviceName = 'srvzhsq_forum_praise_delete'
+      let colName = 'note_no'
+      if(this.appName = 'zhdj'){
+        serviceName = 'srvzhsq_djlt_ftxx_praise_delete'
+        colName = 'ftno'
+      }
+      let url = this.$api.select + '/'+this.appName+'/operate/' + serviceName;
       let userInfo = this.userInfo;
       let req = [
         {
-          serviceName: 'srvzhsq_forum_praise_delete',
-          condition: [{ colName: 'praise_user', ruleType: 'eq', value: userInfo.user_no }, { colName: 'note_no', ruleType: 'eq', value: this.note_no }]
+          serviceName: serviceName,
+          condition: [{ colName: 'praise_user', ruleType: 'eq', value: userInfo.user_no }, { colName: colName, ruleType: 'eq', value: this.note_no }]
         }
       ];
       this.$http.post(url, req).then(res => {
@@ -316,14 +328,18 @@ export default {
     },
     addAgree(item, num, id) {
       console.log('-------触发回帖点赞-------\n', item);
+      let leave_no = ''
+      if(this.appName=='zhdj'){
+        leave_no = item.lyno
+      }else{
+        leave_no = item.leave_no
+      }
       if (item.agreePeople.indexOf(this.userInfo.user_no) != -1) {
         //如果此评论点赞人列表中有当前登录用户,已经点过赞,则此次点赞事件为取消点赞
-        // item['agree_status'] = false;
         num--;
-        this.delDiscussAgreePeople(item.leave_no);
+        this.delDiscussAgreePeople(leave_no);
       } else {
-        // item['agree_status'] = true;
-        this.addDiscussAgreePeople(item.leave_no);
+        this.addDiscussAgreePeople(leave_no);
         num++;
       }
       this.updateLeaveMessageInfo(id, num);
@@ -335,8 +351,12 @@ export default {
      */
     updateLeaveMessageInfo(id, num) {
       // 修改留言信息
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_update';
-      let req = [{ serviceName: 'srvzhsq_leave_word_update', condition: [{ colName: 'id', ruleType: 'eq', value: id }], data: [{ praise_num: num }] }];
+      let serviceName = 'srvzhsq_leave_word_update'
+      if(this.appName === 'zhdj'){
+        serviceName = 'srvzhsq_djlt_lyjl_update'
+      }
+      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
+      let req = [{ serviceName:serviceName, condition: [{ colName: 'id', ruleType: 'eq', value: id }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           this.getWriteBackList();
@@ -345,12 +365,16 @@ export default {
     },
     delDiscussAgreePeople(leave_no) {
       // 删除当前登录账号对当前评论的点赞记录
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leaveword_praise_delete';
+      let serviceName = 'srvzhsq_leaveword_praise_delete'
+      if(this.appName === 'zhdj'){
+        serviceName = 'srvzhsq_djlt_lyjl_praise_delete'
+      }
+      let url = this.$api.select + '/'+this.appName+'/operate/' +serviceName;
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
       let req = [
         {
-          serviceName: 'srvzhsq_leaveword_praise_delete',
+          serviceName: serviceName,
           condition: [
             { colName: 'leave_no', ruleType: 'eq', value: leave_no },
             { colName: 'note_no', ruleType: 'eq', value: this.note_no },
@@ -358,6 +382,18 @@ export default {
           ]
         }
       ];
+      if(this.appName === 'zhdj'){
+        req = [
+          {
+            serviceName: serviceName,
+            condition: [
+              { colName: 'lyno', ruleType: 'eq', value: leave_no },
+              { colName: 'ftno', ruleType: 'eq', value: this.note_no },
+              { colName: 'praise_user', ruleType: 'eq', value: this.userInfo.user_no }
+            ]
+          }
+        ];
+      }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           console.log('删除成功');
@@ -366,10 +402,17 @@ export default {
     },
     addDiscussAgreePeople(leave_no) {
       // 增加当前登录账号对当前评论的点赞记录
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_leaveword_praise_add';
+      let serviceName = 'srvzhsq_leaveword_praise_add'
+      if(this.appName === 'zhdj'){
+        serviceName = 'srvzhsq_djlt_lyjl_praise_add'
+      }
+      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
       let req = [{ serviceName: 'srvzhsq_leaveword_praise_add', condition: [], data: [{ leave_no: leave_no, praise_user: userInfo.user_no }] }];
+      if(this.appName === 'zhdj'){
+         req = [{ serviceName: 'srvzhsq_djlt_lyjl_praise_add', condition: [], data: [{ lyno: leave_no, praise_user: userInfo.user_no }] }];
+      }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           console.log('增加成功');
@@ -388,8 +431,14 @@ export default {
         num--;
         this.delAgreePeople();
       }
-      let url = this.$api.select + '/sqfw/operate/srvzhsq_forum_note_update';
-      let req = [{ serviceName: 'srvzhsq_forum_note_update', condition: [{ colName: 'note_no', ruleType: 'eq', value: no }], data: [{ praise_num: num }] }];
+      let serviceName = 'srvzhsq_forum_note_update'
+      let colName = 'note_no'
+      if(this.appName === 'zhdj'){
+        serviceName = 'srvzhsq_djlt_ftxx_update'
+        colName = 'ftno'
+      }
+      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
+      let req = [{ serviceName: serviceName, condition: [{ colName: colName, ruleType: 'eq', value: this.note_no }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           this.getMainInfo();
@@ -501,8 +550,12 @@ export default {
         success: res => {
           if (res.confirm) {
             console.log('用户点击确定');
-            let url = this.$api.select + '/sqfw/operate/srvzhsq_leave_word_delete';
-            let req = [{ serviceName: 'srvzhsq_leave_word_delete', condition: [{ colName: 'id', ruleType: 'in', value: id }] }];
+            let serviceName = 'srvzhsq_leave_word_delete'
+            if(this.appName==='zhdj'){
+              serviceName = 'srvzhsq_djlt_lyjl_delete'
+            }
+            let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
+            let req = [{ serviceName: serviceName, condition: [{ colName: 'id', ruleType: 'in', value: id }] }];
             this.$http.post(url, req).then(ress => {
               if (ress.data.state === 'SUCCESS') {
                 uni.showToast({

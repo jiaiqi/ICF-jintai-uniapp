@@ -93,6 +93,7 @@
 
 <style>
 	.cmd-page-body {
+    height: 100%;
 		position: absolute;
 		top: 0;
 		left: 0;

@@ -12,12 +12,6 @@
 		<!-- top是指mescroll的padding-top的数值,单位upx. 目的是使下拉布局往下偏移,不然会被悬浮菜单遮住 -->
 		<mescroll-uni top="120" :up="upOption" @up="loadData" @down="downCallback" @init="mescrollInit" @emptyclick="emptyClick">
 			<!-- 数据列表 -->
-			<!-- <view class="data-li" v-for="pd in listData.list" :key="pd.id">
-				<image class="pd-img" v-if="pd.src" :src="pd.src" mode="widthFix"/>
-				<view class="pd-name">{{pd.title.value}}</view>
-				<text class="pd-price">{{pd.title.label}}</text>
-				<text class="pd-sold">已售{{pd.pdSold}}件</text>
-			</view> -->
 			<view v-if="listData.list.length > 0" v-for="(item,index) in listData.list" :key="index" :info="item" class='my-unit'>
 				<view v-if="item.src !== undefined" class="unit-content-left">
 					<image :src="item.src" mode=""></image>
@@ -184,11 +178,6 @@
 			  req.colNames = ['*']
 			  req.condition = self.conds
 			  req['proc_data_type'] = self.tabType
-			 //  if (cond) {
-				// req.condition = cond
-			 //  } else {
-				// req.condition = []
-			 //  }
 			  req.order[0].colName = 'id'
 			  req.order[0].orderType = 'desc'
 			  req['page'] = {
@@ -208,8 +197,6 @@
 						})
 					}
 				    self.total = res.data.page.total
-				    // let resNum = response.data.data.length
-				    // self.total = res.data.page.total
 				    console.log('rep>>>' + rData)
 				    let reqData = []
 					let promise = new Promise((resolve,reject) => {
@@ -254,7 +241,6 @@
 				// 	title:'点击了按钮,具体逻辑自行实现'
 				// })
 			},
-			
 			// 切换菜单
 			changeTab (type) {
 				if (this.tabType !== type) {
@@ -263,54 +249,6 @@
 					this.mescroll.resetUpScroll()// 刷新列表数据
 				}
 			},
-			
-			/*联网加载列表数据
-			在您的实际项目中,请参考官方写法: http://www.mescroll.com/uni.html#tagUpCallback
-			请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
-			实际项目以您服务器接口返回的数据为准,无需本地处理分页.
-			* */
-			// getListDataFromNet(pageNum,pageSize,successCallback,errorCallback) {
-			// 	//延时一秒,模拟联网
-			// 	setTimeout(()=> {
-			// 		try{
-			// 			var listData = []
-			// 			// tabType 全部商品0; 奶粉1; 面膜2; 图书3;
-			// 			if (this.tabType === 0) {
-			// 				// 全部商品 (模拟分页数据)
-			// 				for (var i = (pageNum - 1) * pageSize; i < pageNum * pageSize; i++) {
-			// 					if (i === mockData.length) break
-			// 					listData.push(mockData[i])
-			// 				}
-			// 			} else if (this.tabType === 1) {
-			// 				// 奶粉
-			// 				for (var n = 0; n < mockData.length; n++) {
-			// 					if (mockData[n].pdName.indexOf('奶粉') !== -1) {
-			// 						listData.push(mockData[n])
-			// 					}
-			// 				}
-			// 			}else if (this.tabType === 2) {
-			// 				// 面膜
-			// 				for (var j = 0; j < mockData.length; j++) {
-			// 					if (mockData[j].pdName.indexOf('面膜') !== -1) {
-			// 						listData.push(mockData[j])
-			// 					}
-			// 				}
-			// 			} else if (this.tabType === 2) {
-			// 				// 图书
-			// 				for (var k = 0; k < mockData.length; k++) {
-			// 					if (mockData[k].pdName.indexOf('图书') !== -1) {
-			// 						listData.push(mockData[k])
-			// 					}
-			// 				}
-			// 			}
-			// 			// 回调
-			// 			successCallback && successCallback(listData);
-			// 		} catch (e) {
-			// 			//联网失败的回调
-			// 			errorCallback && errorCallback();
-			// 		}
-			// 	},1000)
-			// }
 		}
 	}
 </script>

@@ -71,9 +71,9 @@ fly.interceptors.request.use((request) => {
     }
     return request
   } else {
-    uni.reLaunch({
-      url: '/pages/login/login'
-    });
+    // uni.reLaunch({
+    //   url: '/pages/login/login'
+    // });
   }
 })
 
@@ -81,17 +81,23 @@ fly.interceptors.request.use((request) => {
 fly.interceptors.response.use((res) => {
     // 对响应数据做些事
     if (res.data.resultCode === "0011") {
+      uni.reLaunch({
+        url: '/pages/login/login'
+      });
       // return res
     }else if(res.data.resultCode === '0000'&&res.data.state==='FAILURE'){
       uni.showModal({
         title:"警告",
-        content:"您没有访问此页面或者进行此操作的权限,点击确认返回上一级页面",
-        showCancel:false,
+        cancelText:"登录",
+        confirmText:"返回",
+        content:"无权限访问\n点击返回按钮返回上一级页面\n点击登录跳转到登录页面",
         success: (res) => {
          if(res.confirm){
            uni.navigateBack();
          } else if(res.cancel){
-           
+           uni.reLaunch({
+             url:'/pages/login/login'
+           })
          }
         }
       })

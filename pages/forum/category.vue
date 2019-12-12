@@ -1,5 +1,5 @@
 <template>
-  <view class="category"><ForumCategory :listData="categoryList"></ForumCategory></view>
+  <view class="category"><ForumCategory :listData="categoryList" :query="query"></ForumCategory></view>
 </template>
 
 <script>
@@ -9,7 +9,8 @@ export default {
   components: { ForumCategory },
   data() {
     return {
-      categoryList: []
+      categoryList: [],
+      query:{}
     };
   },
   methods: {
@@ -67,8 +68,12 @@ export default {
         });
     }
   },
-  onLoad() {
+  onLoad(option) {
     this.getCategory();
+    if(option.query){
+      this.query = JSON.parse(option.query)
+      console.log(this.query)
+    }
   }
 };
 </script>

@@ -1,9 +1,9 @@
 <template>
 	<view class="content-gggs">
-		<image :src="src" mode="" class="banners"></image>、
+		<image :src="src" mode="" class="banners"></image>
 		<view class="" style="display: flex;justify-content: space-between;">
 			<view class="titleone" >{{titletop}}</view>
-			<view class="btn" v-if="titlebar=='hdap'" @click="audit()">待我审批</view>
+			<view class="btn" v-if="(titlebar=='hdap')&&menuAudio>0" @click="audit()">待我审批</view>
 		</view>
 		
 		
@@ -86,6 +86,7 @@
 				datalisttwost:[],
 				titlebar:'',
 				titletop:'',
+				menuAudio:0,
         query:'',
 			}
 		},
@@ -113,6 +114,23 @@
 					this.datalist=res.data.data
 					console.log(res.data.data)
 					this.listshow=false
+				})
+			},
+			getMenu(){
+				
+				let url =this.$api.select + "/sqfw/select/srvzhsq_activity_arrange_select"
+				let req = {};
+				req.serviceName ="srvzhsq_activity_arrange_select";
+				req.colNames = ['*'];
+				req.condition = [];
+				req.order = [];
+				req.proc_data_type="wait"
+				req['page'] = {
+					pageNo: 1,
+					rownumber: 10
+				};
+				this.$http.post(url, req).then(res => {
+						this.menuAudio=res.data.data.length
 				})
 			},
 			audit(){
@@ -180,6 +198,7 @@
 			}
 			this.getdata(liststr)
 			// this.getdatalist()
+			this.getMenu()
 		}
 	}
 </script>
@@ -187,6 +206,7 @@
 <style>
 	.content-gggs{
 		width: 100%;
+    background-color: #fff;
 	}
 	.baobtn{
 		position: relative;

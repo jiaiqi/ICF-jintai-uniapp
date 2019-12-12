@@ -1,33 +1,33 @@
 {
   "pages": [
     //pages数组中第一项表示应用启动页,
-	{
-	  "path": "pages/guide/index",
-	  "style": {
-	      "navigationBarTitleText": "启动页",
-	      "app-plus": {
-	          "titleNView": false
-	      },
-	      "navigationStyle": "custom"
-	  }
-	},
-	{
-	    "path": "pages/guide/list",
-	    "style": {
-	        "navigationBarTitleText": "启动介绍页",
-	        "app-plus": {
-	            "titleNView": false,
-	            "bounce": "none"
-	        },
-	        "navigationStyle": "custom"
-	    }
-	},
+    {
+      "path": "pages/guide/index",
+      "style": {
+        "navigationBarTitleText": "启动页",
+        "app-plus": {
+          "titleNView": false
+        },
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/guide/list",
+      "style": {
+        "navigationBarTitleText": "启动介绍页",
+        "app-plus": {
+          "titleNView": false,
+          "bounce": "none"
+        },
+        "navigationStyle": "custom"
+      }
+    },
     {
       "path": "pages/SmartCity/smartcity",
       "style": {
         "navigationBarTitleText": "首页",
         "navigationBarBackgroundColor": "#ED292A",
-		"enablePullDownRefresh": true
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -48,17 +48,6 @@
       "path": "pages/pwd/pwd",
       "style": {
         "navigationBarTitleText": "忘记密码"
-      }
-    },
-    {
-      "path": "pages/user/user",
-      "style": {
-        "navigationBarTitleText": "我的",
-        "app-plus": {
-          "titleNView": {
-            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
-          }
-        }
       }
     },
     {
@@ -86,8 +75,7 @@
         "enablePullDownRefresh": true,
         "onReachBottomDistance": 20,
         "app-plus": {
-          "titleNView": {
-          }
+          "titleNView": {}
         }
       }
     }, {
@@ -109,16 +97,6 @@
       "style": {
         "navigationBarTitleText": "通讯录"
       }
-    }, {
-      "path": "pages/zhdj/zhdj",
-      "style": {
-        // "navigationBarTitleText": "智慧党建",
-        "app-plus": {
-          "titleNView": {
-            // "type": "transparent"
-          }
-        }
-      }
     },
     {
       "path": "pages/zhdj/gggs",
@@ -126,35 +104,18 @@
 
     },
     {
-      "path": "pages/djpx/djpx",
-      "style": {
-        "navigationBarTitleText": "党建培训",
-        "app-plus": {
-          "titleNView": {
-            "type": "transparent"
-            // "buttons": [{
-            // 		"type": "share"
-            // 	},
-            // 	{
-            // 		"type": "favorite"
-            // 	}
-            // ]
-          }
-        }
-      }
-    }, {
       "path": "pages/shzz/zzhome",
       "style": {
 
       }
     },
-    {
-      "path": "pages/sqfw/sqfw",
-      "style": {
-        "navigationBarTitleText": "社区服务",
-        "navigationBarBackgroundColor": "#FB6A6A"
-      }
-    },
+    // {
+    //   "path": "pages/sqfw/sqfw",
+    //   "style": {
+    //     "navigationBarTitleText": "社区服务",
+    //     "navigationBarBackgroundColor": "#FB6A6A"
+    //   }
+    // },
     {
       "path": "pages/sqfw/dsf",
       "style": {
@@ -162,22 +123,22 @@
         "navigationBarBackgroundColor": "#FB6A6A"
       }
     },
-	{
-	  "path": "pages/audit/audit",
-	  "style": {
-	    "navigationBarTitleText": "审核"
-	  }
-	},
-	{
-	  "path": "pages/audit/auditList",
-	  "style": {
-	    "navigationBarTitleText": "待审核",
-		"enablePullDownRefresh": true,
-		"app-plus": {
-		  "titleNView": false
-		}
-	  }
-	},
+    {
+      "path": "pages/audit/audit",
+      "style": {
+        "navigationBarTitleText": "审核"
+      }
+    },
+    {
+      "path": "pages/audit/auditList",
+      "style": {
+        "navigationBarTitleText": "待审核",
+        "enablePullDownRefresh": true,
+        "app-plus": {
+          // "titleNView": false
+        }
+      }
+    },
     {
       "path": "pages/sqfw/dsftwo",
       "style": {
@@ -299,16 +260,8 @@
 
     {
       "path": "pages/normal/add/add",
-      "style": {}
-    }, {
-      "path": "pages/bmfw/bmfw",
       "style": {
-
-        "navigationBarTitleText": "便民服务",
-        "app-plus": {
-          "animationType": "fade-in",
-          "animationDuration": 300
-        }
+        "navigationBarTitleText": "新增"
       }
     },
     {
@@ -326,7 +279,7 @@
       "style": {
         "navigationBarTitleText": "居民信息详情"
       }
-    },  {
+    }, {
       "path": "pages/forum/forum",
       "style": {
         "navigationBarTitleText": "社区论坛",
@@ -365,12 +318,6 @@
         "navigationBarTitleText": "申请流程"
       }
     },
-    // {
-    //   "path": "components/l-file/l-file",
-    //   "style": {
-    // 	   "navigationBarTitleText": "申请流程"
-    //   }
-    // },
     {
       "path": "pages/ggfw/sqyy",
       "style": {
@@ -401,46 +348,13 @@
       "style": {
         "navigationBarTitleText": "修改密码",
         "app-plus": {
-          "animationType": "fade-in",
-          "animationDuration": 300
-        }
-      }
-    }, {
-      "path": "pages/djForum/djForum", //党建论坛
-      "style": {
-        "navigationBarTitleText": "党建论坛",
-        "app-plus": {
-          "animationType": "fade-in",
-          "animationDuration": 300,
-          "titleNView": {
-            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
-          }
-        }
-      }
-    },
-    {
-      "path": "pages/djForum/add", //党建论坛发帖
-      "style": {
-        "navigationBarTitleText": "发帖",
-        "app-plus": {
+          "titleNView": false, //禁用原生导航栏
           "animationType": "fade-in",
           "animationDuration": 300
         }
       }
     },
     {
-      "path": "pages/djForum/detail", //党建论坛详情
-      "style": {
-        "navigationBarTitleText": "详情",
-        "app-plus": {
-          "animationType": "fade-in",
-          "animationDuration": 300,
-          "titleNView": {
-            "type": "transparent" //透明渐变导航栏 nvue页面暂不支持
-          }
-        }
-      }
-    }, {
       "path": "pages/forum/myPost", // 我的帖子
       "style": {
         "navigationBarTitleText": "我的帖子"
@@ -460,16 +374,17 @@
       "style": {
         "navigationBarTitleText": "栏目"
       }
-    }
-    , {
+    }, {
       "path": "pages/CommunityServices/CommunityServices",
       "style": {
         "navigationBarTitleText": "社区服务",
-		"enablePullDownRefresh": true
+        "enablePullDownRefresh": true
       }
     }, {
       "path": "pages/SecondaryPage/SecondaryPage",
-      "style": {}
+      "style": {
+        "navigationBarTitleText": "菜单"
+      }
     }
   ],
   "tabBar": {

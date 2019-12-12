@@ -8,13 +8,13 @@
       <view class="input-row "><m-input class="m-input" type="text" clearable v-model="account.name" placeholder="请输入账号"></m-input></view>
       <view class="input-row"><m-input type="password" displayable v-model="account.password" placeholder="请输入密码"></m-input></view>
     </view>
-    <navigator url="../user/forgot" style="color: #9E9E9E;text-align: right;margin-right: 40px;margin-top: 5px;">忘记密码?</navigator>
+    <navigator url="../pwd/pwd" style="color: #9E9E9E;text-align: right;margin-right: 40px;margin-top: 5px;">忘记密码?</navigator>
     <view class="btn-row">
       <!-- <button type="primary" class="primary" @tap="bindLogin">登录公众号</button> -->
       <button type="primary" class="primary" style="background-color: #E51C23;" @tap="accoutLogin">登录</button>
       <view class="barbottom" style="">
         <text style="color: #9E9E9E;">还没有账号？</text>
-        <navigator url="../user/register">注册账号</navigator>
+        <navigator url="../reg/reg">注册账号</navigator>
       </view>
       <!-- <button type="primary" class="primary" style="background-color: #E51C23;" >游客访问</button> -->
     </view>

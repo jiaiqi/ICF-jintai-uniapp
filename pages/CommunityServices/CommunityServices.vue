@@ -1,7 +1,7 @@
 <template>
   <view class="wrap">
 	  <!-- loading -->
-	  <Loading v-if="successNum<2"></Loading>
+	  <Loading v-if="successNum"></Loading>
 	  <view class="" v-else>
 	  	<view class="bannerlun"><bw-swiper :swiperList="swperboole ? swiperList : swiperLists" style="width:100%;"></bw-swiper></view>
 	  	<uni-grid :column="4" :showBorder="false">
@@ -10,10 +10,10 @@
 	  	  </uni-grid-item>
 	  	</uni-grid>
 	  	<!-- 插图 -->
-	  	<view class="banner" v-if="!swperboole" :style="{ backgroundImage: 'url(' + imageURL + ')' }"></view>
+	  	<view class="banner"  :style="{ backgroundImage: 'url(' + imageURL + ')' }"></view>
 	  	<!-- 活动 -->
-	  	<view class="">
-	  	  <text class="titleall"  v-if="!swperboole" >热门活动</text>
+	  	<view class="" >
+	  	  <text class="titleall"  v-if="xqpage" >热门活动</text>
 	  	  <view class="contenthot">
 	  	    <view class="hot" v-for="(item, index) in xqpage" :key='index'>
 	  	      <view class="phopos" @tap="detaile(item)" :style="{ backgroundImage: 'url(' + item.activity_img + ')' }"></view>
@@ -43,9 +43,9 @@ export default {
       swperboole: true,
       swiperLists: [],
       phoarr: [],
-      xqpage: Object,
+      xqpage: [],
       imageURL: '../../static/img/bannerthree.jpg',
-	  successNum:0 ,//请求成功次数
+	  successNum:true ,//请求成功次数
 	  status:0
     };
   },
@@ -59,8 +59,7 @@ export default {
         condition: [{ colName: 'client_type', ruleType: 'like', value: 'APP' }]
       };
       this.$http.post(url, req).then(res => {
-		  this.successNum++
-		  console.log(this.successNum,"____________________")
+		  this.successNum=false
         if (res.data.data) {
           let menuData = res.data.data;
           let children = [];
@@ -99,6 +98,7 @@ export default {
         }
       }).catch(err=>{
         console.log('err',err)
+        this.successNum = false
         if(err.status==0){
           this.getMenusList()
         }
@@ -123,33 +123,30 @@ export default {
     // 获取轮播图路径
     getBannerList() {
       // 获取轮播图编号
-      let url = 'http://39.98.203.134:8081/zhdj/select/srvzhsq_djhdjl_djhd_select';
+      let url = this.$api.select+ '/sqfw/select/srvzhsq_activity_record_select';
       let req = {};
-      req.serviceName = 'srvzhsq_djhdjl_djhd_select';
+      req.serviceName = 'srvzhsq_activity_record_select';
       req.colNames = ['*'];
       req.condition = [];
       req.order = [];
       req['page'] = {
         pageNo: 1,
-        rownumber: 10
+        rownumber: 5
       };
       this.$http.post(url, req).then(res => {
-		 
-        // console.log(res);
         let picUrlCode = [];
         if (res.data.data && res.data.data instanceof Array) {
           res.data.data.map(item => {
-            if (item.lbt) {
-              picUrlCode.push(item.lbt); // 将获取到的轮播图编号放入picUrlCode中
+            if (item.activity_img) {
+              picUrlCode.push(item.activity_img); // 将获取到的轮播图编号放入picUrlCode中
             }
           });
         }
-        // console.log('picUrlCode:', picUrlCode);
         if (picUrlCode && picUrlCode instanceof Array) {
           // 通过轮播图编号获取轮播图文件路径
           picUrlCode.map(item => {
-            let path = 'http://39.98.203.134:8081/file/download?filePath=';
-            let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+            let path = this.$api.select+ '/file/download?filePath=';
+            let url = this.$api.select+ '/file/select/srvfile_attachment_select';
             let req = {
               colNames: ['*'],
               condition: [
@@ -164,7 +161,6 @@ export default {
               serviceName: 'srvfile_attachment_select'
             };
             this.$http.post(url, req).then(res => {
-			
               console.log(res.data.data);
               let picUrlList = [];
               this.swiperLists.push({ img: path + res.data.data[0].fileurl });
@@ -175,9 +171,6 @@ export default {
         }
       }).catch(err=>{
         console.log('err',err)
-        if(err.message===''){
-          
-        }
       });;
     },
     //活动列表
@@ -194,15 +187,14 @@ export default {
         rownumber: 7
       };
       this.$http.post(url, req).then(res => {
-		  this.successNum++
-		   console.log(this.successNum,"____________________")
+		 this.xqpage = res.data.data;
         console.log('..................', res.data.data);
-        let path = 'http://39.98.203.134:8081/file/download?filePath=';
+        let path = this.$api.select+ '/file/download?filePath=';
         let listr = [];
         for (let i in res.data.data) {
           listr.push(res.data.data[i].activity_img);
 
-          let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+          let url = this.$api.select+ '/file/select/srvfile_attachment_select';
           let req = {
             colNames: ['*'],
             condition: [

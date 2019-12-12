@@ -4,7 +4,7 @@
       <view class="title">标题</view>
       <input type="text" placeholder="标题" v-model="pageTitle" />
     </view>
-    <view class="forumClassBox cu-form-group margin-top">
+    <view class="forumClassBox cu-form-group margin-top" v-if="appName === 'sqfw'">
       <view class="title">栏目</view>
       <picker mode="multiSelector" @change="MultiChange" @columnchange="MultiColumnChange" :value="multiIndex" :range="multiArray">
         <view class="picker">{{ multiArray[0][multiIndex[0]] }}，{{ multiArray[1][multiIndex[1]] }}</view>
@@ -48,13 +48,10 @@
 </template>
 
 <script>
-import QSPickerCustom from '@/components/QS-inputs-split/elements/QS-picker-custom/index.vue';
-
 var sourceType = [['camera'], ['album'], ['camera', 'album']];
 var sizeType = [['compressed'], ['original'], ['compressed', 'original']];
 export default {
   name: 'addArticle',
-  components: { QSPickerCustom },
   data() {
     return {
       appNo: 'sqfw',
@@ -371,61 +368,14 @@ export default {
               success: function(res) {
                 if (res.confirm) {
                   uni.navigateBack();
-                  // console.log(`即将跳转到： ./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`)
-                  // uni.redirectTo({
-                  //   url: '/pages/normal/list/list?query=' + encodeURIComponent(JSON.stringify(this.query))
-                  // });
-                  // uni.navigateTo({
-                  //   url: `./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`
-                  // });
                 }
               }
             });
-            // let serviceName = '';
-            // if (this.appName === 'sqfw') {
-            //   serviceName = 'srvzhsq_forum_note_select';
-            // } else if (this.appName === 'zhdj') {
-            //   serviceName = 'srvzhsq_djlt_ftxx_select';
-            // }
-            // let id = res.data.response[0].response.ids[0];
-            // console.log(id);
-            // let url2 = this.$api.select + '/sqfw/select/' + serviceName;
-            // let req2 = {
-            //   serviceName: serviceName,
-            //   colNames: ['*'],
-            //   condition: [{ colName: 'id', ruleType: 'eq', value: id }],
-            //   order: []
-            // };
-            // this.$http.post(url2, req2).then(res2 => {
-            //   if (res2.data.data) {
-            //     uni.showModal({
-            //       title: '提示',
-            //       content: '提交成功，审核通过后将会展示在论坛，点击确认返回帖子列表页',
-            //       showCancel: false,
-            //       success: function(res) {
-            //         if (res.confirm) {
-            //           uni.navigateBack();
-            //           // console.log(`即将跳转到： ./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`)
-            //           // uni.redirectTo({
-            //           //   url: '/pages/normal/list/list?query=' + encodeURIComponent(JSON.stringify(this.query))
-            //           // });
-            //           // uni.navigateTo({
-            //           //   url: `./detail?no=${res2.data.data[0].note_no?res2.data.data[0].note_no:res2.data.data[0].ftno}`
-            //           // });
-            //         }
-            //       }
-            //     });
-            //   }
-            // }).catch(error=>{
-            //   console.log("error:",error)
-            // })
           }
         })
         .catch(error => {
           console.log('error:', error);
         });
-      // }
-      // })
     },
     changePicker(e) {
       console.log(e);
@@ -470,9 +420,6 @@ export default {
     right: 20upx;
   }
 }
-// .uni-list::after{
-//   height: 0px;
-// }
 .add_pages {
   display: flex;
   flex-direction: column;
@@ -506,7 +453,6 @@ export default {
       padding: 30upx 0;
     }
     .editbox {
-      // width: 80%;
       flex: 1;
       overflow: hidden;
       .textarea {

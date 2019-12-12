@@ -80,6 +80,15 @@
     }
 </script>
 
-<style>
-
+<style lang="scss">
+.input-group {
+  .input-row {
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height:auto;
+    }
+  }
+}
 </style>

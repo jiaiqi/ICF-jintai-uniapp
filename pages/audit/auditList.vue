@@ -1,16 +1,16 @@
 <template>
 	
 	<view class="content">
-		<view class="tobar">
+		<!-- <view class="tobar">
 			<image class="fanhui" @click="inpage()" src="../../static/img/fanhui.png" mode=""></image>
 			<text class="textline">待审核</text>
-		</view>
-		<view class="" style="padding: 40upx;">
+		</view> -->
+		<view class="list-box" style="padding: 40upx;">
 			<view class="">
 				<view class="box" v-for="(item,index) in listhome" :key="index"   >
 					<view class="">
 						<view class="nametitle" style="">
-						{{item.zuzhi_name||item.organize_name||item.activity_title||item.note_title||item.opinion_title}}</view>
+						{{item.zuzhi_name||item.organize_name||item.activity_title||item.note_title||item.opinion_title||item.opinion_title}}</view>
 						<text>状态:{{item.proc_status}}</text>
 					</view>
 					<view class="but"  @click="audio(item)">
@@ -77,7 +77,7 @@
 					rownumber: this.numberlist
 				};
 				this.$http.post(url, req).then(res => {
-					console.log("ddddddddddd",res)
+          // debugger
 					this.menubtn=false
 					let numarr = res.data.data
 					let arrbar=[]
@@ -105,9 +105,6 @@
 						}
 						this.listhome =   this.listhome.concat(arrbar)
 					}
-					
-					
-					console.log(arrbar)
 				})
 			},
 			inpage(){
@@ -158,9 +155,7 @@
 					       });
 					    }
 					});
-					// "T_FORUM_OPINION_1" "return_to_start" 
 				}else if(this.servenameat=="srvzhsq_activity_arrange_select"){
-					// sqfw/sqxq?query=
 					uni.navigateTo({
 						url: '../sqfw/sqxq?query='+encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
 					});
@@ -191,6 +186,9 @@
 		background: #FFFFFF;
 		
 	}
+  .list-box{
+    /* margin-top: 100upx; */
+  }
 	.box{
 		height: 150upx;
 		width: 100%;

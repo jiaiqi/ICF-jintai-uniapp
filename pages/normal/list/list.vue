@@ -82,8 +82,8 @@
         </uni-swipe-action>
 
         <uni-swipe-action v-if="listData.length > 0 && (title == '社会组织' || title == '志愿者组织')" class="cu-list">
-          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
-            <view class="cont">
+          <uni-swipe-action-item  v-if="item.proc_status == '完成'"  :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+            <view class="cont" >
               <view class="list_item" @tap="details(item)">
                 <view class="item_title" v-if="item.organize_name">{{ item.organize_name }}</view>
                 <view class="item_title" v-if="item.zuzhi_name">{{ item.zuzhi_name }}</view>
@@ -364,7 +364,8 @@ export default {
           page: { pageNo: this.currentPage, rownumber: this.rownumber },
           order: [{ colName: 'create_time', orderType: 'desc' }]
         };
-        if (this.title === '党建论坛' || this.title === '社区论坛') {
+        if (this.title === '党建论坛' || this.title === '社区论坛'||this.title === '志愿者组织'||this.title === '社会组织') {
+          // 如果是流程列表，过滤掉未完成的
           req.condition = [{ colName: 'proc_status', value: '完成', ruleType: 'eq' }];
         }
         let res = await this.$http.post(url, req);
