@@ -59,7 +59,7 @@ export default {
         condition: [{ colName: 'client_type', ruleType: 'like', value: 'APP' }]
       };
       this.$http.post(url, req).then(res => {
-		  this.successNum=false
+		
         if (res.data.data) {
           let menuData = res.data.data;
           let children = [];
@@ -95,10 +95,11 @@ export default {
           });
           this.menuData = parents;
           console.log(parents);
+		  this.successNum=false
         }
+		  
       }).catch(err=>{
         console.log('err',err)
-        this.successNum = false
         if(err.status==0){
           this.getMenusList()
         }
@@ -295,7 +296,7 @@ export default {
 .phopos {
   height: 160upx;
   width: 210upx;
-  background-size: cover;
+  background-size:cover;
   border-radius: 8px;
 }
 .hot {

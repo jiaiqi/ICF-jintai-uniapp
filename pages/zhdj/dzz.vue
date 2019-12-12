@@ -81,7 +81,7 @@
 				req.colNames = ['*'];
 				req.condition = [{colName: "parent_no", value: index, ruleType: "eq"}];
 				req.order = [];
-				req['page'] = null;
+				// req['page'] = null;
 				this.$http.post(url, req).then(res => {
 					
 					this.datalist=res.data.data
@@ -94,7 +94,7 @@
 				req.colNames = ['*'];
 				req.condition = [{colName: "parent_no", ruleType: "isnull"}];
 				req.order = [];
-				req['page'] = {pageNo: 1, rownumber: 10};
+				// req['page'] = {pageNo: 1, rownumber: 10};
 				this.$http.post(url, req).then(res => {
 					
 					this.datalisttwo=res.data.data

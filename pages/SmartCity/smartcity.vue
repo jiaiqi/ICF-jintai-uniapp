@@ -23,7 +23,7 @@
 	  	</view>
 	  	<!-- 活动 -->
 	  	<view class=""  >
-	  		<text class="titleall"   >热门活动</text>
+	  		<text class="titleall">热门活动</text>
 	  		<view class="contenthot">
 	  			<view class="hot" v-for="(item,index) in xqpage" :key="index">
 	  				<view class="phopos" @tap="detaile(item)" :style="{backgroundImage: 'url('+item.slt+')'}"></view>
@@ -69,8 +69,7 @@ export default {
       let req = { serviceName: 'srvsys_user_menu_select', colNames: ['*'], order: [{colName: "seq", orderType: "asc"}], 
       condition: [{colName:"client_type",ruleType:'like',value:"APP"}] };
       this.$http.post(url, req).then(res => {
-		 this.successNum=false
-		  console.log(this.successNum,"_________菜单___________")
+		 
         if (res.data.data) {
           console.log(res.data.data);
           let menuData = res.data.data
@@ -108,7 +107,9 @@ export default {
           })
           // console.log('data',parents)
           this.menuData = parents
+		  this.successNum=false
         }
+		 console.log(this.successNum,"_________菜单___________")
       }).catch(error=>{
         console.log('error:',error)
       if(error.status==0){
