@@ -6,7 +6,7 @@
     </view>
     <from-view v-if="showChild" :pathQuery="query" :pageType="query.type" ref="iForms"></from-view>
     <view class="bottom-flex" style="padding:10px">
-      <view class="bottom">
+      <view class="bottom" v-if="showChild">
         <view v-for="(item, index) in pageBtns" :key="index" v-if="query.cols">
           <button v-if="item.button_type === 'reset'" type="warn" @click.native="onReset">{{ item.button_name }}</button>
           <button v-else-if="item.button_type === 'submit'" type="primary" @click.native="submitForm">{{ item.button_name }}</button>

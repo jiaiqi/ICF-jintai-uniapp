@@ -100,13 +100,15 @@
     },
     {
       "path": "pages/zhdj/gggs",
-      "style": {}
+      "style": {
+        "navigationBarTitleText": "列表"
+      }
 
     },
     {
       "path": "pages/shzz/zzhome",
       "style": {
-
+        "navigationBarTitleText": "列表"
       }
     },
     // {
