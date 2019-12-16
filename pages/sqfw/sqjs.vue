@@ -3,167 +3,10 @@
 		<view class="" style="padding: 10px;">
 			<text style="font-size: 17px;font-weight: 600; border-left: 2px solid red;padding: 5px;">社区列表</text>
 		</view>
-		
-		
+		<!-- <uni-top></uni-top> -->
 			
 	<view class="" v-if="loadingView">
-		<view class=""  >
-			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
-			<view class="content-box">
-				<view class="imageHotel" style="background-color: rgba(150, 150, 150, 0.1);" mode="">
-					<!-- <text class="topone">Top{{index+1}}</text> -->
-				</view>
-				<view class="listtext">
-					<view class="testline" style="display: flex;">
-						<text id="listones" style="display: block;background-color: rgba(150, 150, 150, 0.1); "></text> 
-						 <view class="listcenter" style="display: flex">
-							<image style="background:  rgba(150, 150, 150, 0.1);border-radius: 50%;" mode="" class="calls"  ></image>
-						 </view>
-					</view>
-					<view class="testline" style="position: relative;">
-							<text id="tesdr" style=" vertical-align:middle;background:rgba(150, 150, 150, 0.1) ;height: 20px; " class="textline"></text>
-					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;">
-						<view class="textFlex textFlexborder">
-						  <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view><view class=""  >
-			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
-			<view class="content-box">
-				<view class="imageHotel" style="background-color: rgba(150, 150, 150, 0.1);" mode="">
-					<!-- <text class="topone">Top{{index+1}}</text> -->
-				</view>
-				<view class="listtext">
-					<view class="testline" style="display: flex;">
-						<text id="listones" style="display: block;background-color: rgba(150, 150, 150, 0.1); "></text> 
-						 <view class="listcenter" style="display: flex">
-							<image style="background:  rgba(150, 150, 150, 0.1);border-radius: 50%;" mode="" class="calls"  ></image>
-						 </view>
-					</view>
-					<view class="testline" style="position: relative;">
-							<text id="tesdr" style=" vertical-align:middle;background:rgba(150, 150, 150, 0.1) ;height: 20px; " class="textline"></text>
-					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;">
-						<view class="textFlex textFlexborder">
-						  <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view><view class=""  >
-			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
-			<view class="content-box">
-				<view class="imageHotel" style="background-color: rgba(150, 150, 150, 0.1);" mode="">
-					<!-- <text class="topone">Top{{index+1}}</text> -->
-				</view>
-				<view class="listtext">
-					<view class="testline" style="display: flex;">
-						<text id="listones" style="display: block;background-color: rgba(150, 150, 150, 0.1); "></text> 
-						 <view class="listcenter" style="display: flex">
-							<image style="background:  rgba(150, 150, 150, 0.1);border-radius: 50%;" mode="" class="calls"  ></image>
-						 </view>
-					</view>
-					<view class="testline" style="position: relative;">
-							<text id="tesdr" style=" vertical-align:middle;background:rgba(150, 150, 150, 0.1) ;height: 20px; " class="textline"></text>
-					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;">
-						<view class="textFlex textFlexborder">
-						  <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view><view class=""  >
-			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
-			<view class="content-box">
-				<view class="imageHotel" style="background-color: rgba(150, 150, 150, 0.1);" mode="">
-					<!-- <text class="topone">Top{{index+1}}</text> -->
-				</view>
-				<view class="listtext">
-					<view class="testline" style="display: flex;">
-						<text id="listones" style="display: block;background-color: rgba(150, 150, 150, 0.1); "></text> 
-						 <view class="listcenter" style="display: flex">
-							<image style="background:  rgba(150, 150, 150, 0.1);border-radius: 50%;" mode="" class="calls"  ></image>
-						 </view>
-					</view>
-					<view class="testline" style="position: relative;">
-							<text id="tesdr" style=" vertical-align:middle;background:rgba(150, 150, 150, 0.1) ;height: 20px; " class="textline"></text>
-					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;">
-						<view class="textFlex textFlexborder">
-						  <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view><view class=""  >
-			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
-			<view class="content-box">
-				<view class="imageHotel" style="background-color: rgba(150, 150, 150, 0.1);" mode="">
-					<!-- <text class="topone">Top{{index+1}}</text> -->
-				</view>
-				<view class="listtext">
-					<view class="testline" style="display: flex;">
-						<text id="listones" style="display: block;background-color: rgba(150, 150, 150, 0.1); "></text> 
-						 <view class="listcenter" style="display: flex">
-							<image style="background:  rgba(150, 150, 150, 0.1);border-radius: 50%;" mode="" class="calls"  ></image>
-						 </view>
-					</view>
-					<view class="testline" style="position: relative;">
-							<text id="tesdr" style=" vertical-align:middle;background:rgba(150, 150, 150, 0.1) ;height: 20px; " class="textline"></text>
-					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;">
-						<view class="textFlex textFlexborder">
-						  <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view><view class=""  >
-			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
-			<view class="content-box">
-				<view class="imageHotel" style="background-color: rgba(150, 150, 150, 0.1);" mode="">
-					<!-- <text class="topone">Top{{index+1}}</text> -->
-				</view>
-				<view class="listtext">
-					<view class="testline" style="display: flex;">
-						<text id="listones" style="display: block;background-color: rgba(150, 150, 150, 0.1); "></text> 
-						 <view class="listcenter" style="display: flex">
-							<image style="background:  rgba(150, 150, 150, 0.1);border-radius: 50%;" mode="" class="calls"  ></image>
-						 </view>
-					</view>
-					<view class="testline" style="position: relative;">
-							<text id="tesdr" style=" vertical-align:middle;background:rgba(150, 150, 150, 0.1) ;height: 20px; " class="textline"></text>
-					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;">
-						<view class="textFlex textFlexborder">
-						  <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						 <text style="width: 43px; height: 20px; background:rgba(150, 150, 150, 0.1) ;" ></text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view><view class=""  >
+		<view class=""   v-for="i in 7">
 			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
 			<view class="content-box">
 				<view class="imageHotel" style="background-color: rgba(150, 150, 150, 0.1);" mode="">
@@ -204,7 +47,7 @@
 					<view class="testline" style="display: flex;">
 						<text style="display: block;font-weight: 600;font-size: 16px;" @click="navxq(item.id)">{{item.sqname}}</text> 
 						 <view class="listcenter" style="display: flex">
-							<image src="../../static/img/ditu.png" mode="" class="calls"  @click="open(item.latitude,item.sqtrapeze,item.sqname)"></image>
+							<image src="../../static/img/ditu.png" mode="" class="calls"  @click="open(item.longitude,item.latitude,item.sqname)"></image>
 						 </view>
 					</view>
 					<view class="testline" style="display: flex;font-size: 15px;color: #666;" @click="navxq(item.id)">
@@ -242,7 +85,7 @@
 			}
 		},
 		components:{
-			uniLoading
+			uniLoading,
 		},
 		methods:{
 			getdata(index){
@@ -310,7 +153,7 @@
 							},
 			
 			open(j,w,n) {
-				let url = 'https://m.amap.com/share/index/lnglat=' +w+','+j+'&name='+n+'&callnative=0'
+				let url = 'https://m.amap.com/share/index/lnglat=' +j+','+w+'&name='+n+'&callnative=0'
 				
 				// location.href='https://m.amap.com/share/index/lnglat=108.840104,34.326915&name=西部社区&callnative=0'
 			  plus.runtime.openWeb(url, function(res) {

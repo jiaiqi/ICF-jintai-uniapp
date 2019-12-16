@@ -31,7 +31,7 @@ let ENV = {
   getUserAppMenu:  remoteAddress.serviceAddress +  "/auth/select/srvauth_user_app_menu_select", // 查询app模块
   getMenus:  remoteAddress.serviceAddress +  "/",  // 查询菜单
   getFile: remoteAddress.serviceAddress + '/file/select/srvfile_attachment_select',//文件查询接口
-  
+  imgCode:"192.168.0.160:8101",
   
   
   

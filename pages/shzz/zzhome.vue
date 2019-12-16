@@ -39,7 +39,7 @@
 					<text :class="item.proc_status=='完成'?'colortext': 'colortext-red' ">{{item.proc_status=='完成'?'已审批':'未审批'}}</text>
 				</view>
 			</view>
-			<view class="more" @click="more(listtar)">
+			<view class="more" @click="more(listtar)" v-if="!contentBoole">
 				<text style="color:red;font-size: 16px;">更多>></text>
 			</view>
 		</view>
@@ -72,7 +72,10 @@
 				<text>{{bordermores?'更多>>':'收起<<'}}</text>
 			</view>
 		</view> -->
-	
+	<view class="kapian" v-if="contentBoole">
+		<view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无组织信息</view> 
+		
+	</view>
 		<!-- <button class="btnBottm" type="primary"  size="default"  @tap="join(selectList[0])">新增组织</button> -->
 	</view>
 	
@@ -89,6 +92,7 @@ export default {
 			bordermores:true,
 			numberlist:5,
 			listtar:'',
+			contentBoole:false,
 			label:'',
 			selectList: [
 				{
@@ -176,7 +180,7 @@ export default {
 		   data:{
 			   'names':names,
 			   'dress':dress,
-			   'session':session
+			   'session':session 
 		   },
 		    success: function () {
 		        console.log('success');
@@ -206,8 +210,9 @@ export default {
 			rownumber: this.numberlist
 		};
 		this.$http.post(url, req).then(res => {
-			console.error(res)
-			
+			if(res.data.data.length==0){
+				this.contentBoole=true
+			}
 			let newarr =[]
 			for(let i  in res.data.data ){
 				if(res.data.data[i].proc_status.indexOf("完成")==-1){
@@ -267,6 +272,12 @@ export default {
 		padding:8px 3px ;
 		background: pink;
 		position: relative;
+	}
+	.kapian{
+		box-shadow: 0 0 26px 0 rgba(0,0,0,0.12);
+		margin: 8px 0;
+		padding: 8px;
+		margin: 0 15px;
 	}
 	.fontstext{
 		display: block;

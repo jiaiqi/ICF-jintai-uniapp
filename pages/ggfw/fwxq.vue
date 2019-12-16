@@ -1,101 +1,154 @@
 <template>
-  <view class="content" v-if="datalist">
-    <view >
-      <text class="titlename">公租房名称：</text>
-      <text>{{ datalist.title }}</text>
-    </view>
-    <view >
-      <text class="titlename">公租房地址：</text>
-      <text>{{ datalist.address }}</text>
-    </view>
-    <view class="titlename">办 理 对 象：</view>
-    <view class="cont-box">{{ datalist.bldx }}</view>
-    <view class="titlename">办 理 条 件：</view>
-    <view class="cont-box">{{ datalist.bltj }}</view>
+	<view class="content" v-if="datalist">
+		<view>
+			<text class="titlename">房 屋 名 称：</text>
+			<text>{{ datalist.title }}</text>
+		</view>
+		<view>
+			<text class="titlename">房 屋 地 址：</text>
+			<text>{{ datalist.address }}</text>
+		</view>
+		<view class="titlename">办 理 对 象：</view>
+		<view class="cont-box">{{ datalist.bldx }}</view>
+		<view class="titlename">办 理 条 件：</view>
+		<view class="cont-box">{{ datalist.bltj }}</view>
 
-    <view class="titlename">办 理 流 程：</view>
-    <view class="cont-box" v-html="datalist.content"></view>
+		<view class="titlename">办 理 流 程：</view>
+		<view class="cont-box" v-html="datalist.content"></view>
 
-    <view class="titlename">材 料 清 单：</view>
-    <view class="cont-box">{{ datalist.materials }}</view>
-    <view class="titlename">办 理 时 限：</view>
-    <view class="cont-box">{{ datalist.blsx }}</view>
-    <view class="titlename">收 费 标 准：</view>
-    <view class="cont-box">{{ datalist.sfbz }}</view>
-    <view class="titlename">接 待 时 间：</view>
-    <view class="cont-box">{{ datalist.reception_date }}</view>
+		<view class="titlename">材 料 清 单：</view>
+		<view class="cont-box">{{ datalist.materials }}</view>
+		<view class="titlename">办 理 时 限：</view>
+		<view class="cont-box">{{ datalist.blsx }}</view>
+		<view class="titlename">收 费 标 准：</view>
+		<view class="cont-box">{{ datalist.sfbz }}</view>
+		<view class="titlename">接 待 时 间：</view>
+		<view class="cont-box">{{ datalist.reception_date }}</view>
 
-    <view>
-      <text class="titlename">接 待 人 员：</text>
-      <text>{{ datalist.reception_oper }}</text>
-    </view>
-    <view >
-      <text class="titlename">联 系 电 话：</text>
-      <text>{{ datalist.reception_phone }}</text>
-    </view>
+		<view>
+			<text class="titlename">接 待 人 员：</text>
+			<text>{{ datalist.reception_oper }}</text>
+		</view>
+		<view>
+			<text class="titlename">联 系 电 话：</text>
+			<text>{{ datalist.reception_phone }}</text>
+		</view>
 
-    <view  class="titlename">接 待 地 点：</view>
-    <view class="cont-box">{{ datalist.reception_address }}</view>
-    <view >
-      <text class="titlename">附 件 下 载：</text>
-      <a href="http://39.98.203.134:8081/file/download?filePath=/20190727/20190727150513912100/20190727150513912101.docx" style="color:blue;">公租房.doc</a>
-    </view>
+		<view class="titlename">接 待 地 点：</view>
+		<view class="cont-box">{{ datalist.reception_address }}</view>
+		<view v-if="datalist.files">
+			<text class="titlename">附 件 下 载：</text>
+			<text style="color:blue;" @click="downFile(datalist.files)">点击下载附件</text>
+		</view>
+		<view v-else>
+			<text class="titlename">附 件 下 载：</text>
+			<text>暂无附件</text>
+		</view>
 
-    <view class="btn" @click="navto(datalist.title)">申请预约</view>
-  </view>
+		<view class="btn" @click="navto(datalist.title)">申请预约</view>
+	</view>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      datalist: [],
-      query: {}
-    };
-  },
-  methods: {
-    navto(val) {
-      // uni.navigateTo({
-      //   url: '../normal/add/add?query=' + encodeURIComponent(JSON.stringify(this.query)) + '&info='+encodeURIComponent(JSON.stringify(val))
-      // });
-      uni.navigateTo({
-      	url:'./sqyy?query='+ encodeURIComponent((JSON.stringify(val)))
-      })
-    },
-    down() {}
-  },
-  onLoad(options) {
-    this.datalist = JSON.parse(decodeURIComponent(options.info));
-    console.log(this.datalist);
-    if (options.query) {
-      this.query = JSON.parse(decodeURIComponent(options.query));
-    }
-  }
-};
+	export default {
+		data() {
+			return {
+				datalist: [],
+				query: {}
+			};
+		},
+		methods: {
+			navto(val) {
+				// uni.navigateTo({
+				//   url: '../normal/add/add?query=' + encodeURIComponent(JSON.stringify(this.query)) + '&info='+encodeURIComponent(JSON.stringify(val))
+				// });
+				uni.navigateTo({
+					url: './sqyy?query=' + encodeURIComponent((JSON.stringify(val)))
+				})
+			},
+			downFile(file) {
+				uni.showLoading({
+					title: '下载中，请稍后'
+				})
+				let path = this.$api.select + '/file/download?filePath=';
+				let url = this.$api.select + '/file/select/srvfile_attachment_select';
+				let req = {
+					colNames: ['*'],
+					condition: [{
+						colName: 'file_no',
+						ruleType: 'eq',
+						value: file // 编号
+					}],
+					order: null,
+					page: null,
+					serviceName: 'srvfile_attachment_select'
+				};
+				this.$http.post(url, req).then(res => {
+					console.log(path + res.data.data[0].fileurl)
+					uni.downloadFile({
+						url: path + res.data.data[0].fileurl,
+						success: function(res) {
+							console.log(res)
+							if (res.statusCode === 200) {
+								setTimeout(() => {
+									uni.hideLoading();
+									console.log('下载成功');
+									uni.showModal({
+										title: '下载成功',
+										showCancel: false,
+										content: "存储路径——内部存储/Android/data/io.dcloud.HBuilder/apps/HBuilder/doc/uniapp_save",
+										success: function(res) {
+
+										}
+									});
+								}, 2000)
+
+							}
+						}
+					});
+				})
+
+
+
+			},
+
+		},
+
+		onLoad(options) {
+			this.datalist = JSON.parse(decodeURIComponent(options.info));
+			console.log(this.datalist);
+			if (options.query) {
+				this.query = JSON.parse(decodeURIComponent(options.query));
+			}
+		}
+	};
 </script>
 
 <style>
-.content {
-  width: 100%;
-  background: #ffffff;
-  padding: 30upx;
-}
-.titlename {
-  font-weight: 600;
-  line-height: 60px;
-  font-size: 16px;
-}
-.cont-box {
-  padding: 0 30upx;
-}
-.btn {
-  margin: 40upx 20upx;
-  height: 80upx;
-  background: red;
-  color: #ffffff;
-  font-weight: 600;
-  text-align: center;
-  line-height: 80upx;
-  border-radius: 20upx;
-}
+	.content {
+		width: 100%;
+		background: #ffffff;
+		padding: 30upx;
+	}
+
+	.titlename {
+		font-weight: 600;
+		line-height: 60px;
+		font-size: 16px;
+	}
+
+	.cont-box {
+		padding: 0 30upx;
+	}
+
+	.btn {
+		margin: 40upx 20upx;
+		height: 80upx;
+		background: red;
+		color: #ffffff;
+		font-weight: 600;
+		text-align: center;
+		line-height: 80upx;
+		border-radius: 20upx;
+	}
 </style>

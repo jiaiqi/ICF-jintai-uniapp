@@ -1,7 +1,7 @@
 <template>
   <view>
     <view class="cu-form-group margin-top" v-if="Fileddatas.col_type !== 'Image' && Fileddatas.col_type !== 'FileList'">
-      <view class="title">{{ Fileddatas.label }}</view>
+      <view class="title"><text class="required" v-if="Fileddatas.validators.includes('required')">*</text>{{ Fileddatas.label }}</view>
       <input
         class="input"
         @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
@@ -10,12 +10,15 @@
         v-model="Fileddatas.column"
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入内容'"
       />
-      <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.bx_col_type === 'enum' || Fileddatas.col_type === 'Enum'">
+      <picker @change="PickerChange" :value="index" :range="picker" v-if="(Fileddatas.bx_col_type === 'enum' || Fileddatas.col_type === 'Enum')&&Fileddatas.columns !== 'sflb'">
         <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
+      </picker>
+      <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.columns === 'sflb'">
+        <view class="picker">{{ index > -1 ? picker[index] : '否' }}</view>
       </picker>
       <view class="cu-bar bg-white margin-top"></view>
       <textarea
-        v-if="Fileddatas.col_type === 'MultilineText'"
+        v-if="Fileddatas.col_type === 'MultilineText'||Fileddatas.col_type === 'Note'"
         placeholder="请输入内容"
         class="text-box textarea"
         scroll-y="true"
@@ -25,7 +28,8 @@
         v-model="Fileddatas.column"
         @focus="formValidators(Fileddatas.column, Fileddatas._formItemValidators)"
       ></textarea>
-      <edit ref="note" v-on:listenChild="show" class="note" v-if="Fileddatas.col_type === 'Note'"></edit>
+      
+      <!-- <edit ref="note" v-on:listenChild="show" class="note" v-if="Fileddatas.col_type === 'Note'"></edit> -->
       <input
         v-if="Fileddatas.col_type === 'int'"
         class="uni-form-item uni-column input"
@@ -78,6 +82,9 @@
       <picker mode="date" :value="date" start="2015-09-01" end="2050-09-01" @change="DateChange" v-if="Fileddatas.col_type === 'Date' || Fileddatas.col_type === 'DateTime'">
         <view class="picker">{{ date}}</view>
       </picker>
+      <picker mode="time" :value="time" start="2015-09-01" end="2050-09-01" @change="TimeChange" v-if="Fileddatas.col_type === 'Date' || Fileddatas.col_type === 'DateTime'">
+        <view class="picker">{{ time}}</view>
+      </picker>
       <input
         class="input"
         readonly
@@ -125,7 +132,7 @@
       </uni-popup>
     </view>
     <view class="cu-bar bg-white margin-top" v-if="Fileddatas.col_type === 'Image'">
-      <view class="action">{{ Fileddatas.label }}</view>
+      <view class="action"><text class="required" v-if="Fileddatas.validators.includes('required')">*</text>{{ Fileddatas.label }}</view>
       <view class="action">{{ imgList.length }}/1</view>
     </view>
     <view class="cu-form-group" v-if="Fileddatas.col_type === 'Image'">
@@ -160,6 +167,12 @@ export default {
     endDate() {
       return this.getDate('end');
     },
+    dateTime(){
+      // this.Fileddatas.column = this.date + ' ' + this.time
+      let date = this.date!=="选择日期"?this.date:" "
+      let time =  this.time!=="选择时间"?this.time:" "
+      return date+ ' ' + time
+    },
     fkSelectList: function(e) {
       let cond = [];
       let a = {
@@ -185,7 +198,8 @@ export default {
       imgList: [],
       imgPathList: [],
       query: {}, //url参数
-      date: "请选择",
+      date: "选择日期",
+      time:"选择时间",
       oldColData: {},
       Fileddatas: {},
       currentValue: '',
@@ -199,7 +213,7 @@ export default {
       save: [],
       DeptData: [],
       userList: {
-        search: '',
+        search: uni.getStorageSync("userInfo").user_no?uni.getStorageSync("userInfo").user_no:"",
         Fileddatas: [],
         userSelected: {
           user_disp: '',
@@ -277,8 +291,15 @@ export default {
   methods: {
     DateChange(e){
       // console.log(e)
-      this.Fileddatas.column = e.detail.value
+      // this.Fileddatas.column = e.detail.value
       this.date = e.detail.value
+      this.Fileddatas.column = this.dateTime
+      this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
+      console.log('选择了：', this.Fileddatas.column);
+    },
+    TimeChange(e){
+      this.time = e.detail.value
+      this.Fileddatas.column = this.dateTime
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
       console.log('选择了：', this.Fileddatas.column);
     },
@@ -296,6 +317,9 @@ export default {
             }
           })
         })
+      }
+      if(this.Fileddatas.columns === 'sflb'){
+        this.Fileddatas.column = this.Fileddatas.column?this.Fileddatas.column:"否"
       }
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
       console.log('选择了：', this.Fileddatas.column,e);
@@ -406,6 +430,7 @@ export default {
       };
       this.$http.post(url, req).then(resp => {
         this.userList.Fileddatas = resp.data.data;
+        this.choose(this.userList.Fileddatas[0],0)
       });
     },
     DeptSearch() {
@@ -451,11 +476,12 @@ export default {
     },
     setUserPoup() {
       this.$refs.Upopup.open();
-      this.getUser();
+      // this.getUser();
     },
     setDeptPoup() {
       this.$refs.Dpopup.open();
       this.getDept();
+      
     },
     setPickerData(nationArr) {
       let data1 = [nationArr];
@@ -470,11 +496,12 @@ export default {
       req.order = [];
       req['page'] = {
         pageNo: 1,
-        rownumber: 10
+        rownumber: 100
       };
       this.$http.post(url, req).then(resp => {
         this.save = resp.data.data;
         this.userList.Fileddatas = resp.data.data;
+        this.userSearch()
       });
     },
     getDept() {
@@ -809,6 +836,10 @@ export default {
 <style lang="scss" scoped>
 .form-item-inputs {
   // flex: 1;
+}
+.required{
+  color: red;
+  padding: 10upx;
 }
 .form-item-editer {
   display: flex;

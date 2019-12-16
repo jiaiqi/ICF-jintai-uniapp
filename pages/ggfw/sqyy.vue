@@ -164,11 +164,17 @@
 									icon:"none"
 								});
 							}else{
-								uni.showToast({
-								    title:"提交成功",
+								uni.showLoading({
+								    title:"提交成功,跳转中...",
 								    duration: 2000,
 									icon:"success"
 								});
+								setTimeout(() => {
+									uni.hideLoading()
+								  uni.navigateBack({
+								    delta: 2
+								  });
+								}, 4000);
 							}
 						}
 					})

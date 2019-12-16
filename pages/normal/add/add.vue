@@ -5,9 +5,9 @@
       <view class="gray-text">加载中...</view>
     </view>
     <from-view v-if="showChild" :pathQuery="query" :pageType="query.type" ref="iForms"></from-view>
-    <view class="bottom-flex" style="padding:10px">
-      <view class="bottom" v-if="showChild">
-        <view v-for="(item, index) in pageBtns" :key="index" v-if="query.cols">
+    <view class="bottom-flex" style="padding:10px" v-if="showButton">
+      <view class="bottom" v-if="query.cols.srv_cols && query.cols.srv_cols.length > 0">
+        <view v-for="(item, index) in pageBtns" :key="index">
           <button v-if="item.button_type === 'reset'" type="warn" @click.native="onReset">{{ item.button_name }}</button>
           <button v-else-if="item.button_type === 'submit'" type="primary" @click.native="submitForm">{{ item.button_name }}</button>
         </view>
@@ -34,10 +34,13 @@ export default {
           srv_cols: []
         }
       },
+      queryString: {},
+      showButton: false,
       showChild: false,
       pageBtns: [],
       foreignKey: [],
-      houseInfo: {}
+      houseInfo: {},
+      appName: 'zhdj'
       // foreignKey: this.$route.query.foreignKey,
     };
   },
@@ -46,6 +49,12 @@ export default {
     let query = '';
     if (option.query) {
       query = JSON.parse(option.query);
+      console.log('query', query);
+      this.queryString = query;
+      if (query.menu_url) {
+        const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
+        this.appName = app;
+      }
     }
     if (option.data) {
       query = JSON.parse(option.data);
@@ -58,30 +67,42 @@ export default {
       title: query.label ? query.label : '添加'
     });
     this.getCols(query);
+    this.$on('form-loaded', this.isFormLoaded);
   },
   methods: {
+    isFormLoaded(e) {
+      console.log(e);
+      setTimeout(() => {
+        this.showButton = e;
+      }, 3000);
+    },
     async getCols(query) {
       let self = this;
-      // self.type = self.query.type
       if (query.serviceName === 'srvzhsq_forum_opinion_add') {
         console.log(query);
-        let url = this.$api.select + '/sqfw/select/srvsys_service_columnex_v2_select ';
+        let url = this.$api.select + '/' + this.appName + '/select/srvsys_service_columnex_v2_select ';
         let req = {
           serviceName: 'srvsys_service_columnex_v2_select',
           colNames: ['*'],
           condition: [{ colName: 'service_name', value: 'srvzhsq_forum_opinion_add', ruleType: 'eq' }, { colName: 'use_type', value: 'add', ruleType: 'eq' }],
           order: [{ colName: 'seq', orderType: 'asc' }]
         };
-        this.$http.post(url, req).then(res => {
-          if (res.data.data) {
-            let cols = res.data.data.srv_cols;
-            self.query.cols = res.data.data;
-            console.log(cols);
-            self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
-            self.query.serviceName = query.serviceName;
-            this.showChild = true;
-          }
-        });
+        this.$http
+          .post(url, req)
+          .then(res => {
+            if (res.data.data) {
+              let cols = res.data.data.srv_cols;
+              self.query.cols = res.data.data;
+              self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
+              self.query.serviceName = query.serviceName;
+              this.showChild = true;
+            }
+          })
+          .then(() => {
+            setTimeout(() => {
+              // this.showButton=true;
+            }, 1000);
+          });
       } else {
         if (query.service_name.indexOf('select') != -1) {
           query.service_name = query.service_name.replace('select', 'add');
@@ -97,10 +118,13 @@ export default {
           }
         });
         this.showChild = true;
+        setTimeout(() => {
+          // this.showButton=true;
+        }, 1000);
       }
     },
     async getColumnsData(app = 'sqfw', service_name, use_type = 'add') {
-      let url = this.$api.select + '/' + app + '/select/srvsys_service_columnex_v2_select ';
+      let url = this.$api.select + '/' + this.appName + '/select/srvsys_service_columnex_v2_select ';
       let req = {
         serviceName: 'srvsys_service_columnex_v2_select',
         colNames: ['*'],
@@ -144,6 +168,7 @@ export default {
       console.log(a);
     },
     async submint(nData) {
+      this.showChild = false
       let userInfo = uni.getStorageSync('userInfo');
       let self = this;
       let params = [
@@ -166,7 +191,11 @@ export default {
         }
         params[0].data.push(a);
         console.log(params[0].data);
-        let url = self.$api.add + '/zhdj/operate/srvzhsq_pxap_add';
+        let operate = 'operate';
+        if (this.queryString.label === '党建活动记录') {
+          operate = 'apply';
+        }
+        let url = self.$api.add + '/' + this.appName + '/' + operate + '/srvzhsq_pxap_add';
         let formData = this.$refs.iForms.returnFields();
         if (formData.data) {
           console.log('formdata:', formData);
@@ -174,26 +203,49 @@ export default {
         }
         if (formData.service_name) {
           params[0].serviceName = formData.service_name;
-          url = self.$api.add + '/sqfw/operate/' + formData.service_name;
+          url = self.$api.add + '/' + this.appName + '/' + operate + '/' + formData.service_name;
         }
         console.log('params:', params);
         const response = await self.$http.post(url, params); // 新增
-
+        if(response){
+          this.showChild = true
+        }
         if (response.data.state === 'SUCCESS' && params[0].serviceName == 'srvzhsq_pxap_add') {
-          uni.showToast({
-            title: response.data.resultMessage
+          // uni.showToast({
+          //   title: response.data.resultMessage
+          // });
+          uni.showModal({
+            title: '提示',
+            content: response.data.resultMessage,
+            showCancel: false,
+            success: res => {
+              if (res.confirm) {
+                uni.navigateBack({
+                  delta: 2,
+                  animationType: 'pop-out',
+                  animationDuration: 200
+                });
+              }
+            }
           });
-          uni.navigateBack({
-            delta: 1,
-            animationType: 'pop-out',
-            animationDuration: 200
-          });
+
           // uni.redirectTo({
           //   url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(params[0].data[0]))
           // });
         } else {
-          uni.showToast({
-            title: response.data.resultMessage
+          uni.showModal({
+            title: '提示',
+            content: response.data.resultMessage,
+            showCancel: false,
+            success: res => {
+              if (res.confirm) {
+                uni.navigateBack({
+                  delta: 2,
+                  animationType: 'pop-out',
+                  animationDuration: 200
+                });
+              }
+            }
           });
         }
       } else if (this.query.type === 'apply') {
@@ -213,7 +265,7 @@ export default {
             title: response.data.resultMessage
           });
           uni.navigateBack({
-            delta: 1,
+            delta: 2,
             animationType: 'pop-out',
             animationDuration: 200
           });
@@ -222,7 +274,7 @@ export default {
             title: response.data.resultMessage
           });
           uni.navigateBack({
-            delta: 1,
+            delta: 2,
             animationType: 'pop-out',
             animationDuration: 200
           });

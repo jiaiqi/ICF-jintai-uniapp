@@ -308,6 +308,7 @@ export default {
   display: flex;
   margin-left: 30upx;
   overflow-x: scroll;
+   -webkit-overflow-scrolling: touch;
 }
 .textline {
   margin-top: 5px;

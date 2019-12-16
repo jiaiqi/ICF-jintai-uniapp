@@ -40,7 +40,7 @@
             <view class="cont">
               <view class="list_item" @tap="toDetail(item)">
                 <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
-                <view class="item_title" v-if="item.title">{{ item.title }}</view>
+                <view class="item_title" v-if="item">{{ item.title }}</view>
                 <view class="item_title" v-if="item.xmxx_name">{{ item.xmxx_name }}</view>
                 <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
               </view>
@@ -62,6 +62,7 @@
                 title == '公示公告' ||
                 title == '活动安排' ||
                 title == '党建活动记录' ||
+                title == '党建活动安排' ||
                 title == '公告公示')
           "
           class="cu-list"
@@ -84,7 +85,8 @@
         <uni-swipe-action v-if="listData.length > 0 && (title == '社会组织' || title == '志愿者组织')" class="cu-list">
           <uni-swipe-action-item  v-if="item.proc_status == '完成'"  :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
             <view class="cont" >
-              <view class="list_item" @tap="details(item)">
+              <view class="list_item" @tap="details(item.proc_status,item.zuzhi_name||
+				item.organize_name,item.zuzhi_address||item.address,item.zuzhi_jj||item.remark)">
                 <view class="item_title" v-if="item.organize_name">{{ item.organize_name }}</view>
                 <view class="item_title" v-if="item.zuzhi_name">{{ item.zuzhi_name }}</view>
               </view>
@@ -96,6 +98,9 @@
         </uni-swipe-action>
       </transition>
       <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click.native="loadData('refresh')"></mix-load-more>
+    </view>
+    <view class="nodata" v-if="nodata">
+      暂无数据
     </view>
     <view class="xxx"></view>
     <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区献策'">待我审核</view>
@@ -200,6 +205,7 @@ export default {
       });
     },
     details(statenum, names, dress, session) {
+		console.error("执行存世了")
       uni.setStorage({
         key: 'zuzhi',
         data: {
@@ -367,6 +373,9 @@ export default {
         if (this.title === '党建论坛' || this.title === '社区论坛'||this.title === '志愿者组织'||this.title === '社会组织') {
           // 如果是流程列表，过滤掉未完成的
           req.condition = [{ colName: 'proc_status', value: '完成', ruleType: 'eq' }];
+        }
+        if(this.title === '党建活动安排'){
+          req['proc_data_type'] = "processed"
         }
         let res = await this.$http.post(url, req);
         uni.stopPullDownRefresh();
@@ -674,4 +683,11 @@ export default {
   color: red;
   line-height: 60upx;
 }
+.nodata{
+  width: 100%;
+  min-height: 500upx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  }
 </style>

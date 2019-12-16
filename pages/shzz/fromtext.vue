@@ -9,13 +9,12 @@
 		<view class="tiemname">
 			<text>组织简介：</text> <text class="searchs" v-html="session"></text>
 		</view>
-		<view class="tiemname">
-			<text>组织成员：</text> <text  class="searchs">社区年满18--35岁的青年男女</text>
+		<!-- <view class="tiemname">
+			<text>组织成员：</text> <text  class="searchs"></text>
 		</view>
 		<view class="tiemname">
-			<text>主要职责：</text> <text class="searchs">是由志愿从事社会公益事业与社会保事业的各界青年组成的全国性社会团体 ，
-			是中国共产主义青年团中央指导的，由</text>
-		</view>
+			<text>主要职责：</text> <text class="searchs"></text>
+		</view> -->
 		<view class="tiemname">
 			<text>服务地点：</text> <text  class="searchs">{{dress}}</text>
 		</view>
@@ -65,8 +64,16 @@
 			    success: function (res) {
 					
 					that.titlename=(res.data.names)
-					that.dress=(res.data.dress)
-					that.session=(res.data.session)
+					if(res.data.dress==undefined || res.data.dress==null){
+						that.dress="未录入"
+					}else{
+						that.dress=(res.data.dress)
+					}
+					if(res.data.session==undefined || res.data.session==null){
+						that.session="未录入"
+					}else{
+						that.session=res.data.session
+					}
 			    }
 			});
 		}

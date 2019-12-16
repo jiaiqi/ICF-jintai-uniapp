@@ -9,7 +9,7 @@
                     <!-- #endif -->
 
                     <!-- #ifdef APP-PLUS -->
-                    <image class="flex1" resize="contain" :src="img.src" />
+                    <image class="flex1" resize="cover" :src="img.src" />
                     <!-- #endif -->
                 </view>
             </swiper-item>
