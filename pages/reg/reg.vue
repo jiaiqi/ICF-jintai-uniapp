@@ -27,7 +27,7 @@
       </view>
       <view class="cu-form-group margin-top">
         <text class="title"><text class="required" >*</text>手机号：</text>
-        <input type="password" displayable v-model="regInfo.mobile" placeholder="请输入手机号"></input>
+        <input type="number" displayable v-model="regInfo.mobile" placeholder="请输入手机号"></input>
       </view>
       <view class="cu-form-group margin-top">
         <text class="title"><text class="required" > </text>邮箱：</text>
@@ -61,7 +61,7 @@
       <view class="cu-form-group margin-top">
         <text class="title"><text class="required" >*</text>手机验证码：</text>
         <input type="text" displayable v-model="regInfo.text_code" placeholder="输入验证码"></input>
-     <button class='cu-btn bg-green shadow'>发送</button>
+     <button class='cu-btn bg-green shadow' @click="getPhoneCode">发送</button>
       </view>
     <view class="btn-row"><button type="primary" class="primary" @tap="register">注册</button></view>
   </view>
@@ -95,82 +95,28 @@ export default {
         text_code: ''
       },
       imgCode:this.$api.select + '/sqfw/imageCode/getImageCode',
-      imgCodeShow:true,
-      formItem:[
-        {
-          label:"用户名",
-          type:'text',
-          column:'user_no',
-          value:"",
-          required:false,
-          validator:'',
-          placeholder:"请输入用户名"
-        },
-        {
-          label:"密码",
-          type:'text',
-          value:"pwd",
-          required:true,
-          validator:'',
-          placeholder:"请输入密码"
-        },
-        {
-          label:"重复密码",
-          type:'text',
-          value:"user_no",
-          required:false,
-          validator:'',
-          placeholder:"请再次输入密码"
-        },
-        {
-          label:"姓名",
-          type:'text',
-          value:"user_no",
-          required:false,
-          validator:'',
-          placeholder:"请输入姓名"
-        },
-        {
-          label:"年龄",
-          type:'text',
-          value:"age",
-          required:false,
-          validator:'',
-          placeholder:"请再次输入密码"
-        },
-        {
-          label:"重复密码",
-          type:'text',
-          value:"user_no",
-          required:false,
-          validator:'',
-          placeholder:"请再次输入密码"
-        },
-        {
-          label:"重复密码",
-          type:'text',
-          value:"user_no",
-          required:false,
-          validator:'',
-          placeholder:"请再次输入密码"
-        }
-        
-      ]
+      
     };
   },
   onLoad() {
-  },
-  computed:{
-    // imgCode(){
-    //   return this.$api.select + '/sqfw/imageCode/getImageCode'
-    // }
   },
   methods: {
     changeImgCode(){
       setTimeout(()=>{
         this.imgCode = this.$api.select + '/sqfw/imageCode/getImageCode?xx='+Math.random()
-      },200)
+      },100)
     },
+	getPhoneCode(){
+		let url = this.$api.select + '/sqfw/operate/srvsqfw_mobile_send'
+		let req = {
+			"image_code":this.regInfo.image_code,
+			"mobile":this.regInfo.mobile, 
+			serviceName:'srvsqfw_mobile_send'
+		}
+		this.$http.post(url,req).then(res=>{
+			console.log(res)
+		})
+	},
     register() {
       /**
        * 客户端对账号信息进行一些必要的校验。
@@ -214,16 +160,18 @@ export default {
        });
        return;
       }
-if(data.pwd!==data.rePwd){
+      if(data.pwd!==data.rePwd){
       uni.showToast({
          icon: 'none',
          title: '两次输入的密码不一致'
        });
        return;
       }
-      
-      let url = this.$api.select + '/sso/operate/srvsso_user_add'
-      let req =[{"serviceName":"srvsso_user_add","condition":[],"data":[{"user_no":data.user_no,"pwd":data.pwd,"user_state":"正常"}]}]
+      // let url = this.$api.select + '/sso/operate/srvsso_user_add'
+      let url = this.$api.select + '/sqfw/operate/srvsqfw_register'
+	  let req = this.regInfo
+	  req.serviceName = 'srvsqfw_register'
+      // let req =[{"serviceName":"srvsso_user_add","condition":[],"data":[{"user_no":data.user_no,"pwd":data.pwd,"user_state":"正常"}]}]
       this.$http.post(url,req).then(res=>{
         console.log(res)
         
