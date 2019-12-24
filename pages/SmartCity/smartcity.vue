@@ -22,8 +22,8 @@
 	  		
 	  	</view>
 	  	<!-- 活动 -->
-	  	<view class=""  >
-	  		<text class="titleall">热门活动</text>
+	  	<view class="" v-if="xqpage.length>0" >
+	  		<text class="titleall" >热门活动</text>
 	  		<view class="contenthot">
 	  			<view class="hot" v-for="(item,index) in xqpage" :key="index">
 	  				<view class="phopos" @tap="detaile(item)" :style="{backgroundImage: 'url('+item.slt+')'}"></view>
@@ -69,7 +69,6 @@ export default {
       let req = { serviceName: 'srvsys_user_menu_select', colNames: ['*'], order: [{colName: "seq", orderType: "asc"}], 
       condition: [{colName:"client_type",ruleType:'like',value:"APP"}] };
       this.$http.post(url, req).then(res => {
-		 
         if (res.data.data) {
           console.log(res.data.data);
           let menuData = res.data.data
@@ -151,7 +150,7 @@ export default {
 	// 获取轮播图路径
 	getBannerList() {
 		// 获取轮播图编号
-		let url = 'http://39.98.203.134:8081/zhdj/select/srvzhsq_djhdjl_djhd_select';
+		let url = this.$api.select + '/zhdj/select/srvzhsq_djhdjl_djhd_select';
 		let req = {};
 		req.serviceName = 'srvzhsq_djhdjl_djhd_select';
 		req.colNames = ['*'];
@@ -161,7 +160,7 @@ export default {
 			pageNo: 1,
 			rownumber: 10
 		};
-		this.$http.post(url, req).then(res => {
+		this.$http.post(url, req).then(res => { 
 			// console.log(res);
 			let picUrlCode = [];
 			if (res.data.data && res.data.data instanceof Array) {
@@ -175,8 +174,8 @@ export default {
 			if(picUrlCode && picUrlCode instanceof Array){
 				// 通过轮播图编号获取轮播图文件路径
 				picUrlCode.map(item => {
-					let path = 'http://39.98.203.134:8081/file/download?filePath=';
-					let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+					let path = this.$api.select + '/file/download?filePath=';
+					let url = this.$api.select + '/file/select/srvfile_attachment_select';
 					console.log("ggggggggggggggg",item)
 					let req = {
 						colNames: ['*'],
@@ -208,7 +207,7 @@ export default {
 		req.colNames = ['*'];
 		req.condition = [];
 		req.order = [];
-		req.proc_data_type="processed"
+		// req.proc_data_type="processed"
 		req['page'] = { 
 			pageNo: 1,
 			rownumber: 7
@@ -217,12 +216,12 @@ export default {
 		this.xqpage = res.data.data;
 			console.log("..................",res.data.data)
 			// this.xqpage=res.data.data
-			let path = 'http://39.98.203.134:8081/file/download?filePath=';
+			let path = this.$api.select + '/file/download?filePath=';
 			let listr= []
 			for(let i in  res.data.data){
 				listr.push(res.data.data[i].slt)
 				
-				let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+				let url = this.$api.select + '/file/select/srvfile_attachment_select';
 				let req = {
 					colNames: ['*'],
 					condition: [

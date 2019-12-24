@@ -3,7 +3,7 @@
 		
 		<view class="uniconicons" v-show="contnet">
 			<view :class="!showone?'onelistsexlat':'onelistsexslat' "  v-for="(item,index) in datalisttwo" :key='index'   >
-				<image class="photo-zuhi" src="../../static/img/jtu.png" mode=""></image> 
+				<image class="photo-zuhi" :src="item.tp" mode=""></image> 
 				<view class="contentdzzs">
 					<view class="dabletext">
 						<text class="title"  @click="morrebar(10000)">{{item.zjmc}}</text><text class="twoorder" @click="topcikck(item.id)" >组织详情</text>
@@ -21,7 +21,7 @@
 		
 		<view class="uniconicons" v-show="datashows">
 			<view :class="!showone?'onelistsexlat':'onelistsexslat' "  v-for="(item,index) in datalist" :key='index'   >
-				<image class="photo-zuhi" src="../../static/img/jtu.png" mode=""></image> 
+				<image class="photo-zuhi" :src="item.tp" mode=""></image> 
 				<view class="contentdzzs">
 					<view class="dabletext">
 						<text class="title"  @click="listda(item.no)">{{item.zjmc}}</text><text class="twoorder" @click="topcikck(item.id)" >组织详情</text>
@@ -41,7 +41,7 @@
 	
 		<view class="dabletextstr" v-if="threes">
 			<view class="onelistsexlat"  v-for="(item,index) in datalist" :key='index'  >
-				<image class="photo-zuhi" src="../../static/img/jtu.png" mode=""></image> 
+				<image class="photo-zuhi" :src="item.tp" mode=""></image> 
 				<view class="contentdzzs">
 					<view class="dabletext">
 						<text class="title">{{item.zjmc}}</text> <text class="twoorder" @click="topcikck(item.id)" >组织详情</text>
@@ -57,7 +57,7 @@
 				返回上一级
 			</view>
 		</view>
-		
+	
 	</view>
 </template>
 
@@ -70,10 +70,45 @@
 				showone:false,
 				contnet:true,
 				threes:false,
-				datalisttwo:[]
+				datalisttwo:[],
+				imageURL:'../../static/img/jtu.png'
 			}
 		},
 		methods:{
+			async getphoto(item){
+				let path = this.$api.select + '/file/download?filePath=';
+				let listr= []
+				for(let i in  item){
+					listr.push(item[i].tp)
+					let url = this.$api.select + '/file/select/srvfile_attachment_select';
+					let req = {
+						colNames: ['*'],
+						condition: [
+							{
+								colName: 'file_no',
+								ruleType: 'eq',
+								value: listr[i]// 图编号
+							}
+						],
+						order: null,
+						page: null,
+						serviceName: 'srvfile_attachment_select'
+					};
+					let phoarr = []
+					
+					
+				let resppo=	await this.$http.post(url, req)
+				// console.log("EEEEEEEEEEEEEEEEEEEE",resppo)
+					  if (resppo.data&&resppo.data.data&&resppo.data.data.length>0) {
+						if (item[i].tp == null ) {
+						  item[i].tp = this.imageURL;
+						}else{
+							this.$set(item[i], 'tp', path + resppo.data.data[0].fileurl);
+						}
+					  }
+				}
+				return item
+			},
 			getdata(index){
 				let url = this.$api.select+'/zhdj/select/srvzhsq_dzzjg_select?srvzhsq_dzzjg_select'
 				let req = {};
@@ -83,8 +118,12 @@
 				req.order = [];
 				// req['page'] = null;
 				this.$http.post(url, req).then(res => {
-					
-					this.datalist=res.data.data
+						console.log(res)
+					this.getphoto(res.data.data).then(phop=>{
+						console.error(phop)
+						this.datalist=phop
+					})
+					// console.log(res)
 				})
 			},
 			getdatas(){
@@ -96,8 +135,11 @@
 				req.order = [];
 				// req['page'] = {pageNo: 1, rownumber: 10};
 				this.$http.post(url, req).then(res => {
-					
-					this.datalisttwo=res.data.data
+					console.log(res)
+					this.getphoto(res.data.data).then(phop=>{
+						console.error(phop)
+						this.datalisttwo=phop
+					})
 				})
 			},
 		
@@ -157,6 +199,11 @@
 	.dabletext{
 		display: flex;
 		position: relative;
+	}
+	.kapian{
+		box-shadow: 0 0 26px 0 rgba(0,0,0,0.12);
+		margin: 8px 8px;
+		padding: 8px;
 	}
 	.onelistsex{
 		display: flex;

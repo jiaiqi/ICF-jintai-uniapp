@@ -32,7 +32,7 @@
                 title == '便民信息' ||
                 title == '数字城管' ||
                 title == '公租房列表' ||
-                this.title === '廉租房列表')
+                title === '廉租房列表')
           "
           class="cu-list"
         >
@@ -99,9 +99,9 @@
       </transition>
       <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click.native="loadData('refresh')"></mix-load-more>
     </view>
-    <view class="nodata" v-if="nodata">
-      暂无数据
-    </view>
+	<view class="kapian" v-if="nodata">
+		<view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无数据</view> 
+	</view>
     <view class="xxx"></view>
     <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区献策'">待我审核</view>
   </view>
@@ -385,7 +385,7 @@ export default {
             this.totalListItem = page.total;
           }
           return res.data.data;
-        } else {
+        } else if(res.data.data.length==0&&this.listData.length==0){
           this.nodata = true;
         }
       }
@@ -486,6 +486,12 @@ export default {
   align-items: center;
   border-bottom: 1px solid #efefef;
 }
+.kapian{
+		box-shadow: 0 0 26px 0 rgba(0,0,0,0.12);
+		margin: 8px 0;
+		padding: 8px;
+		margin: 0 40upx;
+	}
 .shenhe {
   z-index: 99;
   position: fixed;

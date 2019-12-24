@@ -4,7 +4,7 @@
 			<view class="img-top">
 				<view class="img-left">
 					<!-- <view class="img-number"><view class="iconfont icon-tupian1 tupian"></view> {{number}}</view> -->
-					<view class="img-zou"><view class=""></view> 所在支部 : 卫生部</view>
+					<!-- <view class="img-zou"><view class=""></view> 所在支部 : 卫生部</view> -->
 				</view>
 				<view class="img-right">
 					<view class="iconfont icon-v"></view>
@@ -16,7 +16,7 @@
 			<view class="loathe" :animation="loatheAnimation[0]">
 				<view class="iconfont icon-chacha1" :style="{fontSize:'60rpx'}"></view>
 			</view> -->
-			<image class="img" src="http://39.98.203.134:8081/file/download?filePath=/20190709/20190709133925676100/20190709133925676101.jpg"></image>
+			<image class="img" :src="src"></image>
 		</view>
 		
 		<view class="bottom">
@@ -36,6 +36,7 @@
 
 <script>
 	export default{ 
+    // props:['src','number','name','sex','constellation','address','old'],
 		props:{
 			src:{
 				type:String,
@@ -71,7 +72,8 @@
 				loveAnimation:{0:{}},
 				loatheAnimation:{0:{}},
 				loveAni:null,
-				loatheAni:null
+				loatheAni:null,
+				imgurl:this.$api.select + "/file/download?filePath=/20190709/20190709133925676100/20190709133925676101.jpg"
 			}
 		},
 		mounted() {

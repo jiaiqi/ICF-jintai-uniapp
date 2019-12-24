@@ -112,7 +112,7 @@
 	}
 
 	.cmd-page-body-top {
-		padding-top: 88upx;
+		/* padding-top: 88upx; */
 		top: var(--status-bar-height);
 	}
 </style>

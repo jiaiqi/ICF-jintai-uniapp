@@ -7,7 +7,7 @@
 			<text>组织状态：</text> <text :class="states.state=='1'?'colortext-red': 'colortext' ">{{states.state==1?'未审批':'已审批'}}</text>
 		</view>
 		<view class="tiemname">
-			<text>组织简介：</text> <text class="searchs" v-html="session"></text>
+			<text>组织简介：</text> <view class="searchs" v-html="session"></view>
 		</view>
 		<!-- <view class="tiemname">
 			<text>组织成员：</text> <text  class="searchs"></text>
@@ -72,7 +72,7 @@
 					if(res.data.session==undefined || res.data.session==null){
 						that.session="未录入"
 					}else{
-						that.session=res.data.session
+						that.session= res.data.session
 					}
 			    }
 			});

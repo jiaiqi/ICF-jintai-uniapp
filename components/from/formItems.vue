@@ -76,9 +76,6 @@
       <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.bx_col_type === 'fk' && (Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||Fileddatas.col_type==='bxzhsq_social_organizie')">
         <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
       </picker>
-      <!--   <hTimePicker sTime="0" cTime="24" interval="1" @changeTime="changeTime" v-if="Fileddatas.col_type === 'Date'||Fileddatas.col_type === 'DateTime'">
-        <view slot="pCon" class="changeTime">{{ Fileddatas.column ? Fileddatas.column : '点击选择时间' }}</view>
-      </hTimePicker> -->
       <picker mode="date" :value="date" start="2015-09-01" end="2050-09-01" @change="DateChange" v-if="Fileddatas.col_type === 'Date' || Fileddatas.col_type === 'DateTime'">
         <view class="picker">{{ date}}</view>
       </picker>
@@ -148,17 +145,11 @@
 </template>
 <script>
 import Emitter from '../../static/js/mixins/emitter.js';
-import QSPickerCustom from '@/components/QS-inputs-split/elements/QS-picker-custom/index.vue';
-import hTimePicker from '@/components/h-timePicker/h-timePicker.vue';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
-import edit from '@/components/qiyue-richtext/uni-richtext.vue';
 export default {
   name: 'iFormItem',
   components: {
     uniPopup,
-    edit,
-    QSPickerCustom,
-    hTimePicker
   },
   computed: {
     startDate() {
@@ -340,7 +331,7 @@ export default {
           let bxAuthTicket = uni.getStorageSync('bxAuthTicket');
           // let appNo = that.appNo;
           var uploadTask = uni.uploadFile({
-            url: 'http://39.98.203.134:8081/file/upload', //上传文件的接口地址
+            url: this.$api.select + '/file/upload', //上传文件的接口地址
             filePath: temp[0],
             header: { bx_auth_ticket: bxAuthTicket },
             name: 'file',

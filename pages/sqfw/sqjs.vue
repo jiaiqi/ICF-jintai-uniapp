@@ -5,7 +5,7 @@
 		</view>
 		<!-- <uni-top></uni-top> -->
 			
-	<view class="" v-if="loadingView">
+	<view class="" v-if="loadingView"> 
 		<view class=""   v-for="i in 7">
 			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
 			<view class="content-box">
@@ -40,21 +40,21 @@
 		<view v-else class="" v-for="(item,index) in listhome" :key="index"  >
 			<!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
 			<view class="content-box">
-				<image class="imageHotel" src="../../static/img/hotels.png" mode="">
+				<image class="imageHotel" :src="item.sqimg" mode="">  
 					<text class="topone">Top{{index+1}}</text>
 				</image>
 				<view class="listtext">
 					<view class="testline" style="display: flex;">
-						<text style="display: block;font-weight: 600;font-size: 16px;" @click="navxq(item.id)">{{item.sqname}}</text> 
+						<text style="display: block;font-weight: 600;font-size: 16px;" @click="navxq(item.id,item.sqimg)">{{item.sqname}}</text> 
 						 <view class="listcenter" style="display: flex">
 							<image src="../../static/img/ditu.png" mode="" class="calls"  @click="open(item.longitude,item.latitude,item.sqname)"></image>
 						 </view>
 					</view>
-					<view class="testline" style="display: flex;font-size: 15px;color: #666;" @click="navxq(item.id)">
+					<view class="testline" style="display: flex;font-size: 15px;color: #666;" @click="navxq(item.id,item.sqimg)">
 							<image class="mapwz" src="../../static/img/wz.png" mode="" ></image>
 							<text style="vertical-align:middle;" class="textline">{{item.sqaddress}}</text>
 					</view>
-					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;"  @click="navxq(item.id)">
+					<view class="" style="display: flex;font-size: 13px;margin-top: 4px;"  @click="navxq(item.id,item.sqimg)">
 						<view class="textFlex textFlexborder">
 						  <text v-if="item.sqfamily>800&&item.sqspace>1200" class="backcolor">优质小区</text>
 						  <text v-if="item.sqfamily>800" class="mapborder">面积大</text>
@@ -80,15 +80,16 @@
 				listhome:[],
 				url: 'https://m.amap.com',
 				status: 0,
-				numberlist:7,
-				pageno:1
+				numberlist:6,
+				pageno:1,
+				imageURL:'../../static/img/hotels.png'
 			}
 		},
 		components:{
 			uniLoading,
 		},
 		methods:{
-			getdata(index){
+			async getdata(index){
 				
 				let url = this.$api.select + "/sqfw/select/srvzhsq_information_select?srvzhsq_information_select"
 				let req = {};
@@ -100,18 +101,59 @@
 					pageNo: this.pageno,
 					rownumber: this.numberlist
 				};
-				this.$http.post(url, req).then(res => {
-					console.log(	res) 
+				  let res = await this.$http.post(url, req)
+					// console.log(	res) 
 					if(index==0){
-						this.listhome =res.data.data
+						this.getphoto(res.data.data).then(ress=>{
+							console.log(ress)
+							this.listhome =ress
+						})
 					}else{
 						if(res.data.data.length==0){
 							this.status=2
 						}
-						this.listhome =   this.listhome.concat(res.data.data)
+						
+						this.getphoto(res.data.data).then(resdata=>{
+						
+							this.listhome =   this.listhome.concat(resdata)
+						})
+						// this.getphoto(res.data.data)
+						
 					}
 					this.loadingView=false
-				})
+			},
+			async getphoto(item){
+				let path = this.$api.select + '/file/download?filePath=';
+				let listr= []
+				for(let i in  item){
+					listr.push(item[i].sqimg)
+					let url = this.$api.select + '/file/select/srvfile_attachment_select';
+					let req = {
+						colNames: ['*'],
+						condition: [
+							{
+								colName: 'file_no',
+								ruleType: 'eq',
+								value: listr[i]// 图编号
+							}
+						],
+						order: null,
+						page: null,
+						serviceName: 'srvfile_attachment_select'
+					};
+					let phoarr = []
+					
+					
+				let resppo=	await this.$http.post(url, req)
+				// console.log("EEEEEEEEEEEEEEEEEEEE",resppo)
+					  if (resppo.data&&resppo.data.data&&resppo.data.data.length>0) {
+					      this.$set(item[i], 'sqimg', path + resppo.data.data[0].fileurl);
+						if (item[i].sqimg == null) {
+						  item[i].sqimg = this.imageURL;
+						}
+					  }
+				}
+				return item
 			},
 				onPullDownRefresh() {
 						this.numberlist= this.listhome.length
@@ -160,15 +202,16 @@
 			    console.log(res);
 			  });
 			},
-			navxq(id){
+			navxq(id,img){
+        console.log('imgPaths',img)
 				uni.navigateTo({
-					url: './sqxqjs?id='+id,
+					url: './sqxqjs?id='+id+'&img='+encodeURIComponent(JSON.stringify(img).replace(/%/g, '%25')),
 				});
 			}
 		},
 		onLoad(){
 			this.getdata(0)
-			
+			this.status=1
 			 // setTimeout(function () {
 			 //            console.log('start pulldown');
 			 //        }, 1000);

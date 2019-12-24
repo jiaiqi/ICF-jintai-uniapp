@@ -1,7 +1,7 @@
 <template>
 	<view class="conbox">
 		<view class="">
-			<image src="../../static/img/111.jpg" class="banner" mode=""></image>
+			<img :src="imgurl" class="banner" mode=""></img>
 		</view>
 		<view class="contentjs" >
 			<view v-if="datalist[0]" style="font-size: 17px; font-weight: 600;margin-bottom: 6px;">{{datalist[0].sqname}}</view>
@@ -18,7 +18,7 @@
 			<view class="" style="font-weight: 600; margin-bottom:14px ; font-size: 18px;">
 				社区简介：
 			</view >
-				<view v-if="datalist[0]" class="conts" style="font-size: 16px;line-height: 25px;" v-html="datalist[0].sqbrief">
+				<view v-if="datalist[0]" class="conts" style="font-size: 16px;line-height: 25px;" v-html="parse">
 				</view>
 		</view>
 	</view>
@@ -28,7 +28,9 @@
 	export default{
 		data(){
 			return{
-				datalist:[]
+				datalist:[],
+				imgurl:'../../static/img/111.jpg',
+				parse:''
 			}
 		},
 		methods:{
@@ -45,12 +47,14 @@
 				this.$http.post(url, req).then(res => {
 					console.log(res)
 					this.datalist=res.data.data
+					this.parse = JSON.parse(JSON.stringify(res.data.data[0].sqbrief.replace(/\<img/gi, '<img width=100% height=100% style="width:100%"')));
 				})
 			},
 		},
 		onLoad(id){
-			console.log(id.id)
+			console.log(id,id.img)
 			this.getdata(id.id)
+			this.imgurl =JSON.parse(decodeURIComponent(id.img))
 		}
 	}
 </script>

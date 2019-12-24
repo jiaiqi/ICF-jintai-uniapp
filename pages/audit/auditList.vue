@@ -10,7 +10,8 @@
 				<view class="box" v-for="(item,index) in listhome" :key="index"   >
 					<view class="">
 						<view class="nametitle" style="">
-						{{item.zuzhi_name||item.organize_name||item.activity_title||item.note_title||item.opinion_title||item.opinion_title}}</view>
+						{{item.zuzhi_name||item.organize_name
+						||item.activity_title||item.note_title||item.opinion_title||item.bt}}</view>
 						<text>状态:{{item.proc_status}}</text>
 					</view>
 					<view class="but"  @click="audio(item)">
@@ -77,7 +78,7 @@
 					rownumber: this.numberlist
 				};
 				this.$http.post(url, req).then(res => {
-          // debugger
+					console.log(res.data.data)
 					this.menubtn=false
 					let numarr = res.data.data
 					let arrbar=[]
@@ -166,6 +167,10 @@
 				}else if(this.servenameat=="srvzhsq_forum_opinion_select"){
 					uni.navigateTo({
 						url: '../normal/detail/detail?query='+encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
+					});
+				}else if (this.servenameat=="srvzhsq_djlt_ftxx_select"){
+					uni.navigateTo({
+						url: '../forum/detail?no=' + item.ftno
 					});
 				}
 			}

@@ -10,9 +10,9 @@
     </view>
     <view class="person-list" v-if="userInfo&&userInfo.user_no !== 'niming'">
       <cmd-cell-item title="我的帖子" slot-left arrow @click="myPost"><cmd-icon type="bullet-list" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
-      <cmd-cell-item title="消息通知" slot-left arrow @click="messageNotification"><cmd-icon type="message" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
+<!--      <cmd-cell-item title="消息通知" slot-left arrow @click="messageNotification"><cmd-icon type="message" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
       <cmd-cell-item title="后台管理" slot-left arrow @click="systemSetting"><cmd-icon type="settings" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
-      <cmd-cell-item title="检查版本" addon="v1.0" slot-left arrow @click="checkVersion"><cmd-icon type="alert-circle" size="24" color="#e52d27"></cmd-icon></cmd-cell-item>
+      <cmd-cell-item title="检查版本" addon="v1.0" slot-left arrow @click="checkVersion"><cmd-icon type="alert-circle" size="24" color="#e52d27"></cmd-icon></cmd-cell-item> -->
     </view>
     <view class="tologin" v-else><button style="background: #E51C23;color: #fff;" @click="toLogin">点击跳转到登录</button></view>
   </view>
@@ -118,6 +118,7 @@ export default {
       });
     },
     toLogin() {
+      console.log("跳转到登录")
       uni.navigateTo({
         url: '../login/login',
         success: res => {
@@ -160,7 +161,6 @@ export default {
   display: flex;
   height: 500upx;
   align-items: center;
- 
 }
 .person-head-nickname {
   font-size: 18px;

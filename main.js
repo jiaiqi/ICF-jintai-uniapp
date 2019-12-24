@@ -64,9 +64,13 @@ fly.interceptors.request.use((request) => {
   } else {
     apiPath = urlstr.slice(len, urlstr.length)
   }
-
+  if(bxAuthTicket){
+    console.log(bxAuthTicket)
+    request.headers.bx_auth_ticket = bxAuthTicket
+  }
   if (!isExpired) {
     if (bxAuthTicket) {
+      console.log(bxAuthTicket)
       request.headers.bx_auth_ticket = bxAuthTicket
     }
     return request
@@ -79,6 +83,9 @@ fly.interceptors.request.use((request) => {
 
 // 添加响应拦截器
 fly.interceptors.response.use((res) => {
+  // if(res.headers.bx_auth_ticket&&res.headers.bx_auth_ticket[0]){
+  //   uni.setStorageSync('bxAuthTicket',res.headers.bx_auth_ticket[0])
+  // }
     // 对响应数据做些事
     if (res.data.resultCode === "0011") {
       uni.reLaunch({

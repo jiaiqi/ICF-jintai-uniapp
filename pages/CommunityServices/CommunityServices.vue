@@ -12,15 +12,15 @@
 	  	<!-- 插图 -->
 	  	<view class="banner"  :style="{ backgroundImage: 'url(' + imageURL + ')' }"></view>
 	  	<!-- 活动 -->
-	  	<view class="" >
-	  	  <text class="titleall"  v-if="xqpage" >热门活动</text>
+	  	<view class="" v-if="xqpage.length>0" >
+	  	  <text class="titleall"  >热门活动</text>
 	  	  <view class="contenthot">
 	  	    <view class="hot" v-for="(item, index) in xqpage" :key='index'>
 	  	      <view class="phopos" @tap="detaile(item)" :style="{ backgroundImage: 'url(' + item.activity_img + ')' }"></view>
 	  	      <view class="textline">{{ item.activity_title }}</view>
 	  	    </view>
 	  	  </view>
-	  	</view>
+	  	</view> 
 	  </view>
 	   <uni-loading   color="#888"  />
   </view>
@@ -68,7 +68,7 @@ export default {
             menu.children = [];
             menu.label = menu.menu_name;
             menu.value = menu.menu_no;
-            if (menu.client_type.includes('APP')) {
+            if (menu.client_type && menu.client_type.includes('APP')) {
               if (menu.parent_no) {
                 children.push(menu);
               } else {
@@ -182,7 +182,7 @@ export default {
       req.colNames = ['*'];
       req.condition = [];
       req.order = [];
-		req.proc_data_type="processed"
+      // req.proc_data_type="processed"
       req['page'] = {
         pageNo: 1,
         rownumber: 7

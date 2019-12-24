@@ -24,14 +24,14 @@
       </div>
 
       <!-- 内容 -->
-      <div v-if="query.content" class="content_view" v-html="JSON.parse(JSON.stringify(query.content).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
+      <div v-if="query.content" class="content_view" v-html="query.content"></div>
       <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
       <!-- 主贴点赞 -->
 
       <!-- 回复 -->
       <div class="little_title"><text>网友评论</text></div>
       <div class="reply_view">
-        <div class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无数据</div>
+        <div style="color: #9E9E9E;" class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无评论</div>
         <div class="discuss_item" v-for="(item, index) in PostLeaveMeaasgeList" :key="index">
           <image :src="item.head_img_path" v-if="item.head_img_path" class="touxiang"></image>
           <uni-icons type="contact" size="60" color="#dd524d" v-if="!item.head_img_path"></uni-icons>
@@ -173,8 +173,16 @@ export default {
       let req = { serviceName: this.serviceName, colNames: ['*'], condition: [{ colName: colName, ruleType: 'like', value: note_no }], order: [] };
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS' && res.data.data) {
-          this.query = res.data.data[0];
-          this.query.content = JSON.parse(JSON.stringify(this.query.content).replace(/\<img/gi, '<img width=100% height=100% '));
+          let data = res.data.data[0];
+          if(data.nr&&data.nr.indexOf('<img')!=-1){
+            data.nr = JSON.parse(JSON.stringify(data.nr).replace(/\<img/gi, '<img width=100% height=100% '));
+          }
+          if(data.content&&data.content.indexOf('<img')!=-1){
+            data.content = JSON.parse(JSON.stringify(data.content).replace(/\<img/gi, '<img width=100% height=100% '));
+          }
+          this.query = data
+          console.log(data)
+          // this.query.content = JSON.parse(JSON.stringify(this.query.content).replace(/\<img/gi, '<img width=100% height=100% '));
           this.getNoteUserInfo(); //查找此贴发帖人信息
           this.getTouxiangPath(); // 查找发帖人头像
           this.getAgreePeopleList(this.note_no);
@@ -464,6 +472,14 @@ export default {
       let res = await this.$http.post(url, req);
       if (res.data.data) {
         let data = res.data.data;
+        data.map(d=>{
+          if(d.nr&&d.nr.indexOf('<img')!=-1){
+            data.nr = JSON.parse(JSON.stringify(data.nr).replace(/\<img/gi, '<img width=100% height=100% '));
+          }
+          if(d.remark&&d.remark.indexOf('<img')!=-1){
+            data.remark = JSON.parse(JSON.stringify(data.remark).replace(/\<img/gi, '<img width=100% height=100% '));
+          }
+        })
         let PostLeaveMeaasgeList = data; // 此贴所有留言记录
         this.getPostLeaveMeaasgeAgreeList(data).then(PostLeaveMeaasgeList => {
           this.PostLeaveMeaasgeList = PostLeaveMeaasgeList;

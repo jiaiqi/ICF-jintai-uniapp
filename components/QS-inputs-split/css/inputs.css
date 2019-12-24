@@ -217,6 +217,8 @@ button::after {
 
 .width100 {
 	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .height100 {

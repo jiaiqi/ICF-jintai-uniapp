@@ -43,7 +43,7 @@ export default {
 	methods: {
 		getBannerList() {
 			// 获取轮播图路径
-			let url = 'http://39.98.203.134:8081/zhdj/select/srvzhsq_djhdjl_djhd_select';
+			let url = this.$api.select + '/zhdj/select/srvzhsq_djhdjl_djhd_select';
 			let req = {};
 			req.serviceName = 'srvzhsq_djhdjl_djhd_select';
 			req.colNames = ['*'];
@@ -61,8 +61,8 @@ export default {
 				});
 				console.log('picUrlList:', picUrlList);
 				picUrlList.map(item => {
-					let path = 'http://39.98.203.134:8081/file/download?filePath=';
-					let url = 'http://39.98.203.134:8081/file/select/srvfile_attachment_select';
+					let path = this.$api.select + '/file/download?filePath=';
+					let url = this.$api.select + '/file/select/srvfile_attachment_select';
 					let req = {
 						colNames: ['*'],
 						condition: [

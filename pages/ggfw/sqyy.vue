@@ -8,7 +8,7 @@
 			<text class="lineh" style="">{{titlename}}</text>
 		</view>
 		
-		<view class="content-box">
+		<view class="content-box"> 
 			<view class="content-width">
 				<text class="texts" style="color: red;">*</text><text class="texts">申请人</text>
 			</view>

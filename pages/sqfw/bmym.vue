@@ -7,6 +7,7 @@
       </view>
       <input type="text" :value="valueadmin" disabled="disabled" style="background: #E2E4EA;" />
     </view>
+
     <view class="content-box">
       <view class="content-width">
         <text class="texts" style="color: red;">*</text>
@@ -21,28 +22,29 @@
       </view>
       <input type="text" v-model="phone" />
     </view>
-    <!-- <view class="content-box">
-			<view class="content-width">
-				<text class="texts" style="color: red;">*</text><text class="texts">选择时间：</text>
-			</view>
-			<view class="input" >
-				<QSPickerDate  name="formName" variableName="date" title="" v-model="dateValue"  @change="changePickers(dateValue)"   placherhold="请选择" />
-			</view>
-		</view> -->
-    <view class="content-box">
+    <view class="content-box cu-form-group margin-top">
+      <view class=" title">
+        <text class="texts" style="color: red;">*</text>
+        选择活动
+      </view>
+      <picker @change="changePicker" :value="pinckindex" :range="activityArray">
+        <view class="picker">{{ pinckindex != -1 ? activityNameArr[pinckindex] : '请选择' }}</view>
+      </picker>
+    </view>
+    <!--  <view class="content-box">
       <view class="content-width">
         <text class="texts" style="color: red;">*</text>
         <text class="texts">选择活动：</text>
       </view>
+      
       <view class="input"><QSPickerCustom ref="nationPickerZ" name="formName" variableName="custom" title="" v-model="pinck" @change="changePicker(pinck)" /></view>
-    </view>
+    </view> -->
+
     <view class="btn" @click="addvalue()">提交申请</view>
   </view>
 </template>
 
 <script>
-import QSPickerCustom from '@/components/QS-inputs-split/elements/QS-picker-custom/index.vue';
-import QSPickerDate from '@/components/QS-inputs-split/elements/QS-picker-date/index.vue';
 import QSApp from '@/components/QS-inputs-split/js/app.js';
 export default {
   data() {
@@ -52,15 +54,20 @@ export default {
       valueadmin: 'admin', //用户编号
       baominvalue: '', //用户报名
       pinck: '', //活动编号,
+      pinckindex: -1, //编号下标
+      idArr: [],
+      activityNameArr:[],
+      activityArray: [], // 多选列表
       phone: '', //手机号,
       active_no: ''
     };
   },
   components: {
-    QSPickerCustom,
-    QSPickerDate
   },
   methods: {
+    MultiColumnChange(e) {
+      console.log(e);
+    },
     getdata() {
       let url = this.$api.select + '/sqfw/select/srvzhsq_activity_arrange_select';
       let req = {};
@@ -72,20 +79,26 @@ export default {
 
       this.$http.post(url, req).then(res => {
         let list = res.data.data;
+        let idArr = [];
         let datast = [];
+        let activityNameArr = []
         for (let i in list) {
+          idArr.push(list[i].activity_no);
+          activityNameArr.push(list[i].activity_title)
           datast.push(list[i].activity_title + '/' + list[i].activity_no);
         }
         let a = '[' + JSON.stringify(datast) + ']';
         let b = JSON.parse(a);
-        this.setPickerDataFc('nationPickerZ', b);
+        this.activityArray = b[0];
+        this.activityNameArr = activityNameArr
+        this.idArr = idArr;
       });
     },
     setPickerDataFc(name, data) {
       this.$refs[name].setData(data);
     },
     addvalue() {
-      if (this.baominvalue == '' || this.phone == '' || this.pinck == '') {
+      if (this.baominvalue == '' || this.phone == '' || this.active_no == '') {
         uni.showToast({
           title: '请填写完整再提交',
           duration: 2000,
@@ -114,46 +127,51 @@ export default {
             ]
           }
         ];
-        uni.showToast({
-          title: '提交中...',
-          icon: 'loading'
+        uni.showLoading({
+          title: '提交中...'
         });
 
         this.$http.post(url, req).then(res => {
           console.log(res);
           if (res.status == 200) {
-            if (res.data.resultCode !== 'SUCCESS') {
-              uni.hideToast();
+            if (res.data.resultCode == 'SUCCESS') {
+              uni.hideLoading();
               uni.showToast({
-                title: res.data.resultMessage,
+                title: '提交成功，跳转中...',
                 duration: 2000,
-                icon: 'none'
+                icon: 'success'
               });
+              setTimeout(() => {
+                uni.navigateBack({
+                  delta: 2
+                });
+              }, 3000);
             } else {
-              uni.hideToast();
-              uni.showModal({
-                title: '提示',
-                content: '提交成功，即将返回到上级菜单',
-                showCancel: false,
-                success: res => {
-                  if (res.confirm) {
-                    uni.navigateBack({
-                      delta: 2
-                    });
-                  }
-                }
+              uni.hideLoading();
+              uni.showToast({
+                title: res.data.resultMessage + '请重新尝试',
+                duration: 3000,
+                image: '../../static/img/gantanhao.png'
               });
             }
+          } else {
+            uni.hideLoading();
+            uni.showToast({
+              title: '提交失败，请重新尝试',
+              duration: 3000,
+              image: '../../static/img/gantanhao.png'
+            });
           }
         });
       }
     },
-    changePickers(val) {
-      console.log(val.data);
-    },
-    changePicker(val) {
-      console.log(val);
-      this.active_no = val.data[0].slice(val.data[0].indexOf('/'), val.data[0].length);
+    changePicker(e) {
+      console.log(e);
+      console.log(e.detail.value, this.activityArray[e.detail.value]);
+      this.pinckindex = e.detail.value;
+      this.active_no = this.idArr[e.detail.value];
+      //    this.active_no = val.data[0].slice(val.data[0].indexOf('/'), val.data[0].length);
+      // console.log(this.active_no,this.pinck);
     }
   },
   onLoad() {
@@ -172,26 +190,38 @@ export default {
 <style scoped>
 .content {
   width: 100%;
-  background: #ffffff;
-  padding: 35upx;
+  background: #f1f1f1;
+  padding: 0 35upx;
 }
 input,
+input,
 .input {
-  border: 1px solid #c5464a;
-  border-radius: 5px 5px 5px 5px;
-  height: 22px;
+  /* border: 1px solid #c5464a; */
+  /* border-radius: 5px 5px 5px 5px; */
+  height: 30px;
   width: 60% !important;
-  font-size: 14px;
+  font-size: 15px;
   padding: 2px 5px;
-  margin: 10px 0;
-  overflow: hidden;
+  margin-top: calc(60upx - 15px);
 }
 
 .content-box {
   display: flex;
+  background: #ffffff;
+  padding: 0 35upx;
+  height: 120upx;
+  margin-top: 30upx;
+}
+.content-box .title {
+  height: auto;
+  line-height: 1;
+}
+.content-width {
+  width: 28%;
 }
 .texts {
-  line-height: 48px;
+  line-height: 120upx;
+  font-size: 15px;
 }
 .content-width {
   width: 28%;

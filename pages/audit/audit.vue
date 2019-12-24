@@ -3,7 +3,8 @@
     <view class="allbox">
       <text class="title">名称：</text>
       <text v-if="datalist" style="font-weight: 600;font-size: 15px;">
-        {{ datalist.zuzhi_name || datalist.organize_name || datalist.activity_title || datalist.note_title || datalist.opinion_title }}
+        {{ datalist.zuzhi_name || datalist.organize_name || datalist.activity_title 
+		|| datalist.note_title || datalist.opinion_title || datalist.bt}}
       </text>
     </view>
     <view class="allbox">
@@ -72,6 +73,7 @@ export default {
     submit(val) {
       let authority = '';
       let num = 0;
+	  let appsdat='sqfw'
       if (val == 'srvzhsq_zyz_zuzhi_select') {
         //志愿者
         authority = 'volunteer_org_ process_';
@@ -88,12 +90,13 @@ export default {
       } else if (val == 'srvzhsq_djlt_ftxx_select') {
         authority = 'zhsq_ltft_0';
         num = 1;
+		appsdat= "zhdj"
       } else if (val == 'srvzhsq_forum_opinion_select') {
         //社区献策
         authority = 'T_FORUM_OPINION_';
         num = 1;
       }
-      let url = 'http://39.98.203.134:8081/sqfw/process/approval';
+      let url = this.$api.select + '/'+appsdat+'/process/approval';
       let req = [
         {
           proc_instance_no: this.datalist.proc_instance_no,

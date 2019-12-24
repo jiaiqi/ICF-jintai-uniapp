@@ -31,7 +31,7 @@
 					this.timer = setInterval(() => {
 						this.numberi++
 						console.log(this.numberi)
-						if(this.numberi==10){
+						if(this.numberi==14){
 							this.numberi=0
 							clearInterval(this.timer)
 							this.img="../../static/img/failed.png"

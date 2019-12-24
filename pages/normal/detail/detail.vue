@@ -31,7 +31,8 @@
       <view>
         <view class="little_title">项目概况：</view>
 
-        <view class="content" v-html="JSON.parse(JSON.stringify(detail.sxmxx_js).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.sxmxx_js"></view>
+        <view class="content" v-html="richText" v-if="richText"></view>
+        <!-- <view class="content" v-html="detail.sxmxx_js" v-if="detail.sxmxx_js"></view> -->
       </view>
     </view>
     <view >
@@ -40,7 +41,7 @@
       <view class="title" v-if="detail.opinion_title">{{ detail.opinion_title }}</view>
       <view class="title" v-if="detail.note_title">{{ detail.note_title }}</view>
       <view class="subtitle">发布时间：{{ detail.create_time }}</view>
-      <view class="content" ref="richText" id="richText"></view>
+      <view class="content" ref="richText" id="richText" v-html="richText"></view>
       <!--      <view class="content" v-html="JSON.parse(JSON.stringify(detail.pxjj).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.pxjj"></view>
       <view class="content" v-html="JSON.parse(JSON.stringify(detail.nr).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.nr"></view>
       <view class="content" v-html="JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% '))" v-if="detail.content"></view> -->
@@ -60,20 +61,43 @@ export default {
     getRichText() {},
     getContent(detail) {
       if (detail.content) {
-        this.richText = JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% ').replace(/<p>/gi,' ').replace(/<\/p\>/gi,' '))
+        if(detail.content.indexOf('<img')!=-1){
+          this.richText = JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% '))
+          // if(detail.content.indexOf('<p>')!=-1){
+          //   this.richText = JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% ').replace(/<p>/gi,' '))
+          // }
+          // if(detail.content.indexOf('</p>')){
+          //   this.richText = JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% ').replace(/<\/p\>/gi,' '))
+          // }
+        }else{
+          this.richText = detail.content
+        }
       }
       if (detail.pxjj) {
         // 党建培训
-        this.richText = JSON.parse(JSON.stringify(detail.pxjj).replace(/\<img/gi, '<img width=100% height=100% '));
+        if(detail.pxjj.indexOf('<img')!=-1){
+          this.richText = JSON.parse(JSON.stringify(detail.pxjj).replace(/\<img/gi, '<img width=100% height=100% '));
+        }else{
+          this.richText = detail.pxjj
+        }
       }
       if (detail.nr) {
-        this.richText = JSON.parse(JSON.stringify(detail.nr).replace(/\<img/gi, '<img width=100% height=100% '));
+        if(detail.nr.indexOf('<img')!=-1){
+          this.richText = JSON.parse(JSON.stringify(detail.nr).replace(/\<img/gi, '<img width=100% height=100% '));
+        }else{
+          this.richText = detail.nr
+        }
       }
-      if (detail.content) {
-        this.richText = JSON.parse(JSON.stringify(detail.content).replace(/\<img/gi, '<img width=100% height=100% '));
+      if(detail.sxmxx_js){
+        if(detail.sxmxx_js.indexOf('<img')!=-1){
+            this.richText = JSON.parse(JSON.stringify(detail.sxmxx_js).replace(/\<img/gi, '<img width=100% height=100% '));
+        }else{
+          this.richText = detail.sxmxx_js
+        }
       }
+
       console.log(this.richText);
-      document.getElementById('richText').innerHTML =  this.richText;
+      // document.getElementById('richText').innerHTML =  this.richText;
       // this.$refs.richText.innerHTML = this.richText;
     }
   },

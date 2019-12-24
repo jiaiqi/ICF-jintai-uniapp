@@ -141,11 +141,11 @@ export default {
 		    return cols;
 		  }
 		},
-		getMenu(){
-			
-			let url =this.$api.select + "/sqfw/select/srvzhsq_activity_arrange_select"
+		getMenu(serve){
+			console.error(serve)
+			let url =this.$api.select + "/sqfw/select/"+serve
 			let req = {};
-			req.serviceName ="srvzhsq_activity_arrange_select";
+			req.serviceName =serve;
 			req.colNames = ['*'];
 			req.condition = [];
 			req.order = [];
@@ -155,6 +155,7 @@ export default {
 				rownumber: 10
 			};
 			this.$http.post(url, req).then(res => {
+				console.log(res)
 					this.menuAudio=res.data.data.length
 			})
 		},
@@ -255,7 +256,7 @@ export default {
 				title: listdatas.label
 			});
 			
-			this.getMenu()
+			this.getMenu(listdatas.service_name)
 		}
 	}
 

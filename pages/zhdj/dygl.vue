@@ -1,23 +1,32 @@
 <template>
 	<view class="content">
-		<view class="flexbox" v-if="!list">
-			<view class="conten-box" v-for="(item,index) in datalist" :key="index">
-				<image class="photo" @click="allitem(item)" src="http://img.weinan.gov.cn/HIWCMweinan/201603/201603170904033.jpg" mode=""></image>
-				<view class="sueecss" style="">{{item.xm}}</view>
+		<view class="" v-if="datalist.length>0">
+			<view class="flexbox" v-if="!list">
+				<view class="conten-box" v-for="(item,index) in datalist" :key="index">
+					<image class="photo" @click="allitem(item)" :src="item.zp" mode=""></image>
+					<view class="sueecss" style="">{{item.xm}}</view>
+				</view>
+			</view>
+			<view class="flexbox" v-if="list">
+				<view class="conten-box" v-for="(item,index) in datalistteo" :key="index">
+					<image class="photo" @click="allitem(item)" :src="item.zp" mode=""></image>
+					<view class="sueecss" style="">{{item.xm}}</view>
+				</view>
+			</view>
+			<view class="titlesucces" v-if="people">
+				暂时没有该党员信息~
 			</view>
 		</view>
 		
-		
-		<view class="flexbox" v-if="list">
-			<view class="conten-box" v-for="(item,index) in datalistteo" :key="index">
-				<image class="photo" @click="allitem(item)" src="http://img.weinan.gov.cn/HIWCMweinan/201603/201603170904033.jpg" mode=""></image>
-				<view class="sueecss" style="">{{item.xm}}</view>
-			</view>
-		</view>
-		<view class="titlesucces" v-if="people">
-			暂时没有该党员信息~
+		<view class="kapian" v-else>
+			<view class="" style="color: #BEBEBE;text-align: center;">
+				<image style="height: 25px;width: 25px;" src="../../static/img/loading.gif" mode=""></image>
+				<view class="">	数据加载中</view>
+					
+			</view> 
 		</view>
 	</view>
+	
 </template>
 
 <script>
@@ -28,10 +37,41 @@
 				 datalist:[],
 				 datalistteo:[],
 				 list:false,
-				 people:false
+				 people:false,
 			 }
 		 },
 		 methods:{
+			 async getphoto(item){
+			 	let path = this.$api.select + '/file/download?filePath=';
+			 	let listr= []
+			 	for(let i in  item){
+			 		listr.push(item[i].zp)
+			 		let url = this.$api.select + '/file/select/srvfile_attachment_select';
+			 		let req = {
+			 			colNames: ['*'],
+			 			condition: [
+			 				{
+			 					colName: 'file_no',
+			 					ruleType: 'eq',
+			 					value: listr[i]// 图编号
+			 				}
+			 			],
+			 			order: null,
+			 			page: null,
+			 			serviceName: 'srvfile_attachment_select'
+			 		};
+			 		let phoarr = []
+			 		
+			 		
+			 	let resppo=	await this.$http.post(url, req)
+			 	// console.log("EEEEEEEEEEEEEEEEEEEE",resppo)
+			 		  if (resppo.data&&resppo.data.data&&resppo.data.data.length>0) {
+			 		      this.$set(item[i], 'zp', path + resppo.data.data[0].fileurl);
+			 			
+			 		  }
+			 	}
+			 	return item
+			 },
 			 getdata(index){
 			 	let url = this.$api.select+'/zhdj/select/srvzhsq_dyxx_select?srvzhsq_dyxx_select'
 			 	let req = {};
@@ -41,8 +81,9 @@
 			 	req.order = [];
 			 	req['page'] =  {pageNo: 1, rownumber: 10};
 			 	this.$http.post(url, req).then(res => {
-			 		console.log(res.data.data)
-			 		this.datalist=res.data.data
+					this.getphoto(res.data.data).then(photo=>{
+						this.datalist=photo
+					})
 			 	})
 			 },
 			 allitem(item){
@@ -61,7 +102,13 @@
 							  console.log(this.people)
 							 this.datalistteo.push(this.datalist[i])
 						 }
+						 if(this.datalistteo.length>0){
+							 this.people=false
+						 }else{
+							 this.people=true
+						 }
 					 }
+					 
 				 }else if (val.text==""||val.text==''){
 					  this.list=false
 					  this.people=false
@@ -95,6 +142,11 @@
 		width: 30%;
 		margin: 1.5%;
 		
+	}
+	.kapian{
+		box-shadow: 0 0 26px 0 rgba(0,0,0,0.12);
+		margin: 8px 0;
+		padding: 8px;
 	}
 	.sueecss{
 		font-weight: 600;

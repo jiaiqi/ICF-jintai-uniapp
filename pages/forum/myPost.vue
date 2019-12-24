@@ -11,7 +11,7 @@
 			* @event {Function} setEnableScroll 设置组件内scroll-view是否允许滚动
 		-->
     <view class="tabs">
-      <view class="tab" @click="ckeckTabs(0)" :class="{ 'tab-active': activeTab == 0 }"><text>党建论坛</text></view>
+      <view class="tab" @click="ckeckTabs(1)" :class="{ 'tab-active': activeTab == 0 }"><text>党建论坛</text></view>
       <view class="tab" @click="ckeckTabs(1)" :class="{ 'tab-active': activeTab == 1 }"><text>社区论坛</text></view>
     </view>
     <mix-pulldown-refresh ref="mixPulldownRefresh" :top="0" @refresh="onPulldownReresh">
@@ -334,7 +334,7 @@ page,
     // overflow: scroll;
     min-height: 140upx;
     .list_item {
-      width: calc(100% - 20upx);
+      // width: calc(100% - 20upx);
       background-color: #fff;
       // padding:0 5%;
       padding-left: 20upx;

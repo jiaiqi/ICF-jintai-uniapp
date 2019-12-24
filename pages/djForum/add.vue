@@ -126,7 +126,7 @@ export default {
           let bxAuthTicket = uni.getStorageSync('bxAuthTicket');
           // let appNo = that.appNo;
           var uploadTask = uni.uploadFile({
-            url: 'http://39.98.203.134:8081/file/upload', //仅为示例，非真实的接口地址,需要替换成自己的接口地址
+            url: this.$api.select + '/file/upload', //仅为示例，非真实的接口地址,需要替换成自己的接口地址
             filePath: temp[0],
             header: { bx_auth_ticket: bxAuthTicket },
             name: 'file',
@@ -138,7 +138,7 @@ export default {
             success: e => {
               var data = JSON.parse(e.data);
               this.imgPathList = this.imgPathList.concat(data.fileurl);
-              this.imageList = this.imageList.concat('http://39.98.203.134:8081/file/download?filePath=' + data.fileurl);
+              this.imageList = this.imageList.concat(this.$api.select + '/file/download?filePath=' + data.fileurl);
               console.log(data, this.imageList);
               // that.$set(that.editItems[that.editItems.length], 'value', 'http://39.98.203.134:8081/file/download?filePath='+data.fileurl);
             },

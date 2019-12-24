@@ -6,12 +6,12 @@
       <view class="btn" v-if="titlebar == 'hdap' && menuAudio > 0" @click="audit()">待我审批</view>
     </view>
 
-    <view class="" v-if="listshow">
+<!--    <view class="" v-if="listshow">
       <view v-for="i in 8" class="" style="display: flex;padding: 8px 10px;justify-content: space-between;">
         <view class="" style="width:200px ; height: 25px; background: rgba(150, 150, 150, 0.1);"></view>
         <view class="" style="width:83px ; height: 25px; background: rgba(150, 150, 150, 0.1);"></view>
       </view>
-    </view>
+    </view> -->
 
     <view class="contentBox" @tap="detaile(item)" v-for="(item, index) in datalist" :key="index">
       <text class="crips"></text>
@@ -21,7 +21,7 @@
 
       <text class="yeardata">{{ item.create_time.substring(0, 11) }}</text>
     </view>
-    <view class="morea" @click="toMore()" v-if="datalist && datalist.length > 6">更多>></view>
+    <view class="morea" @click="toMore()" v-if="datalist && datalist.length > 5">更多>></view>
     <view class="nodata" v-if="nodata&&datalist.length==0">暂无数据</view>
   </view>
 </template>
@@ -63,10 +63,11 @@ export default {
         rownumber: this.numberpage
       };
       this.$http.post(url, req).then(res => {
-        this.datalist = res.data.data;
-        console.log(res.data.data);
-        this.listshow = false;
-        if(!res.data.data||res.data.data.length==0){
+        if(res.data.data){
+          this.datalist = res.data.data;
+          console.log(JSON.stringify(res.data.data));
+          this.listshow = false;
+        }else{
           this.nodata = true
         }
       });

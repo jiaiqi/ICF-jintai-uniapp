@@ -49,7 +49,7 @@
 				// });
 			},
 			getdata(){
-				let url = 'http://39.98.203.134:8081/sqfw/select/srvzhsq_bmfw_thirdservice_select';
+				let url = this.$api.select + '/sqfw/select/srvzhsq_bmfw_thirdservice_select';
 				let req = {};
 				req.serviceName = "srvzhsq_bmfw_thirdservice_select";
 				req.colNames = ['*'];

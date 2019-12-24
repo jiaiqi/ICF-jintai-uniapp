@@ -1,7 +1,7 @@
 <template>
-  <view>
-    <cmd-nav-bar back title="信息设置"></cmd-nav-bar>
-    <cmd-page-body type="top">
+  <view class="wrap">
+    <!-- <cmd-nav-bar back title="个人信息"></cmd-nav-bar> -->
+    <cmd-page-body type="top" v-if="userInfo&&userInfo.user_no !== 'niming'">
       <cmd-transition name="fade-up">
         <view>
           <cmd-cel-item title="头像" slot-right arrow>
@@ -19,6 +19,7 @@
         </view>
       </cmd-transition>
     </cmd-page-body>
+    <view class="tologin" v-else><button style="background: #E51C23;color: #fff;" @click="toLogin">点击跳转到登录</button></view>
   </view>
 </template>
 
@@ -51,6 +52,15 @@
     },
     
     methods:{
+      toLogin() {
+        console.log("跳转到登录")
+        uni.navigateTo({
+          url: '../login/login',
+          success: res => {
+            uni.clearStorageSync();
+          }
+        });
+      },
       /**
        * 点击触发
        * @param {Object} type 跳转页面名或者类型方式
@@ -98,6 +108,9 @@
 </script>
 
 <style>
+  .wrap{
+    width: 100%;
+    }
   .btn-logout {
     margin-top: 100upx;
     width: 80%;
@@ -107,7 +120,13 @@
 	background-color: #E51C23;
     /* background: linear-gradient(to right, #365fff, #36bbff); */
   }
-
+.tologin {
+  display: flex;
+  height: 500upx;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
   .btn-logout-hover {
     background: linear-gradient(to right, #365fdd, #36bbfa);
   }

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import Emitter from '../../../static/js/mixins/emitter.js';
+// import Emitter from '../../../static/js/mixins/emitter.js';
 import fromView from '@/components/from/form.vue';
 export default {
   components: {
@@ -44,7 +44,7 @@ export default {
       // foreignKey: this.$route.query.foreignKey,
     };
   },
-  mixins: [Emitter],
+  // mixins: [Emitter],
   onLoad: function(option) {
     let query = '';
     if (option.query) {
