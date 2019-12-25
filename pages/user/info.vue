@@ -41,16 +41,22 @@
 
     data() {
       return {
-        userInfo:uni.getStorageSync('userInfo')
+        userInfo:{}
       };
     },
 
     mounted() {
+      this.userInfo = uni.getStorageSync('userInfo')
       uni.setNavigationBarTitle({
         title:"个人信息"
       })
     },
-    
+    onShow(){
+      this.userInfo = uni.getStorageSync('userInfo')
+    },
+    // updated() {
+    //   this.userInfo = uni.getStorageSync('userInfo')
+    // },
     methods:{
       toLogin() {
         console.log("跳转到登录")
@@ -97,8 +103,10 @@
         });
       },
       logout(){
-        uni.setStorageSync("userInfo",null)
-        uni.setStorageSync("bxAuthTicket","")
+        uni.clearStorageSync()
+        // uni.clearStorageSync('bxAuthTicket')
+        // uni.setStorageSync("userInfo",null)
+        // uni.setStorageSync("bxAuthTicket","")
         uni.navigateTo({
           url:'/pages/login/login'
         })

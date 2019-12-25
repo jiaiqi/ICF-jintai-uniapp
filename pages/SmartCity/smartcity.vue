@@ -237,7 +237,7 @@ export default {
 				};
 				let phoarr = []
 				this.$http.post(url, req).then(resppo => {
-					console.error(resppo)
+					// console.error(resppo)
 				  if (resppo.data&&resppo.data.data&&resppo.data.data.length>0) {
 				    try{
 				      this.$set(res.data.data[i], 'slt', path + resppo.data.data[0].fileurl);
@@ -292,7 +292,13 @@ export default {
     this.getMenusList();
 	this.getBannerList()
 	this.hotlist("srvzhsq_djhdjl_djhd_select")
-  }
+  },
+  onShow(){
+   this.userInfo = uni.getStorageSync('userInfo');
+  this.getMenusList();
+  this.getBannerList()
+  this.hotlist("srvzhsq_djhdjl_djhd_select")
+  },
 };
 </script>
 

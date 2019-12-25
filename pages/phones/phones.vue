@@ -76,7 +76,10 @@
 			},
 			onLoad(){
 				this.getdata()
-			}
+			},
+      onShow(){
+        this.getdata()
+      }
 		}
 </script>
 

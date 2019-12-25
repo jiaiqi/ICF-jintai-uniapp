@@ -223,7 +223,7 @@ export default {
     },
     visitorAccess() {
       // 游客访问
-      uni.setStorageSync('userInfo',null)
+  uni.clearStorageSync()
       let url = this.$api.select + '/sso/operate/srvuser_login';
       let req = [{ serviceName: 'srvuser_login', data: [{ user_no: 'niming', pwd: '1' }] }];
       this.$http.post(url, req).then(res => {
@@ -247,6 +247,7 @@ export default {
       });
     },
     accoutLogin() {
+      uni.clearStorageSync()
       // 登录访问
       let self = this;
       let ssos = uni.getStorageSync('loginInfoSsos');

@@ -36,37 +36,50 @@
 
 <script>
 	export default{ 
-    // props:['src','number','name','sex','constellation','address','old'],
-		props:{
-			src:{
-				type:String,
-				default:''
-			},
-			number:{
-				type:Number,
-				default:0
-			},
-			name:{
-				type:String,
-				default:''
-			},
-			sex:{
-				type:Number,
-				default:0
-			},
-			constellation:{
-				type:String,
-				default:''
-			},
-			address:{
-				type:String,
-				default:''
-			},
-			old:{
-				type:String,
-				default:''
-			}
-		},
+    props:{
+      src:String,
+      number:Number,
+      name:String,
+      sex:Number,
+      constellation:String,
+      address:String,
+      old:String,
+      datas:Object
+      },
+		// props:{
+		// 	src:{
+		// 		type:String,
+		// 		default:''
+		// 	},
+		// 	number:{
+		// 		type:Number,
+		// 		default:0
+		// 	},
+		// 	name:{
+		// 		type:String,
+		// 		default:''
+		// 	},
+		// 	sex:{
+		// 		type:Number,
+		// 		default:0
+		// 	},
+		// 	constellation:{
+		// 		type:String,
+		// 		default:''
+		// 	},
+		// 	address:{
+		// 		type:String,
+		// 		default:''
+		// 	},
+		// 	old:{
+		// 		type:String,
+		// 		default:''
+		// 	},
+  //     datas:{
+  //       type:Object,
+  //       default: {}
+  //     }
+		// },
 		data(){
 			return{
 				loveAnimation:{0:{}},
@@ -85,6 +98,8 @@
 			this.loatheAni = uni.createAnimation({
 				duration:0
 			});
+      console.error(JSON.stringify(this.datas))
+      console.error(this.src,this.number.toString(),this.name,this.sex,this.constellation,this.address,this.old)
 		},
 		methods:{
 			clearAnimation(){
@@ -124,12 +139,12 @@
 				this.loatheAnimation[0] = this.loatheAni.export()
 			}
 		},
-		watch:{
-			cardData(newVal){
-				console.log(newVal)
-				this.item = newVal
-			}
-		}
+		// watch:{
+		// 	cardData(newVal){
+		// 		console.log(newVal)
+		// 		this.item = newVal
+		// 	}
+		// }
 	}
 </script>
 

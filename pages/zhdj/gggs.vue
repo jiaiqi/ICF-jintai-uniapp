@@ -55,9 +55,9 @@ export default {
       let req = {};
       req.serviceName = serve;
       req.colNames = ['*'];
-      req.condition = [];
+      req.condition = [{colName: "proc_status", ruleType: "eq", value: "完成"}];
       req.order = [];
-      req.proc_data_type = 'processed';
+      // req.proc_data_type = 'processed';
       req['page'] = {
         pageNo: 1,
         rownumber: this.numberpage

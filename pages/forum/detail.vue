@@ -59,7 +59,7 @@
     </view>
     <div class="tool_bar">
       <textarea class="huifu" v-model="remark" placeholder="想对Ta说点什么..." />
-      <button type="primary" class="huifu_btn" @click="writeBack">回复</button>
+      <button type="primary" class="huifu_btn" @click="writeBack">留言</button>
       <!-- <input type="textarea" v-model="remark" class="huifu" placeholder="想对Ta说点什么..." /> -->
       <!-- 主贴点赞 -->
       <div class="main_agree">
@@ -208,15 +208,15 @@ export default {
           userList = userList.map(users => {
             return users.praise_user;
           });
-          console.log(userList, userInfo.user_no);
-          if (userList.indexOf(userInfo.user_no) != -1) {
-            console.log(userInfo, userInfo.user_no);
-            this.agree_icon = '../../static/img/agreea.png';
-            this.agree_status = true;
-          } else {
-            this.agree_icon = '../../static/img/agreeb.png';
-            this.agree_status = false;
-          }
+          // console.log(userList, userInfo.user_no);
+          // if (userList.indexOf(userInfo.user_no) != -1) {
+          //   console.log(userInfo, userInfo.user_no);
+          //   this.agree_icon = '../../static/img/agreea.png';
+          //   // this.agree_status = true;
+          // } else {
+          //   this.agree_icon = '../../static/img/agreeb.png';
+          //   // this.agree_status = false;
+          // }
         }
       });
     },
@@ -280,7 +280,9 @@ export default {
               msg['agreePeople'] = arr;
               if (arr.indexOf(userInfo.user_no) != -1) {
                 msg['agree_icon'] = '../../static/img/agreea.png';
+                // this.agree_status = true
               } else {
+                // this.agree_status = false
                 msg['agree_icon'] = '../../static/img/agreeb.png';
               }
             }
@@ -308,6 +310,7 @@ export default {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
           console.log('点赞成功');
+          this.getAgreePeopleList(this.note_no)
         }
       });
     },
@@ -331,6 +334,7 @@ export default {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
           console.log('删除点赞成功');
+          this.getAgreePeopleList(this.note_no)
         }
       });
     },
@@ -428,6 +432,7 @@ export default {
       });
     },
     addMainAgree(item, num, no) {
+      // this.getAgreePeopleList(this.note_no)
       // 主贴点赞
       this.agree_status = !this.agree_status;
       if (this.agree_status) {

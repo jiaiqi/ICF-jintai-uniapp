@@ -419,7 +419,7 @@ export default {
         // this.getListData(query);
         // this.loadData('refresh');
         this.loadData('refresh');
-        this.getColumnsData(app, query.service_name, query.menu_url.includes('proc') ? 'proclist' : query.menu_no === 'bxsqlt_sqlt' ? 'proclist' : 'list')
+        this.getColumnsData(app, query.service_name, query.menu_url.includes('proc') ? 'proclist' : (query.menu_no === 'bxzhsq_djlt'||query.menu_no === 'bxsqlt_sqlt' )? 'proclist' : 'list')
           .then(cols => {
             console.log('cols', cols);
             this.columnData = cols;
