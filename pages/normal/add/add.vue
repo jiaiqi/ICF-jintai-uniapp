@@ -195,6 +195,9 @@ export default {
         if (this.queryString.label === '党建活动记录') {
           operate = 'apply';
         }
+        if(this.queryString.menu_url.indexOf('listproc')!=-1){
+          operate = 'apply'
+        }
         let url = self.$api.add + '/' + this.appName + '/' + operate + '/srvzhsq_pxap_add';
         let formData = this.$refs.iForms.returnFields();
         if (formData.data) {

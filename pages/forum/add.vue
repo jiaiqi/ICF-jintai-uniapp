@@ -4,10 +4,10 @@
       <view class="title">标题</view>
       <input type="text" placeholder="标题" v-model="pageTitle" />
     </view>
-    <view class="forumClassBox cu-form-group margin-top" v-if="appName === 'sqfw'">
+    <view class="forumClassBox cu-form-group margin-top">
       <view class="title">栏目</view>
-      <picker mode="multiSelector" @change="MultiChange" @columnchange="MultiColumnChange" :value="multiIndex" :range="multiArray">
-        <view class="picker">{{ multiArray[0][multiIndex[0]] }}，{{ multiArray[1][multiIndex[1]] }}</view>
+      <picker @change="ColumnChange" :value="index2" :range="columnsList">
+        <view class="picker">{{ index2 > -1 ? columnsList[index2] : '请选择分类' }}</view>
       </picker>
     </view>
     <view class="forumClassBox cu-form-group margin-top">
@@ -208,11 +208,15 @@ export default {
     },
     getCategory() {
       // 查找论坛栏目列表
-      let url = this.$api.select + '/sqfw/select/srvzhsq_forum_column_select';
+      let serviceName  = 'srvzhsq_forum_column_select'
+      if(this.appName!='sqfw'){
+        serviceName = 'srvzhsq_djlt_ltlm_select'
+      }
+      let url = this.$api.select + '/'+this.appName+'/select/' +  serviceName;
       let req = {
-        serviceName: 'srvzhsq_forum_column_select',
+        serviceName: serviceName,
         colNames: ['*'],
-        condition: [{ colName: 'parent_no', ruleType: 'isnull' }],
+        // condition: [{ colName: 'parent_no', ruleType: 'isnull' }],
         page: { pageNo: 1, rownumber: 10 },
         order: []
       };
@@ -228,40 +232,17 @@ export default {
         })
         .then(datas => {
           if (datas) {
-            datas.map((data, i) => {
-              parentsList.push(data.column_title);
-              columnsList.push({ value: data.column_title, children: [] });
-              data.children = [];
-              let req = {
-                serviceName: 'srvzhsq_forum_column_select',
-                colNames: ['*'],
-                condition: [
-                  {
-                    colName: 'parent_no',
-                    value: data.column_no,
-                    ruleType: 'eq'
-                  }
-                ]
-              };
-              this.$http.post(url, req).then(resp => {
-                console.log(req.condition[0].value, 'req.condition');
-                if (resp.data.data && resp.data.data[0].parent_no == data.column_no) {
-                  data.children = resp.data.data;
-                  data.children.map((item, index) => {
-                    item.text = item.column_title;
-                    columnsList[i]['children'].push(item.column_title);
-                  });
-                }
-              });
-            });
-            return datas;
-          }
-        })
-        .then(datas => {
-          if (datas) {
             console.log(datas);
+            this.columnsList = datas.map(col=>{
+              if(col.column_title){
+                return col.column_title
+              }
+             if(col.mc){
+                return col.mc
+             }
+            })
             this.categoryList = columnsList;
-            this.multiArray = [parentsList, columnsList[0].children];
+            this.multiArray = [parentsList, columnsList];
           }
         });
     },

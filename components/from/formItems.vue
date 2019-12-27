@@ -73,7 +73,7 @@
         v-model="Fileddatas.column"
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入活动名称'"
       />
-      <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.bx_col_type === 'fk' && (Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||Fileddatas.col_type==='bxzhsq_social_organizie')">
+      <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.bx_col_type === 'fk' && (Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||Fileddatas.col_type==='bxzhsq_social_organizie'||Fileddatas.col_type==='bxzhsq_tenement_gzfxx'||Fileddatas.col_type==='bxzhsq_tenement_lzfxx')">
         <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
       </picker>
       <picker mode="date" :value="date" start="2015-09-01" end="2050-09-01" @change="DateChange" v-if="Fileddatas.col_type === 'Date' || Fileddatas.col_type === 'DateTime'">
@@ -268,7 +268,7 @@ export default {
       setTimeout(() => {
         this.setPickerData(nationArr);
       }, 500);
-    } else if (this.Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||this.Fileddatas.col_type==='bxzhsq_social_organizie') {
+    } else if (this.Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||this.Fileddatas.col_type==='bxzhsq_social_organizie'||this.Fileddatas.col_type==='bxzhsq_tenement_gzfxx'||this.Fileddatas.col_type==='bxzhsq_tenement_lzfxx') {
       this.getOptionList();
     }
   },
@@ -305,6 +305,9 @@ export default {
             }
             if(picker===or.zuzhi_name){
               this.Fileddatas.column = or.zuzhi_no
+            }
+            if(picker===or.title){
+               this.Fileddatas.column = or.title
             }
           })
         })
@@ -475,7 +478,7 @@ export default {
       
     },
     setPickerData(nationArr) {
-      let data1 = [nationArr];
+      // let data1 = [nationArr];
       this.picker = nationArr;
     },
     getUser() {
@@ -548,7 +551,7 @@ export default {
           console.log('111111111111111111111111111111', res.data.data);
           if(res.data.data){
             let data = res.data.data
-            let arr = data.map(item=>item.zuzhi_name?item.zuzhi_name:item.organize_name?item.organize_name:'')
+            let arr = data.map(item=>item.zuzhi_name?item.zuzhi_name:item.organize_name?item.organize_name:item.gzf_no?item.title:item.lzf_no?item.title:"")
             this.picker = arr,
             this.originPicker = data
           }

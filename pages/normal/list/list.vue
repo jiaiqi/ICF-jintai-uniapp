@@ -419,7 +419,14 @@ export default {
         // this.getListData(query);
         // this.loadData('refresh');
         this.loadData('refresh');
-        this.getColumnsData(app, query.service_name, query.menu_url.includes('proc') ? 'proclist' : (query.menu_no === 'bxzhsq_djlt'||query.menu_no === 'bxsqlt_sqlt' )? 'proclist' : 'list')
+        let type = 'list'
+        if(query.menu_url.includes('proc')){
+          type = 'proclist'
+        }
+        if(query.menu_no === 'bxzhsq_djlt'||query.menu_no === 'bxsqlt_sqlt'){
+          type = 'proclist'
+        }
+        this.getColumnsData(app, query.service_name, type)
           .then(cols => {
             console.log('cols', cols);
             this.columnData = cols;
