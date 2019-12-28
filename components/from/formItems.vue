@@ -204,7 +204,7 @@ export default {
       save: [],
       DeptData: [],
       userList: {
-        search: uni.getStorageSync("userInfo").user_no?uni.getStorageSync("userInfo").user_no:"",
+        search: "",
         Fileddatas: [],
         userSelected: {
           user_disp: '',
@@ -389,7 +389,6 @@ export default {
 
       this.Fileddatas.column = item.user_no;
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
-
       this.$refs.Upopup.close();
     },
     DeptChoose(item, i) {
@@ -470,7 +469,7 @@ export default {
     },
     setUserPoup() {
       this.$refs.Upopup.open();
-      // this.getUser();
+      this.getUser();
     },
     setDeptPoup() {
       this.$refs.Dpopup.open();
@@ -495,7 +494,7 @@ export default {
       this.$http.post(url, req).then(resp => {
         this.save = resp.data.data;
         this.userList.Fileddatas = resp.data.data;
-        this.userSearch()
+        // this.userSearch()
       });
     },
     getDept() {

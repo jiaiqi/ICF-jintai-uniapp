@@ -24,6 +24,7 @@
       </div>
 
       <!-- 内容 -->
+      <!-- <rich-text :nodes=""></rich-text> -->
       <div v-if="query.content" class="content_view" v-html="query.content"></div>
       <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
       <!-- 主贴点赞 -->
@@ -855,7 +856,9 @@ export default {
   position: fixed;
   background-color: #fff;
   bottom: 0;
-  width: calc(100% - 40upx);
+  width: 100%;
+  box-sizing: border-box;
+  // width: calc(100% - 40upx);
   height: 80upx;
   display: flex;
   align-items: center;
