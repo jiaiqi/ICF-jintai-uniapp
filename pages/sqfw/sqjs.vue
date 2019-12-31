@@ -82,7 +82,10 @@
 				status: 0,
 				numberlist:6,
 				pageno:1,
-				imageURL:'../../static/img/hotels.png'
+				imageURL:'../../static/img/hotels.png',
+				jlon:null,//起点精度
+				wlen: null,//起点维度
+				adress:""
 			}
 		},
 		components:{
@@ -195,9 +198,8 @@
 							},
 			
 			open(j,w,n) {
-				let url = 'https://m.amap.com/share/index/lnglat=' +j+','+w+'&name='+n+'&callnative=0'
-				
-				// location.href='https://m.amap.com/share/index/lnglat=108.840104,34.326915&name=西部社区&callnative=0'
+				let url=`https://uri.amap.com/navigation?from=${this.jlon},${this.wlen},
+				${this.adress}&to=${j},${w},${n}`
 			  plus.runtime.openWeb(url, function(res) {
 			    console.log(res);
 			  });
@@ -216,7 +218,22 @@
 			 //            console.log('start pulldown');
 			 //        }, 1000);
 			 //        uni.startPullDownRefresh();
+			 let that =  this
+			 uni.getLocation({
+			     type: 'wgs84',
+			     success: function (res) {
+			         that.jlon= res.longitude
+					 console.log("精度",res.longitude)
+			        that.wlen= res.latitude
+					console.log("维度",res.latitude)
+			     }
+			 });
 			 
+			 plus.geolocation.getCurrentPosition( function(position){
+			    that.adress = position.addresses
+			 }, function ( e ) {
+			    console.log( e.message );
+			 },{geocode:true});
 		}
 	}
 </script>

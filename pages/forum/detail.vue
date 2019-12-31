@@ -20,6 +20,7 @@
       <div class="title_view">
         <text class="title_text bold_text" v-if="query.note_title">{{ query.note_title }}</text>
         <text class="title_text bold_text" v-if="query.bt">{{ query.bt }}</text>
+        <text class="title_text bold_text" v-if="query.title">{{ query.title }}</text>
         <!-- <span class="time_date">时间：{{ query.create_time }}</span> -->
       </div>
 
@@ -28,9 +29,18 @@
       <div v-if="query.content" class="content_view" v-html="query.content"></div>
       <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
       <!-- 主贴点赞 -->
-
+      
+      <!-- 官方答复 -->
+      <div class="little_title"  v-if="query.ssp_no">
+        <text>官方答复</text>
+      </div>
+      <div class="reply_view" v-if="query.ssp_no">
+        
+      </div>
       <!-- 回复 -->
-      <div class="little_title"><text>网友评论</text></div>
+      <div class="little_title">
+        <text>网友评论</text>
+      </div>
       <div class="reply_view">
         <div style="color: #9E9E9E;" class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无评论</div>
         <div class="discuss_item" v-for="(item, index) in PostLeaveMeaasgeList" :key="index">
@@ -96,7 +106,8 @@ export default {
       PostLeaveMeaasgeList: [], //此贴下所有留言记录
       PostLeaveMeaasgeAgreeList: [], //此贴下所有留言的点赞记录
       agreePepoleList: [], //点赞人合集
-      remark: '' //回复内容
+      remark: '', //回复内容
+      replyList:[], //答复列表
     };
   },
   onLoad: function(option) {
@@ -110,6 +121,9 @@ export default {
       } else {
         this.appName = 'sqfw';
         this.serviceName = 'srvzhsq_forum_note_select';
+        if(option.no.includes('BX-SSP')){
+          this.serviceName = 'srvzhsq_bmfw_ssp_select';
+        }
       }
       this.note_no = option.no;
       this.getMainInfo();
@@ -121,11 +135,20 @@ export default {
   },
 
   methods: {
-    getNoteUserInfo() {
+    getNoteUserInfo(reg) {
       // 获取发帖人信息
-      let url = this.$api.select + '/sso/select/srvsso_user_select';
+      let serviceName = ''
+      let path = ''
+      if(reg){
+        serviceName = 'srvzhsq_reg_select'
+        path = '/sqfw/select/srvzhsq_reg_select'
+      }else{
+        serviceName = 'srvsso_user_select'
+        path='/sso/select/srvsso_user_select'
+      }
+      let url = this.$api.select + path;
       let req = {
-        serviceName: 'srvsso_user_select',
+        serviceName: serviceName,
         colNames: ['*'],
         condition: [{ colName: 'user_no', ruleType: 'eq', value: this.query.create_user }],
         order: []
@@ -169,7 +192,11 @@ export default {
       if (this.appName === 'zhdj') {
         colName = 'ftno';
       } else {
-        colName = 'note_no';
+        if(this.serviceName === 'srvzhsq_bmfw_ssp_select'){
+          colName = 'ssp_no';
+        }else{
+          colName = 'note_no';
+        }
       }
       let req = { serviceName: this.serviceName, colNames: ['*'], condition: [{ colName: colName, ruleType: 'like', value: note_no }], order: [] };
       this.$http.post(url, req).then(res => {
@@ -323,6 +350,9 @@ export default {
         serviceName = 'srvzhsq_djlt_ftxx_praise_delete'
         colName = 'ftno'
       }
+      if(this.serviceName==="srvzhsq_bmfw_ssp_select"){
+        
+      }
       let url = this.$api.select + '/'+this.appName+'/operate/' + serviceName;
       let userInfo = this.userInfo;
       let req = [
@@ -452,6 +482,11 @@ export default {
         colName = 'ftno'
       }
       let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
+      if(this.serviceName==="srvzhsq_bmfw_ssp_select"){
+        colName = 'ssp_no'
+        serviceName = 'srvzhsq_bmfw_ssp_praise_num_update'
+        url = this.$api.select + '/' + this.appName +'/update/'+'srvzhsq_bmfw_ssp_praise_num_update'
+      }
       let req = [{ serviceName: serviceName, condition: [{ colName: colName, ruleType: 'eq', value: this.note_no }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
@@ -643,7 +678,30 @@ export default {
         console.log('PostLeaveMeaasgeList:', PostLeaveMeaasgeList);
       }
     },
-
+    getReplyInfo() {
+          // 查找当前随手拍官方回复信息
+          let ssp_no = this.note_no;
+          let serviceName = "srvzhsq_bmfw_sspdf_select";
+          let url = this.getServiceUrl("select", serviceName, "sqfw");
+          let req = {
+            serviceName: serviceName,
+            colNames: ["*"],
+            condition: [{ colName: "ssp_no", ruleType: "like", value: ssp_no }],
+            // page: {
+            //   pageNo: 1,
+            //   rownumber: 10
+            // },
+            order: []
+          };
+          this.$http.post(url, req).then(res => {
+            console.log(res.data.data);
+            if (res.data.data) {
+              this.replyList = res.data.data;
+              // this.replyPageInfo = res.data.page;
+              // this.replyInfo = res.data.data[0];
+            }
+          });
+        },
     getDateTime() {
       let date = new Date();
       let h = date.getHours();
@@ -780,9 +838,11 @@ export default {
   .reply_view {
     width: 100%;
     background-color: #fff;
-    margin-bottom: 150upx;
     min-height: 200upx;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    &:last-child{
+      margin-bottom: 150upx;
+    }
     .noddata {
       width: 100%;
       height: 100%;

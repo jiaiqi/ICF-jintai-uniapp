@@ -4,12 +4,22 @@
 			<img :src="imgurl" class="banner" mode=""></img>
 		</view>
 		<view class="contentjs" >
-			<view v-if="datalist[0]" style="font-size: 17px; font-weight: 600;margin-bottom: 6px;">{{datalist[0].sqname}}</view>
+			<view v-if="datalist[0]" style="display: flex;" >
+				<text style="font-size: 17px; font-weight: 600;margin-bottom: 6px;">{{datalist[0].sqname}}</text>
+				<view class="" style="display: flex;position: absolute;right: 15px;" @click="callphoto(datalist[0].sqphone)">
+					<view class="dhc"></view>
+					<view class="" style="opacity: 0;">||</view>
+					<text >拨打电话</text>
+					 <!-- :style="{ backgroundImage: 'url(' +photocall + ')' }" -->
+				</view>
+			</view>
 			<view class="" style="font-size: 16px;line-height: 25px;" v-if="datalist[0]">
 				<view >总人口数：{{datalist[0].sqpopulation}}</view>
 				<view >家庭数：{{datalist[0].sqfamily}}</view>
 				<view >车位数：{{datalist[0].sqspace}}</view>
-				<view >社区电话：{{datalist[0].sqphone}}</view>
+				
+					<view >社区电话：{{datalist[0].sqphone}}</view> 
+
 				<view >社区地址：{{datalist[0].sqaddress}}</view>
 			</view>
 			
@@ -30,7 +40,8 @@
 			return{
 				datalist:[],
 				imgurl:'../../static/img/111.jpg',
-				parse:''
+				parse:'',
+				photocall:"../../static/img/dhc.png"
 			}
 		},
 		methods:{
@@ -50,6 +61,21 @@
 					this.parse = JSON.parse(JSON.stringify(res.data.data[0].sqbrief.replace(/\<img/gi, '<img width=100% height=100% style="width:100%"')));
 				})
 			},
+			callphoto(val){
+				uni.showModal({
+				    title: '提示',
+				    content: '拨打电话?',
+				    success: function (res) {
+				        if (res.confirm) {
+				            	uni.makePhoneCall({
+				            	    phoneNumber: val
+				            	});
+				        } else if (res.cancel) {
+				            console.log('用户点击取消');
+				        }
+				    }
+				});
+			}
 		},
 		onLoad(id){
 			console.log(id,id.img)
@@ -102,5 +128,12 @@
 		width: calc(100% - 70upx) !important;
 		border-radius:20upx ;
 		padding: 28upx;
+	}
+	.dhc{
+		display: block;
+		height: 40upx;
+		width: 40upx;
+		background: url("../../static/img/dhc.png");
+		background-size:cover ;
 	}
 </style>

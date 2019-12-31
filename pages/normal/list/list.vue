@@ -6,12 +6,15 @@
       </view>
       <transition name="slide-fade">
         <uni-swipe-action v-if="listData.length > 0 && (title == '社区论坛'||
+                title == '数字城管'||
                 title == '党建论坛')" class="cu-list">
           <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
             <view class="cont">
               <view class="list_item" @tap="toForumDetail(item)">
                 <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
                 <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
+                <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
+                <view class="item_title" v-if="item.title">{{ item.title }}</view>
               </view>
               <view class="data_time">
                 <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
@@ -29,8 +32,7 @@
                 title === '培训安排' ||
                 title == '我为社区献策' ||
                 title == '创投项目' ||
-                title == '便民信息' ||
-                title == '数字城管' ||
+                title == '便民信息'||
                 title == '公租房列表' ||
                 title === '廉租房列表')
           "
@@ -40,7 +42,7 @@
             <view class="cont">
               <view class="list_item" @tap="toDetail(item)">
                 <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
-                <view class="item_title" v-if="item">{{ item.title }}</view>
+                <view class="item_title" v-if="item.title">{{ item.title }}</view>
                 <view class="item_title" v-if="item.xmxx_name">{{ item.xmxx_name }}</view>
                 <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
               </view>
@@ -103,7 +105,7 @@
 		<view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无数据</view> 
 	</view>
     <view class="xxx"></view>
-    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区献策'">待我审核</view>
+    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区献策' ">待我审核</view>
   </view>
 </template>
 
@@ -157,7 +159,8 @@ export default {
       listData: [],
       nodata: false,
       query: {}, //url携带的参数
-      appName: ''
+      appName: '',
+      showParise:false,//展示点赞界面
     };
   },
   methods: {
@@ -235,21 +238,21 @@ export default {
         });
       } else {
         uni.navigateTo({
-          url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
+          url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(item))+'&showParise='+this.showParise
         });
       }
     },
     toForumDetail(item) {
       console.log(item.ftno);
       let no = ''
-      if(item.note_no){no=item.note_no}else if(item.ftno){no = item.ftno}
+      if(item.note_no){no=item.note_no}else if(item.ftno){no = item.ftno}else if(item.ssp_no){no = item.ssp_no}
       uni.navigateTo({
         url: '/pages/forum/detail?no=' + no
       });
     },
     detaile(item) {
       uni.navigateTo({
-        url: '../../sqfw/sqxq?query=' + encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
+        url: '../../sqfw/sqxq?query=' + encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))+'&showParise='+this.showParise
       });
     },
     deleteItem(item) {
@@ -362,6 +365,9 @@ export default {
         if (serviceName.includes('add')) {
           serviceName = serviceName.replace('add', 'select');
         }
+        if(serviceName==='srvzhsq_bmfw_ssp_select'){
+          this.showParise = true
+        }
         let url = this.$api.select + '/' + query.app_name + '/select/' + serviceName;
         let req = {
           serviceName: serviceName,
@@ -410,7 +416,11 @@ export default {
       if (options.query || options.data) {
         query = JSON.parse(options.query ? options.query : options.data ? options.data : []);
         console.log('query,qieur.label', query, query.label);
-        const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
+        let app = ''
+        if(query.menu_url){
+          console.log(query.menu_url)
+          app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
+        }
         query.app_name = app;
         console.log('app', app, query.menu_url);
         this.query = query;

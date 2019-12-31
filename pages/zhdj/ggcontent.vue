@@ -5,7 +5,7 @@
 					<text class="titleler">组织名称：</text><text class="contenttite" v-if="datalist[0]">{{datalist[0].zjmc==null?'未录入':datalist[0].zjmc}}</text>
 				</view>
 				<view class="doubletext">
-					<text class="titleler">组织介绍：</text><text v-if="datalist[0]" v-html="datalist[0].zjjs" class="contenttite"></text>
+					<text class="titleler">组织介绍：</text><rich-text  :nodes="datalist[0].zjjs" class="contenttite"></rich-text >
 				</view>
 				<view class="doubletext">
 					<text class="titleler textfont">书&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;记：</text><text class="contenttite" v-if="datalist[0]">{{datalist[0].zjsj==null?'未录入':datalist[0].zjsj}}</text>
@@ -111,7 +111,9 @@
 					rownumber: 8
 				};
 				this.$http.post(url, req).then(res => {
-					this.datalist=res.data.data
+					this.$nextTick(()=>{
+						this.datalist=res.data.data
+					})
 				})
 			},
 			getdatas(index){
