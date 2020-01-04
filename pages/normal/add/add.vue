@@ -50,6 +50,7 @@ export default {
     if (option.query) {
       query = JSON.parse(option.query);
       console.log('query', query);
+      // this.query.serviceName = query.cols.serviceName
       this.queryString = query;
       if (query.menu_url) {
         const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
@@ -198,7 +199,10 @@ export default {
         if(this.queryString.menu_url.indexOf('listproc')!=-1){
           operate = 'apply'
         }
-        let url = self.$api.add + '/' + this.appName + '/' + operate + '/srvzhsq_pxap_add';
+        if(this.queryString.service_name==="srvzhsq_tenement_gzfxx_add"||this.queryString.service_name==='srvzhsq_tenement_lzfxx_select'){
+          operate = 'apply'
+        }
+        let url = self.$api.add + '/' + this.appName + '/' + operate + '/'+this.queryString.serviceName;
         let formData = this.$refs.iForms.returnFields();
         if (formData.data) {
           console.log('formdata:', formData);

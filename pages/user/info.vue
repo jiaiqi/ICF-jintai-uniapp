@@ -14,6 +14,7 @@
           <cmd-cel-item title="联系方式" :addon="userInfo&&userInfo.mobile?userInfo.mobile:' - '" arrow></cmd-cel-item>
           <cmd-cel-item title="证件号码" :addon="userInfo&&userInfo.id_card?userInfo.id_card:' '" arrow></cmd-cel-item>
           <cmd-cel-item title="我的地址" addon="---" arrow></cmd-cel-item>
+          <cmd-cel-item title="修改资料" @click="fnClick('modifyInfo')" arrow></cmd-cel-item>
           <cmd-cel-item title="修改密码" @click="fnClick('modify')" arrow></cmd-cel-item>
           <button class="btn-logout" @click="logout">退出登录</button>
         </view>
@@ -75,6 +76,10 @@
         if(type == 'modify'){
           uni.navigateTo({
             url:'./modify'
+          })
+        }else if(type==='modifyInfo'){
+          uni.navigateTo({
+            url:'./modifyInfo?data='+encodeURIComponent(JSON.stringify(this.userInfo))
           })
         }
       },

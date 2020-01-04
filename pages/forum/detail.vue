@@ -29,38 +29,52 @@
       <div v-if="query.content" class="content_view" v-html="query.content"></div>
       <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
       <!-- 主贴点赞 -->
-      
+
       <!-- 官方答复 -->
-      <div class="little_title"  v-if="query.ssp_no">
-        <text>官方答复</text>
-      </div>
+      <div class="little_title" v-if="query.ssp_no"><text>官方答复</text></div>
       <div class="reply_view" v-if="query.ssp_no">
-        
-      </div>
-      <!-- 回复 -->
-      <div class="little_title">
-        <text>网友评论</text>
-      </div>
-      <div class="reply_view">
-        <div style="color: #9E9E9E;" class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无评论</div>
-        <div class="discuss_item" v-for="(item, index) in PostLeaveMeaasgeList" :key="index">
-          <image :src="item.head_img_path" v-if="item.head_img_path" class="touxiang"></image>
-          <uni-icons type="contact" size="60" color="#dd524d" v-if="!item.head_img_path"></uni-icons>
+        <div class="discuss_item" v-for="(item, index) in replyList" :key="index">
+          <image :src="commentUserPhoto[item.create_user]" v-if="commentUserPhoto[item.create_user]" class="touxiang"></image>
+          <uni-icons type="contact" size="60" color="#dd524d" v-if="!commentUserPhoto[item.create_user]"></uni-icons>
           <div class="text_box">
             <div class="user_info_box">
               <div class="user_info">{{ item.create_user }}</div>
-              <div class="agree">
+            </div>
+            <div class="content_box" v-html="item.content" v-if="item.content"></div>
+            <!-- <div class="content_box" v-html="item.nr" v-if="item.nr"></div> -->
+            <div class="time_date_box">
+              <div class="time_date">{{ item.create_time }}</div>
+              <!-- <div class="settings_icon" v-if="item.create_user === userInfo.user_no">
+                <image src="../../static/img/shanchu.png" style="width: 16px;height: 16px;" @click="deleteItem(item.id)"></image>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 回复 -->
+      <div class="little_title"><text>网友留言</text></div>
+      <div class="reply_view">
+        <div style="color: #9E9E9E;" class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无评论</div>
+        <div class="discuss_item" v-for="(item, index) in PostLeaveMeaasgeList" :key="index">
+          <image :src="commentUserPhoto[item.create_user]" mode="" v-if="commentUserPhoto" class="touxiang"></image>
+          <image :src="item.head_img_path" v-if="item.head_img_path" class="touxiang"></image>
+          <uni-icons type="contact" size="60" color="#dd524d" v-if="!item.head_img_path && !commentUserPhoto"></uni-icons>
+          <div class="text_box">
+            <div class="user_info_box">
+              <div class="user_info">{{ item.create_user }}</div>
+              <div class="agree" v-if="!query.ssp_no">
                 <!-- 留言点赞 -->
                 <image :src="item.agree_icon" style="width: 16px;height: 16px;" @click="addAgree(item, item.praise_num, item.id)"></image>
                 <uni-badge :text="item.praise_num ? item.praise_num : '0'" type="error" v-if="item.praise_num <= 99"></uni-badge>
                 <uni-badge text="99+" type="error" v-else></uni-badge>
               </div>
             </div>
+            <div class="content_box" v-html="item.content" v-if="item.content"></div>
             <div class="content_box" v-html="item.remark" v-if="item.remark"></div>
             <div class="content_box" v-html="item.nr" v-if="item.nr"></div>
             <div class="time_date_box">
               <div class="time_date">{{ item.create_time }}</div>
-              <div class="settings_icon" v-if="item.create_user === userInfo.user_no">
+              <div class="settings_icon" v-if="item.create_user === userInfo.user_no && !commentUserPhoto">
                 <image src="../../static/img/shanchu.png" style="width: 16px;height: 16px;" @click="deleteItem(item.id)"></image>
               </div>
             </div>
@@ -107,7 +121,9 @@ export default {
       PostLeaveMeaasgeAgreeList: [], //此贴下所有留言的点赞记录
       agreePepoleList: [], //点赞人合集
       remark: '', //回复内容
-      replyList:[], //答复列表
+      replyList: [], //答复列表
+      commentUserPhoto: {},
+      commentUserList: []
     };
   },
   onLoad: function(option) {
@@ -121,7 +137,7 @@ export default {
       } else {
         this.appName = 'sqfw';
         this.serviceName = 'srvzhsq_forum_note_select';
-        if(option.no.includes('BX-SSP')){
+        if (option.no.includes('BX-SSP')) {
           this.serviceName = 'srvzhsq_bmfw_ssp_select';
         }
       }
@@ -137,14 +153,14 @@ export default {
   methods: {
     getNoteUserInfo(reg) {
       // 获取发帖人信息
-      let serviceName = ''
-      let path = ''
-      if(reg){
-        serviceName = 'srvzhsq_reg_select'
-        path = '/sqfw/select/srvzhsq_reg_select'
-      }else{
-        serviceName = 'srvsso_user_select'
-        path='/sso/select/srvsso_user_select'
+      let serviceName = '';
+      let path = '';
+      if (reg) {
+        serviceName = 'srvzhsq_reg_select';
+        path = '/sqfw/select/srvzhsq_reg_select';
+      } else {
+        serviceName = 'srvsso_user_select';
+        path = '/sso/select/srvsso_user_select';
       }
       let url = this.$api.select + path;
       let req = {
@@ -192,9 +208,9 @@ export default {
       if (this.appName === 'zhdj') {
         colName = 'ftno';
       } else {
-        if(this.serviceName === 'srvzhsq_bmfw_ssp_select'){
+        if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
           colName = 'ssp_no';
-        }else{
+        } else {
           colName = 'note_no';
         }
       }
@@ -202,30 +218,35 @@ export default {
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS' && res.data.data) {
           let data = res.data.data[0];
-          if(data.nr&&data.nr.indexOf('<img')!=-1){
+          if (data.nr && data.nr.indexOf('<img') != -1) {
             data.nr = JSON.parse(JSON.stringify(data.nr).replace(/\<img/gi, '<img width=100% height=100% '));
           }
-          if(data.content&&data.content.indexOf('<img')!=-1){
+          if (data.content && data.content.indexOf('<img') != -1) {
             data.content = JSON.parse(JSON.stringify(data.content).replace(/\<img/gi, '<img width=100% height=100% '));
           }
-          this.query = data
-          console.log(data)
+          this.query = data;
+          console.log(data);
           // this.query.content = JSON.parse(JSON.stringify(this.query.content).replace(/\<img/gi, '<img width=100% height=100% '));
           this.getNoteUserInfo(); //查找此贴发帖人信息
           this.getTouxiangPath(); // 查找发帖人头像
           this.getAgreePeopleList(this.note_no);
+          this.getReplyInfo();
         }
       });
     },
     getAgreePeopleList(note_no) {
       // 查找赞过此贴的人的列表
-      let serviceName = 'srvzhsq_forum_praise_select'
-      let colName = 'note_no'
-      if(this.app==='zhdj'){
-        serviceName = 'srvzhsq_djlt_ftxx_praise_select'
-        colName = 'ftno'
+      let serviceName = 'srvzhsq_forum_praise_select';
+      let colName = 'note_no';
+      if (this.app === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_ftxx_praise_select';
+        colName = 'ftno';
       }
-      let url = this.$api.select + '/sqfw/select/srvzhsq_forum_praise_select';
+      if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+        colName = 'ssp_no';
+        serviceName = 'srvzhsq_bmfw_ssppraise_select';
+      }
+      let url = this.$api.select + '/sqfw/select/' + serviceName;
       let req = { serviceName: serviceName, colNames: ['*'], condition: [{ colName: colName, ruleType: 'like', value: note_no }] };
       this.$http.post(url, req).then(res => {
         if (res.data.data) {
@@ -274,13 +295,13 @@ export default {
     // },
     getAgreePeopleForLeaveMessage(msgData) {
       // 获取赞过此条留言的人的列表
-      let serviceName = 'srvzhsq_leaveword_praise_select'
-      let colName = 'leave_no'
-      if(this.appName === 'zhdj'){
-        serviceName = 'srvzhsq_djlt_lyjl_praise_select'
-        colName = 'lyno'
+      let serviceName = 'srvzhsq_leaveword_praise_select';
+      let colName = 'leave_no';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_lyjl_praise_select';
+        colName = 'lyno';
       }
-      let url = this.$api.select + '/'+this.appName+'/select/' + serviceName;
+      let url = this.$api.select + '/' + this.appName + '/select/' + serviceName;
       let req = {};
       let userInfo = this.userInfo;
       let arr = [];
@@ -323,37 +344,44 @@ export default {
     },
     addAgreePeople() {
       // 在点赞信息表中增加此账号对此贴的点赞信息
-      let serviceName = 'srvzhsq_forum_praise_add'
-      if(this.appName === 'zhdj'){
-        serviceName = 'srvzhsq_djlt_ftxx_praise_add'
+      let serviceName = 'srvzhsq_forum_praise_add';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_ftxx_praise_add';
       }
-      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
+      if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+        serviceName = 'srvzhsq_bmfw_ssppraise_add';
+      }
+      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
       let req = [{ serviceName: serviceName, condition: [], data: [{ note_no: this.note_no, praise_user: userInfo.user_no }] }];
-      if(this.appName === 'zhdj'){
-       req = [{ serviceName: serviceName, condition: [], data: [{ ftno: this.note_no, praise_user: userInfo.user_no }] }]
+      if (this.appName === 'zhdj') {
+        req = [{ serviceName: serviceName, condition: [], data: [{ ftno: this.note_no, praise_user: userInfo.user_no }] }];
+      }
+      if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+        req = [{ serviceName: serviceName, condition: [], data: [{ ssp_no: this.note_no, praise_user: userInfo.user_no }] }];
       }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
           console.log('点赞成功');
-          this.getAgreePeopleList(this.note_no)
+          this.getAgreePeopleList(this.note_no);
         }
       });
     },
     delAgreePeople() {
       // 在点赞信息表中删除此账号对此贴的点赞信息
-      let serviceName = 'srvzhsq_forum_praise_delete'
-      let colName = 'note_no'
-      if(this.appName = 'zhdj'){
-        serviceName = 'srvzhsq_djlt_ftxx_praise_delete'
-        colName = 'ftno'
+      let serviceName = 'srvzhsq_forum_praise_delete';
+      let colName = 'note_no';
+      if ((this.appName = 'zhdj')) {
+        serviceName = 'srvzhsq_djlt_ftxx_praise_delete';
+        colName = 'ftno';
       }
-      if(this.serviceName==="srvzhsq_bmfw_ssp_select"){
-        
+      if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+        serviceName = 'srvzhsq_bmfw_ssppraise_add';
+        colName = 'ssp_no';
       }
-      let url = this.$api.select + '/'+this.appName+'/operate/' + serviceName;
+      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let userInfo = this.userInfo;
       let req = [
         {
@@ -365,17 +393,17 @@ export default {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
           console.log('删除点赞成功');
-          this.getAgreePeopleList(this.note_no)
+          this.getAgreePeopleList(this.note_no);
         }
       });
     },
     addAgree(item, num, id) {
       console.log('-------触发回帖点赞-------\n', item);
-      let leave_no = ''
-      if(this.appName=='zhdj'){
-        leave_no = item.lyno
-      }else{
-        leave_no = item.leave_no
+      let leave_no = '';
+      if (this.appName == 'zhdj') {
+        leave_no = item.lyno;
+      } else {
+        leave_no = item.leave_no;
       }
       if (item.agreePeople.indexOf(this.userInfo.user_no) != -1) {
         //如果此评论点赞人列表中有当前登录用户,已经点过赞,则此次点赞事件为取消点赞
@@ -394,12 +422,12 @@ export default {
      */
     updateLeaveMessageInfo(id, num) {
       // 修改留言信息
-      let serviceName = 'srvzhsq_leave_word_update'
-      if(this.appName === 'zhdj'){
-        serviceName = 'srvzhsq_djlt_lyjl_update'
+      let serviceName = 'srvzhsq_leave_word_update';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_lyjl_update';
       }
-      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
-      let req = [{ serviceName:serviceName, condition: [{ colName: 'id', ruleType: 'eq', value: id }], data: [{ praise_num: num }] }];
+      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
+      let req = [{ serviceName: serviceName, condition: [{ colName: 'id', ruleType: 'eq', value: id }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           this.getWriteBackList();
@@ -408,11 +436,11 @@ export default {
     },
     delDiscussAgreePeople(leave_no) {
       // 删除当前登录账号对当前评论的点赞记录
-      let serviceName = 'srvzhsq_leaveword_praise_delete'
-      if(this.appName === 'zhdj'){
-        serviceName = 'srvzhsq_djlt_lyjl_praise_delete'
+      let serviceName = 'srvzhsq_leaveword_praise_delete';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_lyjl_praise_delete';
       }
-      let url = this.$api.select + '/'+this.appName+'/operate/' +serviceName;
+      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
       let req = [
@@ -425,7 +453,7 @@ export default {
           ]
         }
       ];
-      if(this.appName === 'zhdj'){
+      if (this.appName === 'zhdj') {
         req = [
           {
             serviceName: serviceName,
@@ -445,16 +473,16 @@ export default {
     },
     addDiscussAgreePeople(leave_no) {
       // 增加当前登录账号对当前评论的点赞记录
-      let serviceName = 'srvzhsq_leaveword_praise_add'
-      if(this.appName === 'zhdj'){
-        serviceName = 'srvzhsq_djlt_lyjl_praise_add'
+      let serviceName = 'srvzhsq_leaveword_praise_add';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_lyjl_praise_add';
       }
-      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
+      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let userInfo = uni.getStorageSync('userInfo');
       console.log(userInfo);
       let req = [{ serviceName: 'srvzhsq_leaveword_praise_add', condition: [], data: [{ leave_no: leave_no, praise_user: userInfo.user_no }] }];
-      if(this.appName === 'zhdj'){
-         req = [{ serviceName: 'srvzhsq_djlt_lyjl_praise_add', condition: [], data: [{ lyno: leave_no, praise_user: userInfo.user_no }] }];
+      if (this.appName === 'zhdj') {
+        req = [{ serviceName: 'srvzhsq_djlt_lyjl_praise_add', condition: [], data: [{ lyno: leave_no, praise_user: userInfo.user_no }] }];
       }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
@@ -475,18 +503,19 @@ export default {
         num--;
         this.delAgreePeople();
       }
-      let serviceName = 'srvzhsq_forum_note_update'
-      let colName = 'note_no'
-      if(this.appName === 'zhdj'){
-        serviceName = 'srvzhsq_djlt_ftxx_update'
-        colName = 'ftno'
+      let serviceName = 'srvzhsq_forum_note_update';
+      let colName = 'note_no';
+      if (this.appName === 'zhdj') {
+        serviceName = 'srvzhsq_djlt_ftxx_update';
+        colName = 'ftno';
       }
-      let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
-      if(this.serviceName==="srvzhsq_bmfw_ssp_select"){
-        colName = 'ssp_no'
-        serviceName = 'srvzhsq_bmfw_ssp_praise_num_update'
-        url = this.$api.select + '/' + this.appName +'/update/'+'srvzhsq_bmfw_ssp_praise_num_update'
+      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
+      if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+        colName = 'ssp_no';
+        this.appName  = 'sqfw'
+        serviceName = 'srvzhsq_bmfw_ssp_praise_num_update';
       }
+      url = this.$api.select + '/' + this.appName + '/update/' + serviceName;
       let req = [{ serviceName: serviceName, condition: [{ colName: colName, ruleType: 'eq', value: this.note_no }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
@@ -502,30 +531,39 @@ export default {
         leaveServiceName = 'srvzhsq_djlt_lyjl_select';
         colName = 'ftno';
       }
+      if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+        console.log('a');
+        colName = 'ssp_no';
+        leaveServiceName = 'srvzhsq_bmfw_ssply_select';
+      }
       let url = this.$api.select + '/' + this.appName + '/select/' + leaveServiceName;
       let req = {
         serviceName: leaveServiceName,
         colNames: ['*'],
         condition: [{ colName: colName, ruleType: 'eq', value: this.note_no }],
-        page: { pageNo: 1, rownumber: 10 },
+        // page: { pageNo: 1, rownumber: 10 },
         order: [{ colName: 'create_time', orderType: 'desc' }]
       };
       let res = await this.$http.post(url, req);
       if (res.data.data) {
         let data = res.data.data;
-        data.map(d=>{
-          if(d.nr&&d.nr.indexOf('<img')!=-1){
+        data.map(d => {
+          if (d.nr && d.nr.indexOf('<img') != -1) {
             data.nr = JSON.parse(JSON.stringify(data.nr).replace(/\<img/gi, '<img width=100% height=100% '));
           }
-          if(d.remark&&d.remark.indexOf('<img')!=-1){
+          if (d.remark && d.remark.indexOf('<img') != -1) {
             data.remark = JSON.parse(JSON.stringify(data.remark).replace(/\<img/gi, '<img width=100% height=100% '));
           }
-        })
-        let PostLeaveMeaasgeList = data; // 此贴所有留言记录
-        this.getPostLeaveMeaasgeAgreeList(data).then(PostLeaveMeaasgeList => {
-          this.PostLeaveMeaasgeList = PostLeaveMeaasgeList;
         });
-        // this.getAgreePeopleForLeaveMessage(data);
+        if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+          this.PostLeaveMeaasgeList = data;
+          this.setCommentPhotoUrl();
+        } else {
+          let PostLeaveMeaasgeList = data; // 此贴所有留言记录
+          this.getPostLeaveMeaasgeAgreeList(data).then(PostLeaveMeaasgeList => {
+            this.PostLeaveMeaasgeList = PostLeaveMeaasgeList;
+          });
+        }
       }
     },
     replyLeaveMessage() {
@@ -546,6 +584,9 @@ export default {
       let serviceName = 'srvzhsq_leave_word_add';
       if (this.appName === 'zhdj') {
         serviceName = 'srvzhsq_djlt_lyjl_add';
+      }
+      if (this.query.ssp_no) {
+        serviceName = 'srvzhsq_bmfw_ssply_add';
       }
       let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let req = [
@@ -589,6 +630,15 @@ export default {
           }
         ];
       }
+      if (serviceName === 'srvzhsq_bmfw_ssply_add') {
+        req = [
+          {
+            serviceName: 'srvzhsq_bmfw_ssply_add',
+            condition: [],
+            data: [{ ssp_no: this.query.ssp_no, title: '随手拍留言', content: this.remark, top_state: '未置顶', ssply_user: this.userInfo.user_no }]
+          }
+        ];
+      }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
           uni.showToast({
@@ -600,6 +650,66 @@ export default {
         }
       });
     },
+    setCommentPhotoUrl() {
+      // 设置随手拍留言人的头像路径
+      let list = this.PostLeaveMeaasgeList;
+      let commentUserList = list.map(item => item.create_user);
+      commentUserList = Array.from(new Set(commentUserList));
+      console.log('commentUserList', commentUserList);
+      let serviceName = 'srvsso_user_select';
+      let req = {
+        serviceName: serviceName,
+        colNames: ['*']
+      };
+      let that = this;
+      let commentArr = [];
+      let url = this.$api.select + '/sso/select/' + serviceName;
+      this.$http.post(url, req).then(res => {
+        if (res.data.state === 'SUCCESS') {
+          let data = res.data.data;
+          commentArr = data.filter(item => commentUserList.includes(item.user_no));
+          console.log('commentArr', commentArr[0]);
+          this.commentUserList = commentArr;
+          commentArr.map(item => {
+            console.log('item', item);
+            if (item.photo_url) {
+              this.getPhotoUrl(item.photo_url).then(urls => {
+                if (urls) {
+                  item['photoPath'] = urls;
+                  that.$set(that.commentUserPhoto, item.user_no, urls);
+                }
+              });
+            }
+          });
+        }
+      });
+    },
+    /**@function 查询用户头像 */
+    async getPhotoUrl(url_no) {
+      let url1 = this.$api.select + '/file/select/srvfile_attachment_select';
+      let req = {
+        colNames: ['*'],
+        condition: [
+          {
+            colName: 'file_no',
+            ruleType: 'eq',
+            value: url_no // 图片编号
+          }
+        ],
+        serviceName: 'srvfile_attachment_select'
+      };
+      let res = await this.$http.post(url1, req);
+      if (res.data.data) {
+        console.log(res.data.data);
+        let url = this.$api.select + '/file/download?filePath=' + res.data.data[0].fileurl;
+        console.log(url);
+        return url;
+      } else {
+        return null;
+      }
+
+      // });
+    },
     deleteItem(id) {
       // 删除回复
       uni.showModal({
@@ -607,11 +717,11 @@ export default {
         success: res => {
           if (res.confirm) {
             console.log('用户点击确定');
-            let serviceName = 'srvzhsq_leave_word_delete'
-            if(this.appName==='zhdj'){
-              serviceName = 'srvzhsq_djlt_lyjl_delete'
+            let serviceName = 'srvzhsq_leave_word_delete';
+            if (this.appName === 'zhdj') {
+              serviceName = 'srvzhsq_djlt_lyjl_delete';
             }
-            let url = this.$api.select + '/'+this.appName+'/operate/'+serviceName;
+            let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
             let req = [{ serviceName: serviceName, condition: [{ colName: 'id', ruleType: 'in', value: id }] }];
             this.$http.post(url, req).then(ress => {
               if (ress.data.state === 'SUCCESS') {
@@ -679,29 +789,27 @@ export default {
       }
     },
     getReplyInfo() {
-          // 查找当前随手拍官方回复信息
-          let ssp_no = this.note_no;
-          let serviceName = "srvzhsq_bmfw_sspdf_select";
-          let url = this.getServiceUrl("select", serviceName, "sqfw");
-          let req = {
-            serviceName: serviceName,
-            colNames: ["*"],
-            condition: [{ colName: "ssp_no", ruleType: "like", value: ssp_no }],
-            // page: {
-            //   pageNo: 1,
-            //   rownumber: 10
-            // },
-            order: []
-          };
-          this.$http.post(url, req).then(res => {
-            console.log(res.data.data);
-            if (res.data.data) {
-              this.replyList = res.data.data;
-              // this.replyPageInfo = res.data.page;
-              // this.replyInfo = res.data.data[0];
-            }
-          });
-        },
+      // 查找当前随手拍官方回复信息
+      let ssp_no = this.note_no;
+      let serviceName = 'srvzhsq_bmfw_sspdf_select';
+      let url = this.$api.select + '/' + this.appName + '/select/' + serviceName;
+      let req = {
+        serviceName: serviceName,
+        colNames: ['*'],
+        condition: [{ colName: 'ssp_no', ruleType: 'like', value: ssp_no }],
+        // page: {
+        //   pageNo: 1,
+        //   rownumber: 10
+        // },
+        order: []
+      };
+      this.$http.post(url, req).then(res => {
+        console.log(res.data.data);
+        if (res.data.data) {
+          this.replyList = res.data.data;
+        }
+      });
+    },
     getDateTime() {
       let date = new Date();
       let h = date.getHours();
@@ -840,7 +948,7 @@ export default {
     background-color: #fff;
     min-height: 200upx;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    &:last-child{
+    &:last-child {
       margin-bottom: 150upx;
     }
     .noddata {

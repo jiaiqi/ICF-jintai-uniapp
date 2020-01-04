@@ -223,31 +223,34 @@ export default {
     },
     visitorAccess() {
       // 游客访问
-  uni.clearStorageSync()
+      uni.clearStorageSync();
       let url = this.$api.select + '/sso/operate/srvuser_login';
       let req = [{ serviceName: 'srvuser_login', data: [{ user_no: 'niming', pwd: '1' }] }];
-      this.$http.post(url, req).then(res => {
-        if (res.data.resultCode === 'SUCCESS' && res.data.response) {
-          let response = res.data.response[0].response;
-          console.log('res,', response);
-          let bx_auth_ticket = response.bx_auth_ticket;
-          let userInfo = response.login_user_info;
-          let loginTime = new Date().getTime() + response.expire_time * 1000;
-          let expire_time = response.expire_time;
-          uni.setStorageSync('bxAuthTicket', bx_auth_ticket); //保存凭证
-          uni.setStorageSync('userInfo', userInfo); //保存用户信息
-          uni.setStorageSync('expireTime', response.expire_time); //保存时效
-          uni.setStorageSync('outTime', loginTime); //保存时效
-          this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
-        }
-      }).then(()=>{
-        uni.switchTab({
-          url: '/pages/SmartCity/smartcity'
+      this.$http
+        .post(url, req)
+        .then(res => {
+          if (res.data.resultCode === 'SUCCESS' && res.data.response) {
+            let response = res.data.response[0].response;
+            console.log('res,', response);
+            let bx_auth_ticket = response.bx_auth_ticket;
+            let userInfo = response.login_user_info;
+            let loginTime = new Date().getTime() + response.expire_time * 1000;
+            let expire_time = response.expire_time;
+            uni.setStorageSync('bxAuthTicket', bx_auth_ticket); //保存凭证
+            uni.setStorageSync('userInfo', userInfo); //保存用户信息
+            uni.setStorageSync('expireTime', response.expire_time); //保存时效
+            uni.setStorageSync('outTime', loginTime); //保存时效
+            this.getUserInfo(userInfo.user_no); //获取用户信息并将用户信息保存到storage
+          }
+        })
+        .then(() => {
+          uni.switchTab({
+            url: '/pages/SmartCity/smartcity'
+          });
         });
-      });
     },
     accoutLogin() {
-      uni.clearStorageSync()
+      uni.clearStorageSync();
       // 登录访问
       let self = this;
       let ssos = uni.getStorageSync('loginInfoSsos');
@@ -426,6 +429,19 @@ export default {
           colNames: ['*'],
           hisVer: true
         };
+        let url3 = this.$api.select + '/sqfw/select/srvzhsq_reg_select';
+        let req3 = {
+          serviceName: 'srvzhsq_reg_select',
+          colNames: ['*'],
+          condition: [{ colName: 'user_no', ruleType: 'eq', value: user_no }]
+        };
+        this.$http.post(url3, req3).then(res => {
+          if (res.data.data) {
+            let userInfo = res.data.data[0];
+            // Object.assign(this.userInfo, userInfo);
+             uni.setStorageSync('userInfo',userInfo);
+          }
+        });
         this.$http.post(url, req).then(res => {
           if (res.data.data && res.data.data[0]) {
             const userInfo = res.data.data[0];

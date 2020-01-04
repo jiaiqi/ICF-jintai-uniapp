@@ -93,7 +93,7 @@
         "navigationBarTitleText": "消息"
       }
     },
-    
+
     {
       "path": "pages/zhdj/gggs",
       "style": {
@@ -198,8 +198,7 @@
     },
     {
       "path": "pages/sqfw/sqdh",
-      "style": {
-      }
+      "style": {}
     },
     {
       "path": "pages/sqfw/sqjs",
@@ -379,6 +378,12 @@
       "path": "pages/SecondaryPage/SecondaryPage",
       "style": {
         "navigationBarTitleText": "菜单"
+      }
+    },
+    {
+      "path": "pages/user/modifyInfo",
+      "style": {
+        "navigationBarTitleText": "个人信息修改"
       }
     }
   ],
