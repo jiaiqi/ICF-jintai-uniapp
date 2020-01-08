@@ -168,13 +168,8 @@ export default {
         promise.then(e => {
           valFields[i]['_formItemValidators'] = e;
         });
-
-        console.log("self.fields[i]['_formItemValidators']", valFields[i]);
       }
-
-      console.log('valFields.length', valFields.length);
       self.fields = valFields;
-    
       if (self.fields.length === valFields.length) {
         this.fieldsIsUpload = true;
       }
@@ -198,7 +193,6 @@ export default {
       let fieldValid = [];
       let valids = [];
       fieldValid = self.fields;
-      console.log('fieldValid', fieldValid);
       for (let i = 0; i < fieldValid.length; i++) {
         if (fieldValid[i]._valid.valid !== true && fieldValid[i]._valid.valid !== undefined) {
           valids.push(fieldValid[i]._valid);
@@ -215,14 +209,13 @@ export default {
           }
         }
       }
-      // console.log('fieldValid:::', fieldValid, valids)
       let fields = {};
       fields['valid'] = !(valids.length > 0);
       fields['data'] = fids;
+      console.log(fields,'++++++++++++++++')
       return fields;
     },
     resetForm() {
-      // this.
       if (this.pathQuery.cols.srv_cols !== 'undefined') {
         this.getCols(this.pathQuery.cols.srv_cols, this.pageType);
       }
@@ -240,40 +233,6 @@ export default {
           let ret = await eval('var zz=' + fun + '(ctx); zz');
           let msg = ret;
           let col = ret.cols;
-
-          // for(let j = 0; j<col.length;j++){
-          //   let valid = {
-          //     "colName":col[j],
-          //     "valid":msg.valid,
-          //     "msg":msg.msg
-          //   }
-          //   // self.broadcast('iFormItem', 'set-table-valid',valid)
-          //   for(let i = 0;i<self.fields.length;i++){
-          //     if(self.fields[i].columns === col[j]){
-          //       self.fields[i]._tableValid = valid
-          //       vals = valid
-
-          //     }else{
-          //       self.fields[i]._tableValid = {
-          //         "colName":"",
-          //         "valid":"",
-          //         "msg":""
-          //       }
-          //       vals = self.fields[i]._tableValid
-          //     }
-          //   }
-          // }
-          // col = col.filter((item) =>{
-
-          //   return valid
-          // })
-          // self.
-          // let ret = xxx(ctx)
-          // console.warn(`field:: ${ctx.columns} visible: ${ret}`)
-
-          // if(vals !== null){
-          //   self.broadcast('iFormItem', 'set-table-valid',vals)
-          // }
           return ret;
         } catch (error) {
           return false;

@@ -328,6 +328,10 @@ export default {
       })
       this.originPicker = this.Fileddatas.option_list_v2
     }
+    if((this.Fileddatas.bx_col_type === 'enum' || this.Fileddatas.col_type === 'Enum') && this.Fileddatas.table_column === 'hdlb'){
+      this.Fileddatas.column = "党建活动"
+      this.handleInput(this.Fileddatas.columns,   this.Fileddatas.column, this.Fileddatas._formItemValidators);
+    }
   },
   onShow() {
     /// 如果没有传入 prop，则无需校验，也就无需缓存
@@ -419,7 +423,7 @@ export default {
               this.imgList = [this.$api.select + '/file/download?filePath=' + data.fileurl];
               console.log(data, this.imgList, this.imgPathList);
               this.Fileddatas.column = data.file_no;
-              this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
+              this.handleInput(this.Fileddatas.columns, "党建活动", this.Fileddatas._formItemValidators);
               console.log('file_no：', this.Fileddatas.column);
             },
             complete: e => {

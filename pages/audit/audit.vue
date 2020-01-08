@@ -3,8 +3,10 @@
     <view class="allbox">
       <text class="title">名称：</text>
       <text v-if="datalist" style="font-weight: 600;font-size: 15px;">
-        {{ datalist.zuzhi_name || datalist.organize_name || datalist.activity_title 
-		|| datalist.note_title || datalist.opinion_title || datalist.bt}}
+        {{ datalist.zuzhi_name || datalist.organize_name 
+		|| datalist.activity_title 
+		|| datalist.note_title || datalist.opinion_title 
+		|| datalist.bt||datalist.registe||datalist.member_name}}
       </text>
     </view>
     <view class="allbox">
@@ -27,8 +29,8 @@
     </view>
     <view class="allbox">
       <text v-if="start" style="color: red;">*</text>
-      <text class="title">说明：</text>
-      <textarea  v-model="explain" class="select" placeholder="请输入意见" />
+      <text class="title">回复：</text>
+      <textarea  v-model="explain" class="select" placeholder="请输入" />
     </view>
     <view class="btn" @click="submit(datalist.servename)">提 交</view>
   </view>
@@ -95,7 +97,18 @@ export default {
         //社区献策
         authority = 'T_FORUM_OPINION_';
         num = 1;
-      }
+      }else if(val == "srvzhsq_activity_registe_select"){
+		  //活动报名
+		  num=1
+		 authority= "community_services0"
+	  }else if(val == "srvzhsq_organizie_member_select"){
+		  //加入社会组织
+		    num=1
+		 authority= "T_ORGANIZE_MEMBER_0"
+	  }else if(val=="srvzhsq_zyz_member_select"){
+			//加入这志愿者	
+			authority="volunteer_org_ process_"
+		}
       let url = this.$api.select + '/'+appsdat+'/process/approval';
       let req = [
         {

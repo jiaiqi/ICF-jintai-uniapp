@@ -13,6 +13,9 @@
         </view>
       </view>
     </view>
+	<view class="shenhe" v-if="menuAudio>0&&spServename!==''" @click="audist(spServename)">
+		待我审核
+	</view>
   </view>
 </template>
 
@@ -40,15 +43,25 @@ export default {
       pageBtns: [],
       foreignKey: [],
       houseInfo: {},
-      appName: 'zhdj'
+      appName: 'zhdj',
       // foreignKey: this.$route.query.foreignKey,
+	  spServename:'',
+	  menuAudio:0
     };
   },
   mixins: [Emitter],
   onLoad: function(option) {
+	 
     let query = '';
     if (option.query) {
       query = JSON.parse(option.query);
+	  if(query.label=="加入社会组织"){
+		  this.spServename='srvzhsq_organizie_member_select'
+		   this.getMenu(this.spServename)
+	  }else if(query.label=="加入志愿者"){
+		   this.spServename='srvzhsq_zyz_member_select'
+		    this.getMenu(this.spServename)
+	  }
       console.log('query', query);
       // this.query.serviceName = query.cols.serviceName
       this.queryString = query;
@@ -71,12 +84,35 @@ export default {
     this.$on('form-loaded', this.isFormLoaded);
   },
   methods: {
+	  getMenu(serve){
+	  	console.error(serve)
+	  	let url =this.$api.select + "/sqfw/select/"+serve
+	  	let req = {};
+	  	req.serviceName =serve;
+	  	req.colNames = ['*'];
+	  	req.condition = [];
+	  	req.order = [];
+	  	req.proc_data_type="wait"
+	  	req['page'] = {
+	  		pageNo: 1,
+	  		rownumber: 10
+	  	};
+	  	this.$http.post(url, req).then(res => {
+	  		console.log(res)
+	  			this.menuAudio=res.data.data.length
+	  	})
+	  },
     isFormLoaded(e) {
       console.log(e);
       setTimeout(() => {
         this.showButton = e;
       }, 3000);
     },
+	audist(val){
+		uni.navigateTo({
+			url:'../../audit/auditList?serve='+val
+		})
+	},
     async getCols(query) {
       let self = this;
       if (query.serviceName === 'srvzhsq_forum_opinion_add') {
@@ -94,7 +130,7 @@ export default {
             if (res.data.data) {
               let cols = res.data.data.srv_cols;
               self.query.cols = res.data.data;
-              self.pageBtns = res.data.data.formButton
+              self.pageBtns = res.data.data.formButton;
               // self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
               self.query.serviceName = query.serviceName;
               this.showChild = true;
@@ -160,36 +196,37 @@ export default {
           content: '是否确认提交',
           success: function(res) {
             if (res.confirm) {
-              console.log('------------------点击了提交按钮-------------------')
-              self.submint(a.data).then(response=>{
-                if(response.data.resultMessage==='开启成功'||response.data.resultMessage==='操作成功'){
-                  uni.showModal({
-                    title:'提示',
-                    content:response.data.resultMessage+',点击跳转到列表页',
-                    showCancel:false,
-                    success: (res) => {
-                      if(res.confirm){
-                        uni.navigateBack({
-                          delta: 1,
-                          animationType: 'pop-out',
-                          animationDuration: 200
-                        });
-                      }
-                    }
-                  })
-                 
-                }
-              });
+              console.log('------------------点击了提交按钮-------------------');
+              self.submitData(a.data);
+              // self.submint(a.data)
+              // .then(response => {
+              //   if (response.data.resultMessage === '开启成功' || response.data.resultMessage === '操作成功') {
+              //     uni.showModal({
+              //       title: '提示',
+              //       content: response.data.resultMessage + ',点击跳转到列表页',
+              //       showCancel: false,
+              //       success: res => {
+              //         if (res.confirm) {
+              //           uni.navigateBack({
+              //             delta: 1,
+              //             animationType: 'pop-out',
+              //             animationDuration: 200
+              //           });
+              //         }
+              //       }
+              //     });
+              //   }
+              // });
             } else if (res.cancel) {
               console.log('用户点击取消');
             }
           }
         });
       }
-      console.log(a);
     },
-    async submint(nData) {
-      this.showChild = false
+    submitData(nData) {
+      console.log(nData);
+      this.showChild = false;
       let userInfo = uni.getStorageSync('userInfo');
       let self = this;
       let params = [
@@ -209,22 +246,159 @@ export default {
           a[this.foreignKey[0].colName] = this.foreignKey[0].value;
         }
         params[0].data.push(a);
-        console.log(JSON.stringify(params[0].data));
         let operate = 'operate';
         if (this.queryString.label === '党建活动记录') {
           operate = 'apply';
         }
-        if(this.queryString.menu_url.indexOf('listproc')!=-1){
-          operate = 'apply'
+        if (this.queryString.menu_url.indexOf('listproc') != -1) {
+          operate = 'apply';
         }
-        if(this.queryString.service_name==="srvzhsq_tenement_gzfxx_add"||this.queryString.service_name==='srvzhsq_tenement_lzfxx_select'){
-          operate = 'apply'
+        if (this.queryString.service_name==='srvzhsq_djhdjl_djhd_add'||this.queryString.service_name === 'srvzhsq_tenement_gzfxx_add' || this.queryString.service_name === 'srvzhsq_tenement_lzfxx_select'||this.queryString.service_name==='srvzhsq_bmfw_xmxx_add') {
+          operate = 'apply';
         }
-        console.log(self.queryString.service_name,operate)
-        let url = self.$api.add + '/' + this.appName + '/' + operate + '/'+this.queryString.serviceName;
-        console.log(url)
+        let url = self.$api.add + '/' + this.appName + '/' + operate + '/' + this.queryString.service_name;
+        params[0].serviceName = this.queryString.service_name;
+        // let formData = self.$refs.iForms.returnFields();
+        // let formData = { data: self.$refs.iForms.fields };
+
+        // if (formData.data) {
+        //   formData = formData.data[0];
+        // }
+        // if (formData.service_name) {
+        //   params[0].serviceName = formData.service_name;
+        //   url = self.$api.add + '/' + self.appName + '/' + operate + '/' + formData.service_name;
+        // }
+        self.$http.post(url, params).then(response => {
+          if (response&&response.data.resultCode==="SUCCESS") {
+            this.showChild = true;
+            uni.showModal({
+              title: '提示',
+              content: response.data.resultMessage + ',点击跳转到列表页',
+              showCancel: false,
+              success: res => {
+                if (res.confirm) {
+                  uni.navigateBack({
+                    delta: 1,
+                    animationType: 'pop-out',
+                    animationDuration: 200
+                  });
+                }
+              }
+            });
+          }else{
+            this.showChild = true;
+            uni.showModal({
+              title: '提示',
+              content: response.data.resultMessage,
+              showCancel: false
+            });
+          }
+        }); // 新增
+      } else if (this.query.type === 'apply') {
+        let datas = [];
+        let a = {};
+        datas = nData.map(item => {
+          if (item.column === '') {
+            item.column = null;
+          }
+          a[item.columns] = item.column;
+        });
+        params[0].data.push(a);
+        self.$http.post(self.$api.startProc, params).then(response => {if (response&&response.data.resultCode==="SUCCESS") {
+            this.showChild = true;
+            uni.showModal({
+              title: '提示',
+              content: response.data.resultMessage + ',点击跳转到列表页',
+              showCancel: false,
+              success: res => {
+                if (res.confirm) {
+                  uni.navigateBack({
+                    delta: 1,
+                    animationType: 'pop-out',
+                    animationDuration: 200
+                  });
+                }
+              }
+            });
+          }else{
+            this.showChild = true;
+            uni.showModal({
+              title: '提示',
+              content: response.data.resultMessage,
+              showCancel: false
+            });
+          }
+        }); // 流程开启
+      } else {
+        let datas = [];
+        let a = {};
+        datas = nData.map(item => {
+          if (item.column === '') {
+            item.column = null;
+          }
+          a[item.columns] = item.column;
+        });
+        params[0].data.push(a);
+        self.$http.post(self.$api.startProc, params).then(response => {if (response&&response.data.resultCode==="SUCCESS") {
+            this.showChild = true;
+            uni.showModal({
+              title: '提示',
+              content: response.data.resultMessage + ',点击跳转到列表页',
+              showCancel: false,
+              success: res => {
+                if (res.confirm) {
+                  uni.navigateBack({
+                    delta: 1,
+                    animationType: 'pop-out',
+                    animationDuration: 200
+                  });
+                }
+              }
+            });
+          }else{
+            this.showChild = true;
+            uni.showModal({
+              title: '提示',
+              content: response.data.resultMessage,
+              showCancel: false
+            });
+          }
+        }); // 流程开启
+      }
+    },
+    async submint(nData) {
+      this.showChild = false;
+      let userInfo = uni.getStorageSync('userInfo');
+      let self = this;
+      let params = [
+        {
+          serviceName: 'srvzhsq_pxap_add',
+          condition: [],
+          data: []
+        }
+      ];
+      if (this.query.type === 'add') {
+        let data = [];
+        let a = {};
+        data = nData.map(item => {
+          a[item.columns] = item.column;
+        });
+        if (this.foreignKey.length > 0) {
+          a[this.foreignKey[0].colName] = this.foreignKey[0].value;
+        }
+        params[0].data.push(a);
+        let operate = 'operate';
+        if (this.queryString.label === '党建活动记录') {
+          operate = 'apply';
+        }
+        if (this.queryString.menu_url.indexOf('listproc') != -1) {
+          operate = 'apply';
+        }
+        if (this.queryString.service_name === 'srvzhsq_tenement_gzfxx_add' || this.queryString.service_name === 'srvzhsq_tenement_lzfxx_select') {
+          operate = 'apply';
+        }
+        let url = self.$api.add + '/' + this.appName + '/' + operate + '/' + this.queryString.serviceName;
         let formData = self.$refs.iForms.returnFields();
-        console.log(JSON.stringify(formData))
         if (formData.data) {
           formData = formData.data[0];
         }
@@ -232,11 +406,9 @@ export default {
           params[0].serviceName = formData.service_name;
           url = self.$api.add + '/' + self.appName + '/' + operate + '/' + formData.service_name;
         }
-        console.log(JSON.stringify(params));
         const response = await self.$http.post(url, params); // 新增
-        console.log("response.data.state",response.data.state)
-        if(response){
-          this.showChild = true
+        if (response) {
+          this.showChild = true;
         }
         // if (response.data.state === 'SUCCESS' && params[0].serviceName == 'srvzhsq_pxap_add') {
         //   uni.showModal({
@@ -254,22 +426,22 @@ export default {
         //     }
         //   });
         // } else {
-          uni.showModal({
-            title: '提示',
-            content: response.data.resultMessage,
-            showCancel: false,
-            success: res => {
-              if (res.confirm) {
-                uni.navigateBack({
-                  delta: 2,
-                  animationType: 'pop-out',
-                  animationDuration: 200
-                });
-              }
-            }
-          });
+        // uni.showModal({
+        //   title: '提示',
+        //   content: response.data.resultMessage,
+        //   showCancel: false,
+        //   success: res => {
+        //     if (res.confirm) {
+        //       uni.navigateBack({
+        //         delta: 2,
+        //         animationType: 'pop-out',
+        //         animationDuration: 200
+        //       });
+        //     }
+        //   }
+        // });
         // }
-        return response
+        return response;
       } else if (this.query.type === 'apply') {
         let datas = [];
         let a = {};
@@ -281,29 +453,68 @@ export default {
         });
         params[0].data.push(a);
         const response = await self.$http.post(self.$api.startProc, params); // 流程开启
-        console.log("response.data.state",response.data.state)
-        if (response.data.state === 'SUCCESS') {
-          uni.showToast({
-            title: response.data.resultMessage
-          });
-          uni.navigateBack({
-            delta: 2,
-            animationType: 'pop-out',
-            animationDuration: 200
-          });
-        } else {
-          uni.showToast({
-            title: response.data.resultMessage
-          });
-          if(response.data.resultMessage==='开启成功'||response.data.resultMessage==='操作成功'){
-            uni.navigateBack({
-              delta: 2,
-              animationType: 'pop-out',
-              animationDuration: 200
-            });
-          }
+        if (response) {
+          this.showChild = true;
         }
-        return response
+        // if (response.data.state === 'SUCCESS') {
+        //   uni.showToast({
+        //     title: response.data.resultMessage
+        //   });
+        //   uni.navigateBack({
+        //     delta: 2,
+        //     animationType: 'pop-out',
+        //     animationDuration: 200
+        //   });
+        // } else {
+        //   uni.showToast({
+        //     title: response.data.resultMessage
+        //   });
+        //   if (response.data.resultMessage === '开启成功' || response.data.resultMessage === '操作成功') {
+        //     uni.navigateBack({
+        //       delta: 2,
+        //       animationType: 'pop-out',
+        //       animationDuration: 200
+        //     });
+        //   }
+        // }
+        return response;
+      } else {
+        let datas = [];
+        let a = {};
+        datas = nData.map(item => {
+          if (item.column === '') {
+            item.column = null;
+          }
+          a[item.columns] = item.column;
+        });
+        params[0].data.push(a);
+        const response = await self.$http.post(self.$api.startProc, params); // 流程开启
+        if (response) {
+          this.showChild = true;
+        }
+        console.log('response.data.state', response.data.state);
+        // if (response.data.state === 'SUCCESS') {
+        //   uni.showToast({
+        //     title: response.data.resultMessage
+        //   });
+        //   uni.navigateBack({
+        //     delta: 2,
+        //     animationType: 'pop-out',
+        //     animationDuration: 200
+        //   });
+        // } else {
+        //   uni.showToast({
+        //     title: response.data.resultMessage
+        //   });
+        //   if (response.data.resultMessage === '开启成功' || response.data.resultMessage === '操作成功') {
+        //     uni.navigateBack({
+        //       delta: 2,
+        //       animationType: 'pop-out',
+        //       animationDuration: 200
+        //     });
+        //   }
+        // }
+        return response;
       }
     },
     onReset() {
@@ -319,6 +530,7 @@ export default {
 .addView {
   width: 100%;
   position: relative;
+  margin-bottom: 50px;;
 }
 .scroll {
   height: 500px;
@@ -332,5 +544,17 @@ export default {
     margin-left: 1%;
     float: left;
   }
+}
+.shenhe {
+width: 100%;
+  z-index: 99;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  line-height: 80upx;
+  background-color: #007aff;
+  color: #fff;
 }
 </style>

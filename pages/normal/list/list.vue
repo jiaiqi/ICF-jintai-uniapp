@@ -399,7 +399,9 @@ export default {
           this.title === '志愿者组织' ||
           this.title === '社会组织' ||
           this.title === '学习心得' ||
-          this.title === '我为社区献一策'
+          this.title === '我为社区献一策'||
+          this.title === '党建活动记录'||
+          this.title === '创投项目'
         ) {
           // 如果是流程列表，过滤掉未完成的
           req.condition = [{ colName: 'proc_status', value: '完成', ruleType: 'eq' }];
@@ -409,7 +411,6 @@ export default {
           req['proc_data_type'] = 'processed';
         }
         let res = await this.$http.post(url, req);
-
         uni.stopPullDownRefresh();
         if (res.data.data && res.data.data.length > 0) {
           if (res.data.page) {

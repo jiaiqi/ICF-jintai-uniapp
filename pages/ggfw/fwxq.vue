@@ -6,36 +6,36 @@
 		</view>
 		<view>
 			<text class="titlename">房 屋 地 址：</text>
-			<text>{{ datalist.address }}</text>
+			<text>{{ datalist.address?datalist.address:'未填写' }}</text>
 		</view>
 		<view class="titlename">办 理 对 象：</view>
-		<view class="cont-box">{{ datalist.bldx }}</view>
+		<view class="cont-box">{{ datalist.bldx?datalist.bldx:'未填写' }}</view>
 		<view class="titlename">办 理 条 件：</view>
-		<view class="cont-box">{{ datalist.bltj }}</view>
+		<view class="cont-box">{{ datalist.bltj?datalist.bltj:'未填写' }}</view>
 
 		<view class="titlename">办 理 流 程：</view>
-		<view class="cont-box" v-html="datalist.content"></view>
+		<view class="cont-box" v-html="datalist.content?datalist.content:'未填写' "></view>
 
 		<view class="titlename">材 料 清 单：</view>
-		<view class="cont-box">{{ datalist.materials }}</view>
+		<view class="cont-box">{{ datalist.materials?datalist.materials:'未填写' }}</view>
 		<view class="titlename">办 理 时 限：</view>
-		<view class="cont-box">{{ datalist.blsx }}</view>
+		<view class="cont-box">{{ datalist.blsx?datalist.blsx:'未填写' }}</view>
 		<view class="titlename">收 费 标 准：</view>
-		<view class="cont-box">{{ datalist.sfbz }}</view>
+		<view class="cont-box">{{ datalist.sfbz?datalist.sfbz:'未填写' }}</view>
 		<view class="titlename">接 待 时 间：</view>
-		<view class="cont-box">{{ datalist.reception_date }}</view>
+		<view class="cont-box">{{ datalist.reception_date?datalist.reception_date:'未填写' }}</view>
 
 		<view>
 			<text class="titlename">接 待 人 员：</text>
-			<text>{{ datalist.reception_oper }}</text>
+			<text>{{ datalist.reception_oper?datalist.reception_oper:'未填写' }}</text>
 		</view>
 		<view>
 			<text class="titlename">联 系 电 话：</text>
-			<text>{{ datalist.reception_phone }}</text>
+			<text>{{ datalist.reception_phone?datalist.reception_phone:'未填写' }}</text>
 		</view>
 
 		<view class="titlename">接 待 地 点：</view>
-		<view class="cont-box">{{ datalist.reception_address }}</view>
+		<view class="cont-box">{{ datalist.reception_address?datalist.reception_address:'未填写' }}</view>
 		<view v-if="datalist.files">
 			<text class="titlename">附 件 下 载：</text>
 			<text style="color:blue;" @click="downFile(datalist.files)">点击下载附件</text>

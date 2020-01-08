@@ -11,7 +11,8 @@
 					<view class="">
 						<view class="nametitle" style="">
 						{{item.zuzhi_name||item.organize_name
-						||item.activity_title||item.note_title||item.opinion_title||item.bt}}</view>
+						||item.activity_title||item.note_title||
+						item.opinion_title||item.bt||item.registe||item.member_name}}</view>
 						<text>状态:{{item.proc_status}}</text>
 					</view>
 					<view class="but"  @click="audio(item)">
@@ -23,7 +24,7 @@
 					</view> -->
 					<!-- v-if="booe(item.proc_status)" -->
 					
-					<view class="xq" @click="xqpages(item)">
+					<view class="xq" v-if="!item.member_name" @click="xqpages(item)">
 						详情
 					</view>
 				</view>
@@ -172,6 +173,10 @@
 					uni.navigateTo({
 						url: '../forum/detail?no=' + item.ftno+'&pbox=true'
 					});
+				}else if(this.servenameat=="srvzhsq_activity_registe_select"){
+					uni.navigateTo({
+						url: '../sqfw/bmym?no=' +encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
+					});
 				}
 			}
 		},
@@ -181,6 +186,10 @@
 				this.apps="zhdj"
 			}
 			this.getlist(option.serve,0)
+		},
+		onShow(){
+			// console.error(this.servenameat)
+			// this.getlist(this.servenameat,0)
 		}
 	}
 </script>

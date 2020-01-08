@@ -13,41 +13,58 @@
         <text class="texts" style="color: red;">*</text>
         <text class="texts letter">姓名：</text>
       </view>
-      <input type="text" v-model="baominvalue" />
+      <input type="text" :disabled="opxq" placeholder="请输入姓名" v-model="baominvalue" />
     </view>
     <view class="content-box">
       <view class="content-width">
         <text class="texts" style="color: red;">*</text>
         <text class="texts">手机号码：</text>
       </view>
-      <input type="text" v-model="phone" />
+      <input type="text" placeholder="请输入手机号码" v-model="phone" :disabled="opxq"/>
     </view>
-    <view class="content-box cu-form-group margin-top">
-      <view class=" title">
-        <text class="texts" style="color: red;">*</text>
-        选择活动
-      </view>
-      <picker @change="changePicker" :value="pinckindex" :range="activityArray">
-        <view class="picker">{{ pinckindex != -1 ? activityNameArr[pinckindex] : '请选择' }}</view>
-      </picker>
-    </view>
-    <view class="content-box">
-      <view class="content-width">
-        <text class="texts" style="color: red;">*</text>
-        <text class="texts">报名时间：</text>
-      </view>
-      <input type="text" v-model="nowTime" disabled/>
-    </view>
-    <!--  <view class="content-box">
-      <view class="content-width">
-        <text class="texts" style="color: red;">*</text>
-        <text class="texts">选择活动：</text>
-      </view>
-      
-      <view class="input"><QSPickerCustom ref="nationPickerZ" name="formName" variableName="custom" title="" v-model="pinck" @change="changePicker(pinck)" /></view>
-    </view> -->
+	
+	<view class="" v-if="!opxq">
+		<view class="content-box cu-form-group margin-top">
+		  <view class=" title">
+		    <text class="texts" style="color: red;">*</text>
+		    选择活动
+		  </view>
+		  <picker @change="changePicker" :value="pinckindex" :range="activityArray">
+		    <view class="picker">{{ pinckindex != -1 ? activityNameArr[pinckindex] : '请选择' }}</view>
+		  </picker>
+		</view>
+		<view class="content-box">
+		  <view class="content-width">
+		    <text class="texts" style="color: red;">*</text>
+		    <text class="texts">报名时间：</text>
+		  </view>
+		  <input type="text" v-model="nowTime" disabled/>
+		</view>
+	</view>
+  
+	<view class="" v-else>
+		<view class="content-box">
+		  <view class="content-width">
+		    <text class="texts" style="color: red;">*</text>
+		    <text class="texts letter">报名活动：</text>
+		  </view>
+		  <input type="text" :disabled="opxq" v-model="activetitle" />
+		</view>
+		<view class="content-box">
+		  <view class="content-width">
+		    <text class="texts" style="color: red;">*</text>
+		    <text class="texts">报名时间：</text>
+		  </view>
+		  <input type="text" :disabled="opxq" v-model="modify_time" />
+		</view>
+	</view>
+  
+  
 
-    <view class="btn" @click="addvalue()">提交申请</view>
+    <view class="btn" @click="addvalue()"  v-if="!opxq">提交申请</view>
+	<view class="shenhe" v-if="menuAudio>0" @click="audist">
+		待我审核
+	</view>
   </view>
 </template>
 
@@ -68,11 +85,41 @@ export default {
       activityArray: [], // 多选列表
       phone: '', //手机号,
       active_no: '',
-      nowTime:new Date()
+      nowTime:new Date(),
+	  //详情
+	  detailslist:[],
+	  activity_noxq:'', //详情编号
+	  opxq:false,
+	  activetitle:'',
+	  modify_time:'',
+	  menuAudio:0
     };
   },
   components: {},
   methods: {
+	  audist(val){
+		  uni.navigateTo({
+		  	url:'../audit/auditList?serve='+"srvzhsq_activity_registe_select"
+		  })
+	  },
+	  getMenu(serve){
+	  	console.error(serve)
+	  	let url =this.$api.select + "/sqfw/select/"+serve
+	  	let req = {};
+	  	req.serviceName =serve;
+	  	req.colNames = ['*'];
+	  	req.condition = [];
+	  	req.order = [];
+	  	req.proc_data_type="wait"
+	  	req['page'] = {
+	  		pageNo: 1,
+	  		rownumber: 10
+	  	};
+	  	this.$http.post(url, req).then(res => {
+	  		console.log(res)
+	  			this.menuAudio=res.data.data.length
+	  	})
+	  },
     MultiColumnChange(e) {
       console.log(e);
     },
@@ -89,7 +136,18 @@ export default {
       req.distinct = false;
 
       this.$http.post(url, req).then(res => {
+		  
         let list = res.data.data;
+		this.detailslist=list
+		console.error(list)
+		if(this.opxq){
+			console.log(this.activity_noxq)
+			for(let i in list ){
+				if(this.activity_noxq==list[i].activity_no){
+					this.activetitle=list[i].activity_title
+				}
+			}
+		}
         let idArr = [];
         let datast = [];
         let activityNameArr = [];
@@ -109,6 +167,7 @@ export default {
       this.$refs[name].setData(data);
     },
     addvalue() {
+		console.log(this.active_no)
       if (this.baominvalue == '' || this.phone == '' || this.active_no == '') {
         uni.showToast({
           title: '请填写完整再提交',
@@ -185,7 +244,16 @@ export default {
       // console.log(this.active_no,this.pinck);
     }
   },
-  onLoad() {
+  onLoad(option) {
+	  if(option.no){
+		  this.opxq =true
+			let detailslist = JSON.parse(decodeURIComponent(option.no));
+			console.log(detailslist)
+			this.baominvalue=detailslist.registe
+			this.phone = detailslist.phone
+			this.activity_noxq=detailslist.activity_no
+			this.modify_time=detailslist.modify_time
+	  }
     this.getdata();
     let that = this;
     uni.getStorage({
@@ -194,6 +262,7 @@ export default {
         that.valueadmin = e.data.user_no;
       }
     });
+	this.getMenu('srvzhsq_activity_registe_select')
   }
 };
 </script>
@@ -215,7 +284,18 @@ input,
   padding: 2px 5px;
   margin-top: calc(60upx - 15px);
 }
-
+.shenhe {
+width: 100%;
+  z-index: 99;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  line-height: 80upx;
+  background-color: #007aff;
+  color: #fff;
+}
 .content-box {
   display: flex;
   background: #ffffff;
