@@ -1,42 +1,36 @@
 <template>
   <view class="wrap">
-   <!-- <uni-grid :column="3" :showBorder="showBorder" v-if="treeData.children">
-      <uni-grid-item v-for="(item, index) in treeData.children" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="item">
-        <text class="text">{{ item.label }}</text>
-      </uni-grid-item>
-    </uni-grid> -->
-    
     <view class="card_box" v-if="treeData.children">
-		<ListItem :itemData="item" v-for="(item, index) in treeData.children" :key="index"  :indexs="index" type="menu"></ListItem>
+      <ListItem :itemData="item" v-for="(item, index) in treeData.children" :key="index" :indexs="index" type="menu"></ListItem>
     </view>
   </view>
 </template>
 
 <script>
-import uniGrid from '@/components/uni-grid/uni-grid.vue';
-import uniGridItem from '@/components/uni-grid-item/uni-grid-item.vue';
-  import ListItem from '@/components/bx-CardList/card-list-item.vue'
+import ListItem from '@/components/bx-CardList/card-list-item.vue';
 export default {
-  components: { uniGrid, uniGridItem ,ListItem},
+  components: { ListItem },
   data() {
     return {
-      userInfo: {},
-      showBorder: false,
-      treeData:{}
+      treeData: {}
     };
   },
   onLoad(option) {
     // 从URL获取菜单数据
-    let data = []
-	if(option.data){
-		data=JSON.parse(decodeURIComponent(option.data));
-	}else if (option.query){
-		data=JSON.parse(decodeURIComponent(option.query));
-	}
-    this.treeData = data
+    let data = [];
+    if (option.data) {
+      data = JSON.parse(decodeURIComponent(option.data));
+      console.log(option.data)
+    } else if (option.query) {
+      data = JSON.parse(decodeURIComponent(option.query));
+    }else{
+      console.log( JSON.stringify(option))
+    }
+    this.treeData = data;
+    console.log( data.label)
     uni.setNavigationBarTitle({
-      title:data.label
-    })
+      title: data.label
+    });
   }
 };
 </script>
@@ -45,7 +39,7 @@ export default {
 .wrap {
   width: 100%;
   height: 100%;
-  .card_box{
+  .card_box {
     width: 100%;
     height: 100%;
     margin-top: 20upx;

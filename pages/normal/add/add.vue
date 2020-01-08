@@ -94,7 +94,8 @@ export default {
             if (res.data.data) {
               let cols = res.data.data.srv_cols;
               self.query.cols = res.data.data;
-              self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
+              self.pageBtns = res.data.data.formButton
+              // self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
               self.query.serviceName = query.serviceName;
               this.showChild = true;
             }
@@ -113,11 +114,11 @@ export default {
         console.log(self.query.cols);
         self.query.serviceName = query.serviceName;
         self.pageBtns = self.query.cols.formButton;
-        self.pageBtns = self.pageBtns.filter(item => {
-          if (item.permission === true) {
-            return item;
-          }
-        });
+        // self.pageBtns = self.pageBtns.filter(item => {
+        //   if (item.permission === true) {
+        //     return item;
+        //   }
+        // });
         this.showChild = true;
         setTimeout(() => {
           // this.showButton=true;
@@ -159,7 +160,26 @@ export default {
           content: '是否确认提交',
           success: function(res) {
             if (res.confirm) {
-              self.submint(a.data);
+              console.log('------------------点击了提交按钮-------------------')
+              self.submint(a.data).then(response=>{
+                if(response.data.resultMessage==='开启成功'||response.data.resultMessage==='操作成功'){
+                  uni.showModal({
+                    title:'提示',
+                    content:response.data.resultMessage+',点击跳转到列表页',
+                    showCancel:false,
+                    success: (res) => {
+                      if(res.confirm){
+                        uni.navigateBack({
+                          delta: 1,
+                          animationType: 'pop-out',
+                          animationDuration: 200
+                        });
+                      }
+                    }
+                  })
+                 
+                }
+              });
             } else if (res.cancel) {
               console.log('用户点击取消');
             }
@@ -180,7 +200,6 @@ export default {
         }
       ];
       if (this.query.type === 'add') {
-        // eslint-disable-next-line
         let data = [];
         let a = {};
         data = nData.map(item => {
@@ -188,10 +207,9 @@ export default {
         });
         if (this.foreignKey.length > 0) {
           a[this.foreignKey[0].colName] = this.foreignKey[0].value;
-          console.log('key', this.foreignKey[0]);
         }
         params[0].data.push(a);
-        console.log(params[0].data);
+        console.log(JSON.stringify(params[0].data));
         let operate = 'operate';
         if (this.queryString.label === '党建活动记录') {
           operate = 'apply';
@@ -202,25 +220,40 @@ export default {
         if(this.queryString.service_name==="srvzhsq_tenement_gzfxx_add"||this.queryString.service_name==='srvzhsq_tenement_lzfxx_select'){
           operate = 'apply'
         }
+        console.log(self.queryString.service_name,operate)
         let url = self.$api.add + '/' + this.appName + '/' + operate + '/'+this.queryString.serviceName;
-        let formData = this.$refs.iForms.returnFields();
+        console.log(url)
+        let formData = self.$refs.iForms.returnFields();
+        console.log(JSON.stringify(formData))
         if (formData.data) {
-          console.log('formdata:', formData);
           formData = formData.data[0];
         }
         if (formData.service_name) {
           params[0].serviceName = formData.service_name;
-          url = self.$api.add + '/' + this.appName + '/' + operate + '/' + formData.service_name;
+          url = self.$api.add + '/' + self.appName + '/' + operate + '/' + formData.service_name;
         }
-        console.log('params:', params);
+        console.log(JSON.stringify(params));
         const response = await self.$http.post(url, params); // 新增
+        console.log("response.data.state",response.data.state)
         if(response){
           this.showChild = true
         }
-        if (response.data.state === 'SUCCESS' && params[0].serviceName == 'srvzhsq_pxap_add') {
-          // uni.showToast({
-          //   title: response.data.resultMessage
-          // });
+        // if (response.data.state === 'SUCCESS' && params[0].serviceName == 'srvzhsq_pxap_add') {
+        //   uni.showModal({
+        //     title: '提示',
+        //     content: response.data.resultMessage,
+        //     showCancel: false,
+        //     success: res => {
+        //       if (res.confirm) {
+        //         uni.navigateBack({
+        //           delta: 2,
+        //           animationType: 'pop-out',
+        //           animationDuration: 200
+        //         });
+        //       }
+        //     }
+        //   });
+        // } else {
           uni.showModal({
             title: '提示',
             content: response.data.resultMessage,
@@ -235,28 +268,9 @@ export default {
               }
             }
           });
-
-          // uni.redirectTo({
-          //   url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(params[0].data[0]))
-          // });
-        } else {
-          uni.showModal({
-            title: '提示',
-            content: response.data.resultMessage,
-            showCancel: false,
-            success: res => {
-              if (res.confirm) {
-                uni.navigateBack({
-                  delta: 2,
-                  animationType: 'pop-out',
-                  animationDuration: 200
-                });
-              }
-            }
-          });
-        }
+        // }
+        return response
       } else if (this.query.type === 'apply') {
-        // eslint-disable-next-line
         let datas = [];
         let a = {};
         datas = nData.map(item => {
@@ -267,6 +281,7 @@ export default {
         });
         params[0].data.push(a);
         const response = await self.$http.post(self.$api.startProc, params); // 流程开启
+        console.log("response.data.state",response.data.state)
         if (response.data.state === 'SUCCESS') {
           uni.showToast({
             title: response.data.resultMessage
@@ -280,16 +295,15 @@ export default {
           uni.showToast({
             title: response.data.resultMessage
           });
-          uni.navigateBack({
-            delta: 2,
-            animationType: 'pop-out',
-            animationDuration: 200
-          });
-          self.$vux.toast.show({
-            type: 'text',
-            text: response.data.resultMessage
-          });
+          if(response.data.resultMessage==='开启成功'||response.data.resultMessage==='操作成功'){
+            uni.navigateBack({
+              delta: 2,
+              animationType: 'pop-out',
+              animationDuration: 200
+            });
+          }
         }
+        return response
       }
     },
     onReset() {

@@ -1,7 +1,10 @@
 <template>
   <view>
     <view class="cu-form-group margin-top" v-if="Fileddatas.col_type !== 'Image' && Fileddatas.col_type !== 'FileList'">
-      <view class="title"><text class="required" v-if="Fileddatas.validators.includes('required')">*</text>{{ Fileddatas.label }}</view>
+      <view class="title">
+        <text class="required" v-if="Fileddatas.validators.includes('required')">*</text>
+        {{ Fileddatas.label }}
+      </view>
       <input
         class="input"
         @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
@@ -10,7 +13,20 @@
         v-model="Fileddatas.column"
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入内容'"
       />
-      <picker @change="PickerChange" :value="index" :range="picker" v-if="(Fileddatas.bx_col_type === 'enum' || Fileddatas.col_type === 'Enum')&&Fileddatas.columns !== 'sflb'">
+      <input
+        class="input"
+        @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
+        @blur="handleBlur"
+        disabled
+        v-if="(Fileddatas.bx_col_type === 'enum' || Fileddatas.col_type === 'Enum') && Fileddatas.table_column === 'hdlb'"
+        value="党建活动"
+      />
+      <picker
+        @change="PickerChange"
+        :value="index"
+        :range="picker"
+        v-if="(Fileddatas.bx_col_type === 'enum' || Fileddatas.col_type === 'Enum') && Fileddatas.columns !== 'sflb' && Fileddatas.table_column !== 'hdlb'"
+      >
         <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
       </picker>
       <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.columns === 'sflb'">
@@ -18,7 +34,7 @@
       </picker>
       <view class="cu-bar bg-white margin-top"></view>
       <textarea
-        v-if="Fileddatas.col_type === 'MultilineText'||Fileddatas.col_type === 'Note'"
+        v-if="Fileddatas.col_type === 'MultilineText' || Fileddatas.col_type === 'Note'"
         placeholder="请输入内容"
         class="text-box textarea"
         scroll-y="true"
@@ -28,7 +44,7 @@
         v-model="Fileddatas.column"
         @focus="formValidators(Fileddatas.column, Fileddatas._formItemValidators)"
       ></textarea>
-      
+
       <!-- <edit ref="note" v-on:listenChild="show" class="note" v-if="Fileddatas.col_type === 'Note'"></edit> -->
       <input
         v-if="Fileddatas.col_type === 'int'"
@@ -60,7 +76,7 @@
       <input
         v-if="Fileddatas.col_type === 'Email'"
         class="uni-form-item uni-column input"
-        :maxlength="Fileddatas._formItemValidators.max"
+        :maxlength="Fileddatas._formItemValidators.max?Fileddatas._formItemValidators.max:50"
         @input="handleInput(Fileddatas.columns, Fileddatas.column, Fileddatas._formItemValidators)"
         v-model="Fileddatas.column"
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入邮箱'"
@@ -73,26 +89,46 @@
         v-model="Fileddatas.column"
         :placeholder="Fileddatas.placeholder !== '' && Fileddatas.placeholder !== null ? Fileddatas.placeholder : '请输入活动名称'"
       />
-      <picker @change="PickerChange" :value="index" :range="picker" v-if="Fileddatas.bx_col_type === 'fk' && (Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||Fileddatas.col_type==='bxzhsq_social_organizie'||Fileddatas.col_type==='bxzhsq_tenement_gzfxx'||Fileddatas.col_type==='bxzhsq_tenement_lzfxx')">
+      <picker
+        @change="PickerChange"
+        :value="index"
+        :range="picker"
+        v-if="
+          Fileddatas.bx_col_type === 'fk' &&
+            (Fileddatas.col_type === 'bxzhsq_zyz_zuzhi' ||
+              Fileddatas.col_type === 'bxzhsq_social_organizie' ||
+              Fileddatas.col_type === 'bxzhsq_tenement_gzfxx' ||
+              Fileddatas.col_type === 'bxzhsq_tenement_lzfxx')||Fileddatas.col_type === 'Dept'
+        "
+      >
+        <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
+      </picker>
+      <picker
+        @change="PickerChange"
+        :value="index"
+        :range="picker"
+        v-if=" Fileddatas.bx_col_type === 'dict'"
+      >
         <view class="picker">{{ index > -1 ? picker[index] : '请选择' + Fileddatas.label }}</view>
       </picker>
       <picker mode="date" :value="date" start="2015-09-01" end="2050-09-01" @change="DateChange" v-if="Fileddatas.col_type === 'Date' || Fileddatas.col_type === 'DateTime'">
-        <view class="picker">{{ date}}</view>
+        <view class="picker">{{ date }}</view>
       </picker>
-      <picker mode="time" :value="time" start="2015-09-01" end="2050-09-01" @change="TimeChange" v-if="Fileddatas.col_type === 'Date' || Fileddatas.col_type === 'DateTime'">
-        <view class="picker">{{ time}}</view>
+      <picker mode="time" :value="time" start="2015-09-01" end="2050-09-01" @change="TimeChange" v-if="Fileddatas.col_type === 'DateTime'">
+        <view class="picker">{{ time }}</view>
       </picker>
       <input
         class="input"
         readonly
-        v-if="Fileddatas.col_type === 'User'"
+        v-if="Fileddatas.col_type === 'User' && Fileddatas.label !== '作者'"
         @change="bindDateChange"
         @tap="setUserPoup"
         :value="userList.userSelected.user_disp"
         placeholder="选择发布人"
       />
-
-      <input class="input" readonly ref="deptSelect" v-if="Fileddatas.col_type === 'Dept'" @tap="setDeptPoup" :value="DeptList.DeptSelected.label" placeholder="选择部门" />
+      <input class="input" disabled v-if="Fileddatas.col_type === 'User' && Fileddatas.label === '作者'" :value="userInfo.user_no" />
+      <!-- <input class="input" readonly ref="deptSelect" v-if="Fileddatas.col_type === 'Dept'" @tap="setDeptPoup" :value="DeptList.DeptSelected.label" placeholder="选择部门" /> -->
+     
       <uni-popup v-if="Fileddatas.col_type === 'User'" ref="Upopup" type="bottom">
         <view class="popup-view">
           <view class="header">
@@ -110,8 +146,10 @@
           </view>
         </view>
       </uni-popup>
-      <uni-popup v-if="Fileddatas.col_type === 'Dept'" ref="Dpopup" type="bottom">
-        <view class="popup-view">
+      <!-- <uni-popup v-if="Fileddatas.col_type === 'Dept'" ref="Dpopup" type="bottom"> -->
+        <!-- <zy-search :is-focus="false" :theme="themeClass" :show-want="true" :speechEngine="speechEngine"
+        :hot-list="hotList" @getSearchText="getSearchText"></zy-search> -->
+       <!-- <view class="popup-view">
           <view class="header">
             <view class="search">
               <input class="uni-input search_input" v-model="DeptList.search" type="text" adjust-position focus confirm-type="search" placeholder="自动获得焦点" />
@@ -125,11 +163,14 @@
               </li>
             </ul>
           </view>
-        </view>
-      </uni-popup>
+        </view> -->
+      <!-- </uni-popup> -->
     </view>
     <view class="cu-bar bg-white margin-top" v-if="Fileddatas.col_type === 'Image'">
-      <view class="action"><text class="required" v-if="Fileddatas.validators.includes('required')">*</text>{{ Fileddatas.label }}</view>
+      <view class="action">
+        <text class="required" v-if="Fileddatas.validators.includes('required')">*</text>
+        {{ Fileddatas.label }}
+      </view>
       <view class="action">{{ imgList.length }}/1</view>
     </view>
     <view class="cu-form-group" v-if="Fileddatas.col_type === 'Image'">
@@ -144,12 +185,12 @@
   </view>
 </template>
 <script>
-import Emitter from '../../static/js/mixins/emitter.js';
+import Emitter from '@/static/js/mixins/emitter.js';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
 export default {
   name: 'iFormItem',
   components: {
-    uniPopup,
+    uniPopup
   },
   computed: {
     startDate() {
@@ -158,11 +199,11 @@ export default {
     endDate() {
       return this.getDate('end');
     },
-    dateTime(){
+    dateTime() {
       // this.Fileddatas.column = this.date + ' ' + this.time
-      let date = this.date!=="选择日期"?this.date:" "
-      let time =  this.time!=="选择时间"?this.time:" "
-      return date+ ' ' + time
+      let date = this.date !== '选择日期' ? this.date : ' ';
+      let time = this.time !== '选择时间' ? this.time : ' ';
+      return date + ' ' + time;
     },
     fkSelectList: function(e) {
       let cond = [];
@@ -183,14 +224,18 @@ export default {
   mixins: [Emitter],
   data() {
     return {
+      themeClass: 'block',
+      speechEngine: 'baidu', //语音识别引擎
+      hotList: ['栏目1','栏目2','栏目3','栏目4'],	//搜索组件初始化推荐列表
+      userInfo: uni.getStorageSync('userInfo'),
       index: -1,
       picker: ['喵喵喵', '汪汪汪', '哼唧哼唧'],
-      originPicker:null,
+      originPicker: null,
       imgList: [],
       imgPathList: [],
       query: {}, //url参数
-      date: "选择日期",
-      time:"选择时间",
+      date: '选择日期',
+      time: '选择时间',
       oldColData: {},
       Fileddatas: {},
       currentValue: '',
@@ -204,7 +249,7 @@ export default {
       save: [],
       DeptData: [],
       userList: {
-        search: "",
+        search: '',
         Fileddatas: [],
         userSelected: {
           user_disp: '',
@@ -268,8 +313,20 @@ export default {
       setTimeout(() => {
         this.setPickerData(nationArr);
       }, 500);
-    } else if (this.Fileddatas.col_type === 'bxzhsq_zyz_zuzhi'||this.Fileddatas.col_type==='bxzhsq_social_organizie'||this.Fileddatas.col_type==='bxzhsq_tenement_gzfxx'||this.Fileddatas.col_type==='bxzhsq_tenement_lzfxx') {
+    } else if (
+      this.Fileddatas.col_type === 'bxzhsq_zyz_zuzhi' ||
+      this.Fileddatas.col_type === 'bxzhsq_social_organizie' ||
+      this.Fileddatas.col_type === 'bxzhsq_tenement_gzfxx' ||
+      this.Fileddatas.col_type === 'bxzhsq_tenement_lzfxx'
+    ) {
       this.getOptionList();
+    }else if(this.Fileddatas.col_type === 'Dept'){
+      this.getDept()
+    }else if(this.Fileddatas.col_type==='Dict'){
+      this.picker = this.Fileddatas.option_list_v2.map(item=>{
+        return item.label
+      })
+      this.originPicker = this.Fileddatas.option_list_v2
     }
   },
   onShow() {
@@ -280,43 +337,56 @@ export default {
   },
 
   methods: {
-    DateChange(e){
+    getSearchText(e) {
+    	uni.showToast({
+    		title:'回调的搜索信息: ' + e,
+    		icon:"none"
+    	})
+    },
+    DateChange(e) {
       // console.log(e)
       // this.Fileddatas.column = e.detail.value
-      this.date = e.detail.value
-      this.Fileddatas.column = this.dateTime
+      this.date = e.detail.value;
+      this.Fileddatas.column = this.dateTime;
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
       console.log('选择了：', this.Fileddatas.column);
     },
-    TimeChange(e){
-      this.time = e.detail.value
-      this.Fileddatas.column = this.dateTime
+    TimeChange(e) {
+      this.time = e.detail.value;
+      this.Fileddatas.column = this.dateTime;
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
       console.log('选择了：', this.Fileddatas.column);
     },
     PickerChange(e) {
-      this.index = e.detail.value;
-      this.Fileddatas.column = this.picker[this.index];
-      if(this.originPicker){
-        this.originPicker.map(or=>{
-          this.picker.map(picker=>{
-            if(picker===or.organize_name){
-              this.Fileddatas.column = or.organize_no
-            }
-            if(picker===or.zuzhi_name){
-              this.Fileddatas.column = or.zuzhi_no
-            }
-            if(picker===or.title){
-               this.Fileddatas.column = or.title
-            }
-          })
-        })
+      if(e.detail.value!=-1){
+        this.index = e.detail.value;
+      }else{
+        this.index = 0;
       }
-      if(this.Fileddatas.columns === 'sflb'){
-        this.Fileddatas.column = this.Fileddatas.column?this.Fileddatas.column:"否"
+      this.Fileddatas.column = this.picker[this.index];
+      if (this.originPicker) {
+        this.originPicker.map(or => {
+          this.picker.map(picker => {
+            if (picker === or.organize_name) {
+              this.Fileddatas.column = or.organize_no;
+            }
+            if (picker === or.zuzhi_name) {
+              this.Fileddatas.column = or.zuzhi_no;
+            }
+            if (picker === or.title) {
+              this.Fileddatas.column = or.title;
+            }
+            if(picker===or.label){
+               this.Fileddatas.column =or.value
+            }
+          });
+        });
+      }
+      if (this.Fileddatas.columns === 'sflb') {
+        this.Fileddatas.column = this.Fileddatas.column ? this.Fileddatas.column : '否';
       }
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
-      console.log('选择了：', this.Fileddatas.column,e);
+      console.log('选择了：', this.Fileddatas.column, e);
     },
     ChooseImage() {
       uni.chooseImage({
@@ -423,7 +493,7 @@ export default {
       };
       this.$http.post(url, req).then(resp => {
         this.userList.Fileddatas = resp.data.data;
-        this.choose(this.userList.Fileddatas[0],0)
+        this.choose(this.userList.Fileddatas[0], 0);
       });
     },
     DeptSearch() {
@@ -471,11 +541,10 @@ export default {
       this.$refs.Upopup.open();
       this.getUser();
     },
-    setDeptPoup() {
-      this.$refs.Dpopup.open();
-      this.getDept();
-      
-    },
+    // setDeptPoup() {
+    //   this.$refs.Dpopup.open();
+    //   this.getDept();
+    // },
     setPickerData(nationArr) {
       // let data1 = [nationArr];
       this.picker = nationArr;
@@ -506,6 +575,11 @@ export default {
       req.order = [];
       this.$http.post(url, req).then(resp => {
         this.DeptList.Fileddatas = resp.data.data;
+        let data = resp.data.data;
+        this.originPicker = data
+        this.picker = data.map(item=>{
+          return item.dept_name
+        })
       });
     },
     bindTextAreaBlur(e) {
@@ -544,15 +618,14 @@ export default {
           queryMethod: 'select',
           distinct: false,
           colNames: ['*'],
-          condition: [{ colName: 'proc_status', ruleType: 'eq', value: '完成' }],
+          condition: [{ colName: 'proc_status', ruleType: 'eq', value: '完成' }]
         };
         this.$http.post(url, req).then(res => {
           console.log('111111111111111111111111111111', res.data.data);
-          if(res.data.data){
-            let data = res.data.data
-            let arr = data.map(item=>item.zuzhi_name?item.zuzhi_name:item.organize_name?item.organize_name:item.gzf_no?item.title:item.lzf_no?item.title:"")
-            this.picker = arr,
-            this.originPicker = data
+          if (res.data.data) {
+            let data = res.data.data;
+            let arr = data.map(item => (item.zuzhi_name ? item.zuzhi_name : item.organize_name ? item.organize_name : item.gzf_no ? item.title : item.lzf_no ? item.title : ''));
+            (this.picker = arr), (this.originPicker = data);
           }
         });
       }
@@ -618,12 +691,12 @@ export default {
           return a;
         });
       } else if (self.Fileddatas.bx_col_type === 'dict') {
-        self.Fileddatas.option_list_v2 = self.Fileddatas.option_list_v2.map(item => {
-          let a = {};
-          a.key = item.value;
-          a.value = item.label;
-          return a;
-        });
+        // self.Fileddatas.option_list_v2 = self.Fileddatas.option_list_v2.map(item => {
+        //   let a = {};
+        //   a.key = item.value;
+        //   a.value = item.label;
+        //   return a;
+        // });
       } else if (self.Fileddatas.bx_col_type === 'image') {
         if (self.Fileddatas.column !== '' && self.Fileddatas.column !== undefined) {
           let res = await self.getImageUrl(self.Fileddatas.column);
@@ -645,7 +718,6 @@ export default {
         self.Fileddatas['_selected'] = selected;
       }
     },
-
     handleBlur(event) {
       console.log('失去焦点', event);
       this.formValidators(this.Fileddatas.column, this.Fileddatas._formItemValidators);
@@ -689,7 +761,7 @@ export default {
         }
       };
       if (this.Fileddatas.col_type === 'Note') {
-        this.$refs.note.reset();
+        // this.$refs.note.reset();
       }
     },
     show(data) {
@@ -782,7 +854,6 @@ export default {
   watch: {
     formValids: {
       handler: function(val, oldval) {
-        // console.log('formValids更新1', val)
         let b = {
           columns: this.fromColData.columns,
           formValids: this.formValids
@@ -830,7 +901,7 @@ export default {
 .form-item-inputs {
   // flex: 1;
 }
-.required{
+.required {
   color: red;
   padding: 10upx;
 }

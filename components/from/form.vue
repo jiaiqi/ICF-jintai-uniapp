@@ -134,6 +134,8 @@ export default {
           if (item.in_add === 1 && item.updatable !== 0) {
             // item['_formItemValidators'] = self.getColValidators(item)
             return item;
+          }else if(item.updatable === 0 &&item.columns==='hdlb'){
+            return item;
           }
         } else if (pageType === 'update') {
           if (item.in_update === 1 && item.updatable !== 0) {
@@ -198,10 +200,8 @@ export default {
       fieldValid = self.fields;
       console.log('fieldValid', fieldValid);
       for (let i = 0; i < fieldValid.length; i++) {
-        // console.log(fieldValid[i].label, fieldValid[i]._valid)
         if (fieldValid[i]._valid.valid !== true && fieldValid[i]._valid.valid !== undefined) {
           valids.push(fieldValid[i]._valid);
-          // return item
         }
       }
       let olddata = JSON.parse(JSON.stringify(self.cols));
@@ -295,15 +295,6 @@ export default {
       },
       deep: true // 是否深度监听
     }
-    // "pathQuery":{
-    //   handler: function (val, oldval) {
-    //     let self = this
-    //     // this.broadcast('iFormItem', 'on-submit')
-    //     // this.fields = JSON.parse(JSON.stringify(this.cols))
-    //     console.log('更新val',pathQuery)
-    //   },
-    //   deep: true   // 是否深度监听
-    // }
   }
 };
 </script>

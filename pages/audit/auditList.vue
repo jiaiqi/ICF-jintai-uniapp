@@ -160,9 +160,9 @@
 					uni.navigateTo({
 						url: '../sqfw/sqxq?query='+encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
 					});
-				}else if(this.servenameat=="srvzhsq_forum_note_list_num_select"){
+				}else if(this.servenameat=="srvzhsq_forum_note_list_num_select"||this.servenameat==='srvzhsq_forum_note_select'){
 					uni.navigateTo({
-						url: '../forum/detail?no=' + item.note_no
+						url: '../forum/detail?no=' + item.note_no+'&pbox=true'
 					});
 				}else if(this.servenameat=="srvzhsq_forum_opinion_select"){
 					uni.navigateTo({
@@ -170,14 +170,14 @@
 					});
 				}else if (this.servenameat=="srvzhsq_djlt_ftxx_select"){
 					uni.navigateTo({
-						url: '../forum/detail?no=' + item.ftno
+						url: '../forum/detail?no=' + item.ftno+'&pbox=true'
 					});
 				}
 			}
 		},
 		onLoad(option){
 			this.servenameat=option.serve
-			if(option.serve=="srvzhsq_djlt_ftxx_select"){
+			if(option.serve=="srvzhsq_djlt_ftxx_select"||option.serve ==='srvzhsq_xxxd_select'){
 				this.apps="zhdj"
 			}
 			this.getlist(option.serve,0)

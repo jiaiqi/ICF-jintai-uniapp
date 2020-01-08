@@ -28,7 +28,6 @@
       <!-- <rich-text :nodes=""></rich-text> -->
       <div v-if="query.content" class="content_view" v-html="query.content"></div>
       <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
-      <!-- 主贴点赞 -->
 
       <!-- 官方答复 -->
       <div class="little_title" v-if="query.ssp_no"><text>官方答复</text></div>
@@ -56,9 +55,9 @@
       <div class="reply_view">
         <div style="color: #9E9E9E;" class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无评论</div>
         <div class="discuss_item" v-for="(item, index) in PostLeaveMeaasgeList" :key="index">
-          <image :src="commentUserPhoto[item.create_user]" mode="" v-if="commentUserPhoto" class="touxiang"></image>
+          <image :src="commentUserPhoto[item.create_user]" mode="" v-if="commentUserPhoto[item.create_user]" class="touxiang"></image>
           <image :src="item.head_img_path" v-if="item.head_img_path" class="touxiang"></image>
-          <uni-icons type="contact" size="60" color="#dd524d" v-if="!item.head_img_path && !commentUserPhoto"></uni-icons>
+          <uni-icons type="contact" size="60" color="#dd524d" v-if="!item.head_img_path && !commentUserPhoto[item.create_user]"></uni-icons>
           <div class="text_box">
             <div class="user_info_box">
               <div class="user_info">{{ item.create_user }}</div>
@@ -74,7 +73,7 @@
             <div class="content_box" v-html="item.nr" v-if="item.nr"></div>
             <div class="time_date_box">
               <div class="time_date">{{ item.create_time }}</div>
-              <div class="settings_icon" v-if="item.create_user === userInfo.user_no && !commentUserPhoto">
+              <div class="settings_icon" v-if="item.create_user === userInfo.user_no && !commentUserPhoto[item.create_user]">
                 <image src="../../static/img/shanchu.png" style="width: 16px;height: 16px;" @click="deleteItem(item.id)"></image>
               </div>
             </div>
@@ -82,7 +81,7 @@
         </div>
       </div>
     </view>
-    <div class="tool_bar">
+    <div class="tool_bar" v-if="pbox">
       <textarea class="huifu" v-model="remark" placeholder="想对Ta说点什么..." />
       <button type="primary" class="huifu_btn" @click="writeBack">留言</button>
       <!-- <input type="textarea" v-model="remark" class="huifu" placeholder="想对Ta说点什么..." /> -->
@@ -123,13 +122,19 @@ export default {
       remark: '', //回复内容
       replyList: [], //答复列表
       commentUserPhoto: {},
-      commentUserList: []
+      commentUserList: [],
+      pbox: true
     };
   },
   onLoad: function(option) {
     uni.setNavigationBarTitle({
       title: '详情'
     });
+    if (option.pbox) {
+      this.pbox = false;
+    } else {
+      this.pbox = true;
+    }
     if (option.no) {
       if (option.no.includes('LTFT')) {
         this.appName = 'zhdj';
@@ -238,7 +243,7 @@ export default {
       // 查找赞过此贴的人的列表
       let serviceName = 'srvzhsq_forum_praise_select';
       let colName = 'note_no';
-      if (this.app === 'zhdj') {
+      if (this.appName === 'zhdj') {
         serviceName = 'srvzhsq_djlt_ftxx_praise_select';
         colName = 'ftno';
       }
@@ -257,15 +262,15 @@ export default {
           userList = userList.map(users => {
             return users.praise_user;
           });
-          // console.log(userList, userInfo.user_no);
-          // if (userList.indexOf(userInfo.user_no) != -1) {
-          //   console.log(userInfo, userInfo.user_no);
-          //   this.agree_icon = '../../static/img/agreea.png';
-          //   // this.agree_status = true;
-          // } else {
-          //   this.agree_icon = '../../static/img/agreeb.png';
-          //   // this.agree_status = false;
-          // }
+          console.log(userList, userInfo.user_no);
+          if (userList.indexOf(userInfo.user_no) != -1) {
+            console.log(userInfo, userInfo.user_no);
+            this.agree_icon = '../../static/img/agreea.png';
+            this.agree_status = true;
+          } else {
+            this.agree_icon = '../../static/img/agreeb.png';
+            this.agree_status = false;
+          }
         }
       });
     },
@@ -365,6 +370,7 @@ export default {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
           console.log('点赞成功');
+          this.getMainInfo();
           this.getAgreePeopleList(this.note_no);
         }
       });
@@ -372,9 +378,11 @@ export default {
     delAgreePeople() {
       // 在点赞信息表中删除此账号对此贴的点赞信息
       let serviceName = 'srvzhsq_forum_praise_delete';
+    serviceName = 'srvzhsq_forum_praise_praise_num_delete';
       let colName = 'note_no';
-      if ((this.appName = 'zhdj')) {
+      if (this.appName == 'zhdj') {
         serviceName = 'srvzhsq_djlt_ftxx_praise_delete';
+        serviceName = 'srvzhsq_djlt_ftxx_praise_praise_num_delete'
         colName = 'ftno';
       }
       if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
@@ -393,6 +401,7 @@ export default {
         if (res.data.state === 'SUCCESS') {
           // this.getWriteBackList();
           console.log('删除点赞成功');
+          this.getMainInfo();
           this.getAgreePeopleList(this.note_no);
         }
       });
@@ -408,37 +417,49 @@ export default {
       if (item.agreePeople.indexOf(this.userInfo.user_no) != -1) {
         //如果此评论点赞人列表中有当前登录用户,已经点过赞,则此次点赞事件为取消点赞
         num--;
-        this.delDiscussAgreePeople(leave_no);
+        // this.delDiscussAgreePeople(leave_no);
       } else {
-        this.addDiscussAgreePeople(leave_no);
+        // this.addDiscussAgreePeople(leave_no);
         num++;
       }
-      this.updateLeaveMessageInfo(id, num);
+      this.updateLeaveMessageInfo(id, num, item,leave_no);
     },
 
     /**
      * @param  id
      * @param  num
      */
-    updateLeaveMessageInfo(id, num) {
+    updateLeaveMessageInfo(id, num, item,leave_no) {
       // 修改留言信息
       let serviceName = 'srvzhsq_leave_word_update';
+      serviceName = 'srvzhsq_leave_word_praise_num_update'
       if (this.appName === 'zhdj') {
         serviceName = 'srvzhsq_djlt_lyjl_update';
+        serviceName = 'srvzhsq_djlt_lyjl_praise_num_update'
       }
       let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let req = [{ serviceName: serviceName, condition: [{ colName: 'id', ruleType: 'eq', value: id }], data: [{ praise_num: num }] }];
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
-          this.getWriteBackList();
+          if (item.agreePeople.indexOf(this.userInfo.user_no) != -1) {
+            //如果此评论点赞人列表中有当前登录用户,已经点过赞,则此次点赞事件为取消点赞
+            // num--;
+            this.delDiscussAgreePeople(leave_no);
+          } else {
+            this.addDiscussAgreePeople(leave_no);
+            // num++;
+          }
+          // this.getWriteBackList();
         }
       });
     },
     delDiscussAgreePeople(leave_no) {
       // 删除当前登录账号对当前评论的点赞记录
       let serviceName = 'srvzhsq_leaveword_praise_delete';
+   serviceName = 'srvzhsq_leaveword_praise_praise_num_delete';
       if (this.appName === 'zhdj') {
         serviceName = 'srvzhsq_djlt_lyjl_praise_delete';
+        serviceName = 'srvzhsq_djlt_lyjl_praise_praise_num_delete';
       }
       let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let userInfo = uni.getStorageSync('userInfo');
@@ -467,6 +488,7 @@ export default {
       }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
+          this.getWriteBackList();
           console.log('删除成功');
         }
       });
@@ -486,6 +508,7 @@ export default {
       }
       this.$http.post(url, req).then(res => {
         if (res.data.state === 'SUCCESS') {
+          this.getWriteBackList();
           console.log('增加成功');
         }
       });
@@ -493,35 +516,57 @@ export default {
     addMainAgree(item, num, no) {
       // this.getAgreePeopleList(this.note_no)
       // 主贴点赞
-      this.agree_status = !this.agree_status;
-      if (this.agree_status) {
-        this.agree_icon = '../../static/img/agreea.png';
-        num++;
-        this.addAgreePeople();
-      } else {
-        this.agree_icon = '../../static/img/agreeb.png';
-        num--;
-        this.delAgreePeople();
-      }
-      let serviceName = 'srvzhsq_forum_note_update';
-      let colName = 'note_no';
-      if (this.appName === 'zhdj') {
-        serviceName = 'srvzhsq_djlt_ftxx_update';
-        colName = 'ftno';
-      }
-      let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
-      if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
-        colName = 'ssp_no';
-        this.appName  = 'sqfw'
-        serviceName = 'srvzhsq_bmfw_ssp_praise_num_update';
-      }
-      url = this.$api.select + '/' + this.appName + '/update/' + serviceName;
-      let req = [{ serviceName: serviceName, condition: [{ colName: colName, ruleType: 'eq', value: this.note_no }], data: [{ praise_num: num }] }];
-      this.$http.post(url, req).then(res => {
-        if (res.data.state === 'SUCCESS') {
-          this.getMainInfo();
+      if (this.query.proc_status) {
+        if (this.query.proc_status !== '完成') {
+          uni.showToast({
+            title: '当前帖子状态为[' + this.query.proc_status + '], 不可以进行点赞',
+            icon: 'none',
+            duration: 3000
+          });
+          return;
+        } else {
+          this.agree_status = !this.agree_status;
+          if (this.agree_status) {
+            this.agree_icon = '../../static/img/agreea.png';
+            num++;
+            // this.addAgreePeople();
+          } else {
+            this.agree_icon = '../../static/img/agreeb.png';
+            num--;
+            // this.delAgreePeople();
+          }
+          let serviceName = 'srvzhsq_forum_note_update';
+          serviceName = 'srvzhsq_forum_note_praise_num_update'
+          let colName = 'note_no';
+          if (this.appName === 'zhdj') {
+            serviceName = 'srvzhsq_djlt_ftxx_update';
+            serviceName = 'srvzhsq_djlt_ftxx_praise_num_update';
+            colName = 'ftno';
+          }
+          let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
+          if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
+            colName = 'ssp_no';
+            this.appName = 'sqfw';
+            serviceName = 'srvzhsq_bmfw_ssp_praise_num_update';
+          }
+          url = this.$api.select + '/' + this.appName + '/update/' + serviceName;
+          let req = [{ serviceName: serviceName, condition: [{ colName: colName, ruleType: 'eq', value: this.note_no }], data: [{ praise_num: num }] }];
+          this.$http.post(url, req).then(res => {
+            if (res.data.state === 'SUCCESS') {
+              if (this.agree_status) {
+                // this.agree_icon = '../../static/img/agreea.png';
+                // num++;
+                this.addAgreePeople();
+              } else {
+                // this.agree_icon = '../../static/img/agreeb.png';
+                // num--;
+                this.delAgreePeople();
+              }
+              // this.getMainInfo();
+            }
+          });
         }
-      });
+      }
     },
     async getWriteBackList() {
       // 获取留言列表
@@ -571,6 +616,16 @@ export default {
     },
     writeBack() {
       // 留言/评论
+      if (this.query.proc_status) {
+        if (this.query.proc_status !== '完成') {
+          uni.showToast({
+            title: '当前帖子状态为[' + this.query.proc_status + '], 不可以进行评论',
+            icon: 'none',
+            duration: 3000
+          });
+          return;
+        }
+      }
       let str = this.remark;
       str = str.replace(/\s*/g, '');
       if (!str) {

@@ -85,7 +85,6 @@ export default {
                 }
               }
             });
-            // console.log(children,'\n',parents,'a')
             children.map(item1 => {
               children.map(item2 => {
                 if (item1.parent_no === item2.menu_no) {
@@ -100,16 +99,14 @@ export default {
                 }
               });
             });
-            // console.log('data',parents)
             this.menuData = parents;
             this.successNum = false;
           }
-          console.log(this.successNum, '_________菜单___________');
         })
         .catch(error => {
           console.log('error:', error);
           if (error.status == 0) {
-            this.getMenusList();
+            setTimeout(this.getMenusList(),5000)
           }
         });
     },
@@ -119,9 +116,7 @@ export default {
       });
     },
     onPullDownRefresh() {
-      // this.numberlist= this.listhome.length
       let _self = this;
-      // _self.rebuileComponents()
       setTimeout(function() {
         uni.stopPullDownRefresh();
         _self.userInfo = uni.getStorageSync('userInfo');
@@ -130,15 +125,6 @@ export default {
         _self.hotlist('srvzhsq_djhdjl_djhd_select');
       }, 1000);
     },
-    // rebuileComponents() {
-    //       // 销毁子标签
-    //       this.successNum = 3;
-    //       // 重新创建子标签
-    //       this.$nextTick(() => {
-    //         this.successNum = 0;
-    //       });
-    //     },
-
     detaile(item, val) {
       uni.navigateTo({
         url: '../sqfw/sqxq?query=' + encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25')) + '&num=1'
@@ -211,7 +197,6 @@ export default {
       };
       this.$http.post(url, req).then(res => {
         this.xqpage = res.data.data;
-        console.log('..................', res.data.data);
         // this.xqpage=res.data.data
         let path = this.$api.select + '/file/download?filePath=';
         let listr = [];
@@ -234,12 +219,10 @@ export default {
           };
           let phoarr = [];
           this.$http.post(url, req).then(resppo => {
-            // console.error(resppo)
             if (resppo.data && resppo.data.data && resppo.data.data.length > 0) {
               try {
                 this.$set(res.data.data[i], 'slt', path + resppo.data.data[0].fileurl);
               } catch (e) {
-                //TODO handle the exception
                 console.log('err', e);
               }
             }
@@ -249,7 +232,6 @@ export default {
           }
           this.xqpage = res.data.data;
         }
-        // console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiii",this.phoarr)
       });
     },
     async getImagePath(imgId) {
@@ -268,20 +250,12 @@ export default {
         };
         let res = await this.$http.post(url, req);
         if (res.data.data && res.data.data.length > 0) {
-          console.log(res.data.data);
           let path = this.$api.select + '/file/download?filePath=' + res.data.data[0].fileurl;
           return path;
         }
       } else {
         return '';
       }
-      // this.$http.post(url, req).then(res => {
-      // 	if (res.data.data && res.data.data.length > 0) {
-      // 		console.log(res.data.data);
-      // 		this.note_user_info['head_img'] = this.$api.select + '/file/download?filePath=' + res.data.data[0].fileurl;
-      // 		this.userImage = this.$api.select + '/file/download?filePath=' + res.data.data[0].fileurl;
-      // 	}
-      // });
     }
   },
   onLoad() {
@@ -310,7 +284,6 @@ export default {
 .banner {
   height: 10vh;
   width: calc(100% - 60upx);
-  // background: url();
   background-size: cover;
   margin: 0 30upx 10px 30upx;
   border-radius: 5px;

@@ -62,6 +62,14 @@
 				})
 			},
 			callphoto(val){
+        // #ifndef APP-PLUS
+        uni.showToast({
+          title:"非APP端不支持拨打电话",
+          icon:"none"
+        })
+        // window.location.href = url;
+        // #endif
+        // #ifdef APP-PLUS
 				uni.showModal({
 				    title: '提示',
 				    content: '拨打电话?',
@@ -75,6 +83,7 @@
 				        }
 				    }
 				});
+        // #endif
 			}
 		},
 		onLoad(id){

@@ -2,12 +2,10 @@
   <view class="content_wrap">
     <view class="px_list">
       <view class="buttons">
-        <view class="title_right title_btn" @tap="toAdd" v-if="showAddButton || showApplyButton || title === '公租房列表'"><text class="lg  cuIcon-add "></text></view>
+        <view class="title_right title_btn" @tap="toAdd" v-if="showAddButton || showApplyButton"><text class="lg  cuIcon-add "></text></view>
       </view>
       <transition name="slide-fade">
-        <uni-swipe-action v-if="listData.length > 0 && (title == '社区论坛'||
-                title == '数字城管'||
-                title == '党建论坛')" class="cu-list">
+        <uni-swipe-action v-if="listData.length > 0 && (title == '社区论坛' || title == '数字城管' || title == '党建论坛')" class="cu-list">
           <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
             <view class="cont">
               <view class="list_item" @tap="toForumDetail(item)">
@@ -30,9 +28,9 @@
               (title == '党建培训' ||
                 title == '学习心得' ||
                 title === '培训安排' ||
-                title == '我为社区献策' ||
+                title == '我为社区一献策' ||
                 title == '创投项目' ||
-                title == '便民信息'||
+                title == '便民信息' ||
                 title == '公租房列表' ||
                 title === '廉租房列表')
           "
@@ -41,6 +39,7 @@
           <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
             <view class="cont">
               <view class="list_item" @tap="toDetail(item)">
+                <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
                 <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
                 <view class="item_title" v-if="item.title">{{ item.title }}</view>
                 <view class="item_title" v-if="item.xmxx_name">{{ item.xmxx_name }}</view>
@@ -59,7 +58,7 @@
             listData.length > 0 &&
               (title === '社区活动' ||
                 title === '社会组织活动' ||
-                title === '活动记录'  ||
+                title === '活动记录' ||
                 title == '党建活动' ||
                 title == '公示公告' ||
                 title == '活动安排' ||
@@ -85,10 +84,16 @@
         </uni-swipe-action>
 
         <uni-swipe-action v-if="listData.length > 0 && (title == '社会组织' || title == '志愿者组织')" class="cu-list">
-          <uni-swipe-action-item  v-if="item.proc_status == '完成'"  :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
-            <view class="cont" >
-              <view class="list_item" @tap="details(item.proc_status,item.zuzhi_name||
-				item.organize_name,item.zuzhi_address||item.address,item.zuzhi_jj||item.remark)">
+          <uni-swipe-action-item
+            v-if="item.proc_status == '完成'"
+            :options="options"
+            @click="swipeOptionClick($event, item)"
+            @change="swipeChange"
+            v-for="(item, index) in listData"
+            :key="index"
+          >
+            <view class="cont">
+              <view class="list_item" @tap="details(item.proc_status, item.zuzhi_name || item.organize_name, item.zuzhi_address || item.address, item.zuzhi_jj || item.remark)">
                 <view class="item_title" v-if="item.organize_name">{{ item.organize_name }}</view>
                 <view class="item_title" v-if="item.zuzhi_name">{{ item.zuzhi_name }}</view>
               </view>
@@ -101,17 +106,16 @@
       </transition>
       <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click.native="loadData('refresh')"></mix-load-more>
     </view>
-	<view class="kapian" v-if="nodata">
-		<view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无数据</view> 
-	</view>
+    <view class="kapian" v-if="nodata"><view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无数据</view></view>
     <view class="xxx"></view>
-    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区献策' ">待我审核</view>
+    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区一献策' || title === '学习心得'">
+      待我审核
+    </view>
   </view>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-import mixPulldownRefresh from '@/components/mix-pulldown-refresh/mix-pulldown-refresh';
 import mixLoadMore from '@/components/mix-load-more/mix-load-more';
 import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import uniIcons from '@/components/uni-icons/uni-icons.vue';
@@ -119,7 +123,6 @@ import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
 import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue';
 export default {
   components: {
-    mixPulldownRefresh,
     mixLoadMore,
     uniLoadMore,
     uniIcons,
@@ -147,7 +150,7 @@ export default {
         }
       ],
       title: '',
-      loadMoreStatus: 1,
+      loadMoreStatus: 1, // 0加载前，1加载中，2没有更多了
       loadText: '',
       columnData: {},
       showAddButton: false,
@@ -160,7 +163,7 @@ export default {
       nodata: false,
       query: {}, //url携带的参数
       appName: '',
-      showParise:false,//展示点赞界面
+      showParise: false //展示点赞界面
     };
   },
   methods: {
@@ -208,7 +211,7 @@ export default {
       });
     },
     details(statenum, names, dress, session) {
-		console.error("执行存世了")
+      console.error('执行存世了');
       uni.setStorage({
         key: 'zuzhi',
         data: {
@@ -238,21 +241,27 @@ export default {
         });
       } else {
         uni.navigateTo({
-          url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(item))+'&showParise='+this.showParise
+          url: '../detail/detail?query=' + encodeURIComponent(JSON.stringify(item)) + '&showParise=' + this.showParise
         });
       }
     },
     toForumDetail(item) {
       console.log(item.ftno);
-      let no = ''
-      if(item.note_no){no=item.note_no}else if(item.ftno){no = item.ftno}else if(item.ssp_no){no = item.ssp_no}
+      let no = '';
+      if (item.note_no) {
+        no = item.note_no;
+      } else if (item.ftno) {
+        no = item.ftno;
+      } else if (item.ssp_no) {
+        no = item.ssp_no;
+      }
       uni.navigateTo({
         url: '/pages/forum/detail?no=' + no
       });
     },
     detaile(item) {
       uni.navigateTo({
-        url: '../../sqfw/sqxq?query=' + encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))+'&showParise='+this.showParise
+        url: '../../sqfw/sqxq?query=' + encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25')) + '&showParise=' + this.showParise
       });
     },
     deleteItem(item) {
@@ -266,8 +275,8 @@ export default {
               console.log(res);
               if (res.resultCode === 'SUCCESS') {
                 uni.showToast({
-                  title: '正在删除',
-                  icon: 'loading',
+                  title: '删除成功',
+                  icon: 'success',
                   duration: 2000
                 });
                 this.loadData('refresh');
@@ -322,12 +331,17 @@ export default {
         if (type === 'add') {
           this.currentPage += 1;
           this.getListData(this.query).then(data => {
-            console.log(data);
-            if (data && data.length > 0) {
-              this.loadMoreStatus = 0;
-              this.listData = this.listData.concat(data);
-            } else {
+            console.log(data)
+            if (data&&data.length < 10) {
               this.loadMoreStatus = 2;
+            } else if(!data){
+              this.loadMoreStatus = 2;
+            }else{
+              this.loadMoreStatus = 0;
+            }
+            if (data && data.length > 0) {
+              // this.loadMoreStatus = 0;
+              this.listData = this.listData.concat(data);
             }
           });
         } else if (type === 'refresh') {
@@ -335,8 +349,13 @@ export default {
           this.listData = [];
           this.currentPage = 1;
           this.getListData(this.query).then(data => {
-            console.log(data);
-            this.loadMoreStatus = 0;
+            if (data&&data.length < 10) {
+              this.loadMoreStatus = 2;
+            } else if(!data){
+              this.loadMoreStatus = 2;
+            }else{
+              this.loadMoreStatus = 0;
+            }
             if (data && data.length > 0) {
               this.listData = this.listData.concat(data);
             }
@@ -357,16 +376,14 @@ export default {
       // 获取列表数据
       if (query) {
         this.loadMoreStatus = 1;
-        console.log('query:', query);
-	
         this.query = query;
         let serviceName = query.service_name;
         this.serviceNames = query.service_name;
         if (serviceName.includes('add')) {
           serviceName = serviceName.replace('add', 'select');
         }
-        if(serviceName==='srvzhsq_bmfw_ssp_select'){
-          this.showParise = true
+        if (serviceName === 'srvzhsq_bmfw_ssp_select') {
+          this.showParise = true;
         }
         let url = this.$api.select + '/' + query.app_name + '/select/' + serviceName;
         let req = {
@@ -376,14 +393,23 @@ export default {
           page: { pageNo: this.currentPage, rownumber: this.rownumber },
           order: [{ colName: 'create_time', orderType: 'desc' }]
         };
-        if (this.title === '党建论坛' || this.title === '社区论坛'||this.title === '志愿者组织'||this.title === '社会组织') {
+        if (
+          this.title === '党建论坛' ||
+          this.title === '社区论坛' ||
+          this.title === '志愿者组织' ||
+          this.title === '社会组织' ||
+          this.title === '学习心得' ||
+          this.title === '我为社区献一策'
+        ) {
           // 如果是流程列表，过滤掉未完成的
           req.condition = [{ colName: 'proc_status', value: '完成', ruleType: 'eq' }];
         }
-        if(this.title === '党建活动安排'){
-          req['proc_data_type'] = "processed"
+
+        if (this.title === '党建活动安排') {
+          req['proc_data_type'] = 'processed';
         }
         let res = await this.$http.post(url, req);
+
         uni.stopPullDownRefresh();
         if (res.data.data && res.data.data.length > 0) {
           if (res.data.page) {
@@ -391,7 +417,7 @@ export default {
             this.totalListItem = page.total;
           }
           return res.data.data;
-        } else if(res.data.data.length==0&&this.listData.length==0){
+        } else if (res.data.data.length == 0 && this.listData.length == 0) {
           this.nodata = true;
         }
       }
@@ -416,9 +442,9 @@ export default {
       if (options.query || options.data) {
         query = JSON.parse(options.query ? options.query : options.data ? options.data : []);
         console.log('query,qieur.label', query, query.label);
-        let app = ''
-        if(query.menu_url){
-          console.log(query.menu_url)
+        let app = '';
+        if (query.menu_url) {
+          console.log(query.menu_url);
           app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
         }
         query.app_name = app;
@@ -428,14 +454,11 @@ export default {
         this.title = query.label;
         // this.getListData(query);
         // this.loadData('refresh');
+        let type = 'list';
+        if (query.menu_url.includes('proc') || query.menu_no === 'bxzhsq_djlt' || query.menu_no === 'bxsqlt_sqlt' || query.label === '学习心得') {
+          type = 'proclist';
+        }
         this.loadData('refresh');
-        let type = 'list'
-        if(query.menu_url.includes('proc')){
-          type = 'proclist'
-        }
-        if(query.menu_no === 'bxzhsq_djlt'||query.menu_no === 'bxsqlt_sqlt'){
-          type = 'proclist'
-        }
         this.getColumnsData(app, query.service_name, type)
           .then(cols => {
             console.log('cols', cols);
@@ -462,12 +485,12 @@ export default {
               title: this.title ? this.title : '列表'
             });
             console.log('title：', this.title);
-			uni.setStorage({
-				key:"homeMessage",
-					data:{
-					   'homename':this.title
-					},
-			})
+            uni.setStorage({
+              key: 'homeMessage',
+              data: {
+                homename: this.title
+              }
+            });
           });
       }
     },
@@ -503,12 +526,12 @@ export default {
   align-items: center;
   border-bottom: 1px solid #efefef;
 }
-.kapian{
-		box-shadow: 0 0 26px 0 rgba(0,0,0,0.12);
-		margin: 8px 0;
-		padding: 8px;
-		margin: 0 40upx;
-	}
+.kapian {
+  box-shadow: 0 0 26px 0 rgba(0, 0, 0, 0.12);
+  margin: 8px 0;
+  padding: 8px;
+  margin: 0 40upx;
+}
 .shenhe {
   z-index: 99;
   position: fixed;
@@ -706,11 +729,11 @@ export default {
   color: red;
   line-height: 60upx;
 }
-.nodata{
+.nodata {
   width: 100%;
   min-height: 500upx;
   display: flex;
   align-items: center;
   justify-content: center;
-  }
+}
 </style>

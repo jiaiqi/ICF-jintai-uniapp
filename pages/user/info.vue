@@ -53,7 +53,9 @@
       })
     },
     onShow(){
-      this.userInfo = uni.getStorageSync('userInfo')
+      if( uni.getStorageSync('userInfo')){
+        this.userInfo = uni.getStorageSync('userInfo')
+      }
     },
     // updated() {
     //   this.userInfo = uni.getStorageSync('userInfo')

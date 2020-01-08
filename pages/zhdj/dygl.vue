@@ -13,7 +13,7 @@
 					<view class="sueecss" style="">{{item.xm}}</view>
 				</view>
 			</view>
-			<view class="titlesucces" v-if="people">
+			<view class="titlesucces"  v-if="people">
 				暂时没有该党员信息~
 			</view>
 		</view>

@@ -15,7 +15,7 @@
 		name: "mix-load-more",
 		props: {
 			status: {
-				//0加载前，1加载中，2没有更多了
+				//0加载前，1加载中，2没有更多了 
 				type: Number,
 				default: 0
 			},

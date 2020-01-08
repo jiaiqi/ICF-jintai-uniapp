@@ -82,10 +82,13 @@ export default {
 		toNewPage() {
 			let treeData = this.treeData;
 			if (treeData) {
-				const url = treeData.app_dest_page + '?data=';
-        console.log("treeData",treeData)
+				const url = treeData.app_dest_page + '?data='+ encodeURIComponent(JSON.stringify(JSON.parse(JSON.stringify(treeData))));
+        console.log("treeData",url)
+        // uni.redirectTo({
+        //    url: url
+        // });
 				uni.navigateTo({
-					url: url + encodeURIComponent(JSON.stringify(treeData))
+					url: url
 				});
 			} else {
 				uni.showModal({

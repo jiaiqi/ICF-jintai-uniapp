@@ -28,7 +28,7 @@
     <view class="allbox">
       <text v-if="start" style="color: red;">*</text>
       <text class="title">说明：</text>
-      <textarea value="" v-model="explain" class="select" placeholder="" />
+      <textarea  v-model="explain" class="select" placeholder="请输入意见" />
     </view>
     <view class="btn" @click="submit(datalist.servename)">提 交</view>
   </view>

@@ -383,6 +383,7 @@ export default {
               let loginTime = new Date().getTime() + res.data.response[0].response.expire_time * 1000;
               let expire_time = res.data.response[0].response.expire_time;
               uni.setStorageSync('bxAuthTicket', bx_auth_ticket); //保存凭证
+              // console.log('userInfo',userInfo)
               uni.setStorageSync('userInfo', userInfo); //保存用户信息
               uni.setStorageSync('expireTime', res.data.response[0].response.expire_time); //保存时效
               uni.setStorageSync('outTime', loginTime); //保存时效
@@ -439,7 +440,10 @@ export default {
           if (res.data.data) {
             let userInfo = res.data.data[0];
             // Object.assign(this.userInfo, userInfo);
-             uni.setStorageSync('userInfo',userInfo);
+            console.log('userInfo',userInfo)
+            if(userInfo){
+              uni.setStorageSync('userInfo',userInfo);
+            }
           }
         });
         this.$http.post(url, req).then(res => {

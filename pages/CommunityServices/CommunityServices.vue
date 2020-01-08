@@ -5,7 +5,7 @@
     <view class="" v-else>
       <view class="bannerlun"><bw-swiper :swiperList="swperboole ? swiperList : swiperLists" style="width:100%;"></bw-swiper></view>
       <uni-grid :column="4" :showBorder="false">
-        <uni-grid-item v-for="(item, index) in menuData" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="item">
+        <uni-grid-item v-for="(item, index) in menuData" :key="index" :url="item.app_temp_col_map ? item.app_temp_col_map : ''" :treeData="JSON.parse(JSON.stringify(item))">
           <text class="text">{{ item.label }}</text>
         </uni-grid-item>
       </uni-grid>
@@ -55,6 +55,57 @@ export default {
         serviceName: 'srvsys_user_menu_select',
         colNames: ['*'],
         order: [{ colName: 'seq', orderType: 'asc' }],
+        group: [
+          {
+            colName: 'service_name',
+            type: 'by'
+          },
+          {
+            colName: 'menu_url',
+            type: 'by'
+          },
+          // {
+          //   colName: 'icon',
+          //   type: 'by'
+          // },
+          {
+            colName: 'is_leaf',
+            type: 'by'
+          },
+          {
+            colName: 'app_icon',
+            type: 'by'
+          },
+          {
+            colName: 'app_dest_page',
+            type: 'by'
+          },
+          {
+            colName: 'client_type',
+            type: 'by'
+          },
+          {
+            colName: 'seq',
+            type: 'by'
+          }
+          ,
+          {
+            colName: 'parent_no',
+            type: 'by'
+          },
+          {
+            colName: 'app_temp_col_map',
+            type: 'by'
+          },
+          {
+            colName: 'menu_name',
+            type: 'by'
+          },
+          {
+            colName: 'menu_no',
+            type: 'by'
+          }
+        ],
         condition: [{ colName: 'client_type', ruleType: 'like', value: 'APP' }]
       };
       this.$http
@@ -101,7 +152,7 @@ export default {
         .catch(err => {
           console.log('err', err);
           if (err.status == 0) {
-            this.getMenusList();
+            setTimeout(this.getMenusList(), 5000);
           }
         });
     },
@@ -273,12 +324,12 @@ export default {
     this.getBannerList();
     this.hotlist('srvzhsq_activity_record_select');
   },
-  onShow(){
-   this.userInfo = uni.getStorageSync('userInfo');
-   this.getMenusList(this.appserve);
-   this.getBannerList();
-   this.hotlist('srvzhsq_activity_record_select');
-  },
+  onShow() {
+    this.userInfo = uni.getStorageSync('userInfo');
+    this.getMenusList(this.appserve);
+    this.getBannerList();
+    this.hotlist('srvzhsq_activity_record_select');
+  }
 };
 </script>
 

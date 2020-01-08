@@ -45,7 +45,8 @@
 			<text>暂无附件</text>
 		</view>
 
-		<view class="btn" @click="navto(datalist.title)">申请预约</view>
+		<view class="btn" v-if="btnbox" @click="navto(datalist.title)">申请预约</view>
+		<view class="btns" v-else>申请预约</view>
 	</view>
 </template>
 
@@ -54,7 +55,8 @@
 		data() {
 			return {
 				datalist: [],
-				query: {}
+				query: {},
+				btnbox:true
 			};
 		},
 		methods: {
@@ -120,6 +122,11 @@
 			if (options.query) {
 				this.query = JSON.parse(decodeURIComponent(options.query));
 			}
+			
+			let userInfo = uni.getStorageSync('userInfo');
+			if(userInfo.user_no=="niming"){
+				this.btnbox=false
+			}
 		}
 	};
 </script>
@@ -145,6 +152,16 @@
 		margin: 40upx 20upx;
 		height: 80upx;
 		background: red;
+		color: #ffffff;
+		font-weight: 600;
+		text-align: center;
+		line-height: 80upx;
+		border-radius: 20upx;
+	}
+	.btns{
+		margin: 40upx 20upx;
+		height: 80upx;
+		background: #999;
 		color: #ffffff;
 		font-weight: 600;
 		text-align: center;

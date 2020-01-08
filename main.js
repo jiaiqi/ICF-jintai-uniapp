@@ -65,12 +65,10 @@ fly.interceptors.request.use((request) => {
     apiPath = urlstr.slice(len, urlstr.length)
   }
   if(bxAuthTicket){
-    console.log(bxAuthTicket)
     request.headers.bx_auth_ticket = bxAuthTicket
   }
   if (!isExpired) {
     if (bxAuthTicket) {
-      console.log(bxAuthTicket)
       request.headers.bx_auth_ticket = bxAuthTicket
     }
     return request

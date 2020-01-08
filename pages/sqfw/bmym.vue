@@ -31,6 +31,13 @@
         <view class="picker">{{ pinckindex != -1 ? activityNameArr[pinckindex] : '请选择' }}</view>
       </picker>
     </view>
+    <view class="content-box">
+      <view class="content-width">
+        <text class="texts" style="color: red;">*</text>
+        <text class="texts">报名时间：</text>
+      </view>
+      <input type="text" v-model="nowTime" disabled/>
+    </view>
     <!--  <view class="content-box">
       <view class="content-width">
         <text class="texts" style="color: red;">*</text>
@@ -54,16 +61,17 @@ export default {
       valueadmin: 'admin', //用户编号
       baominvalue: '', //用户报名
       pinck: '', //活动编号,
+      registe_date:'',//报名时间
       pinckindex: -1, //编号下标
       idArr: [],
-      activityNameArr:[],
+      activityNameArr: [],
       activityArray: [], // 多选列表
       phone: '', //手机号,
-      active_no: ''
+      active_no: '',
+      nowTime:new Date()
     };
   },
-  components: {
-  },
+  components: {},
   methods: {
     MultiColumnChange(e) {
       console.log(e);
@@ -71,9 +79,12 @@ export default {
     getdata() {
       let url = this.$api.select + '/sqfw/select/srvzhsq_activity_arrange_select';
       let req = {};
+      let date = new Date()
+     date = this.formatTime(date,'yyyy-MM-dd HH:mm:ss')
+     this.nowTime = date
       req.serviceName = 'srvzhsq_activity_arrange_select';
       req.colNames = ['*'];
-      req.condition = [];
+      req.condition = [{ colName: 'proc_status', ruleType: 'eq', value: '完成' }, { colName: 'activity_limitdate', ruleType: 'gt', value: date }];
       req.queryMethod = 'select';
       req.distinct = false;
 
@@ -81,16 +92,16 @@ export default {
         let list = res.data.data;
         let idArr = [];
         let datast = [];
-        let activityNameArr = []
+        let activityNameArr = [];
         for (let i in list) {
           idArr.push(list[i].activity_no);
-          activityNameArr.push(list[i].activity_title)
+          activityNameArr.push(list[i].activity_title);
           datast.push(list[i].activity_title + '/' + list[i].activity_no);
         }
         let a = '[' + JSON.stringify(datast) + ']';
         let b = JSON.parse(a);
         this.activityArray = b[0];
-        this.activityNameArr = activityNameArr
+        this.activityNameArr = activityNameArr;
         this.idArr = idArr;
       });
     },
