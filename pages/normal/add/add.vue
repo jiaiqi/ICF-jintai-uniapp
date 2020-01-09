@@ -13,9 +13,7 @@
         </view>
       </view>
     </view>
-	<view class="shenhe" v-if="menuAudio>0&&spServename!==''" @click="audist(spServename)">
-		待我审核
-	</view>
+    <view class="shenhe" v-if="menuAudio > 0 && spServename !== ''" @click="audist(spServename)">待我审核</view>
   </view>
 </template>
 
@@ -37,6 +35,7 @@ export default {
           srv_cols: []
         }
       },
+      formList: [],
       queryString: {},
       showButton: false,
       showChild: false,
@@ -45,23 +44,22 @@ export default {
       houseInfo: {},
       appName: 'zhdj',
       // foreignKey: this.$route.query.foreignKey,
-	  spServename:'',
-	  menuAudio:0
+      spServename: '',
+      menuAudio: 0
     };
   },
   mixins: [Emitter],
   onLoad: function(option) {
-	 
     let query = '';
     if (option.query) {
       query = JSON.parse(option.query);
-	  if(query.label=="加入社会组织"){
-		  this.spServename='srvzhsq_organizie_member_select'
-		   this.getMenu(this.spServename)
-	  }else if(query.label=="加入志愿者"){
-		   this.spServename='srvzhsq_zyz_member_select'
-		    this.getMenu(this.spServename)
-	  }
+      if (query.label == '加入社会组织') {
+        this.spServename = 'srvzhsq_organizie_member_select';
+        this.getMenu(this.spServename);
+      } else if (query.label == '加入志愿者') {
+        this.spServename = 'srvzhsq_zyz_member_select';
+        this.getMenu(this.spServename);
+      }
       console.log('query', query);
       // this.query.serviceName = query.cols.serviceName
       this.queryString = query;
@@ -84,35 +82,34 @@ export default {
     this.$on('form-loaded', this.isFormLoaded);
   },
   methods: {
-	  getMenu(serve){
-	  	console.error(serve)
-	  	let url =this.$api.select + "/sqfw/select/"+serve
-	  	let req = {};
-	  	req.serviceName =serve;
-	  	req.colNames = ['*'];
-	  	req.condition = [];
-	  	req.order = [];
-	  	req.proc_data_type="wait"
-	  	req['page'] = {
-	  		pageNo: 1,
-	  		rownumber: 10
-	  	};
-	  	this.$http.post(url, req).then(res => {
-	  		console.log(res)
-	  			this.menuAudio=res.data.data.length
-	  	})
-	  },
+    getMenu(serve) {
+      let url = this.$api.select + '/sqfw/select/' + serve;
+      let req = {};
+      req.serviceName = serve;
+      req.colNames = ['*'];
+      req.condition = [];
+      req.order = [];
+      req.proc_data_type = 'wait';
+      req['page'] = {
+        pageNo: 1,
+        rownumber: 10
+      };
+      this.$http.post(url, req).then(res => {
+        console.log(res);
+        this.menuAudio = res.data.data.length;
+      });
+    },
     isFormLoaded(e) {
       console.log(e);
       setTimeout(() => {
         this.showButton = e;
       }, 3000);
     },
-	audist(val){
-		uni.navigateTo({
-			url:'../../audit/auditList?serve='+val
-		})
-	},
+    audist(val) {
+      uni.navigateTo({
+        url: '../../audit/auditList?serve=' + val
+      });
+    },
     async getCols(query) {
       let self = this;
       if (query.serviceName === 'srvzhsq_forum_opinion_add') {
@@ -130,6 +127,9 @@ export default {
             if (res.data.data) {
               let cols = res.data.data.srv_cols;
               self.query.cols = res.data.data;
+              let colsList = self.query.cols.srv_cols;
+              colsList = colsList.filter(item => item.in_add == 1 && item.updatable != 0);
+              this.formList = colsList;
               self.pageBtns = res.data.data.formButton;
               // self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
               self.query.serviceName = query.serviceName;
@@ -148,6 +148,9 @@ export default {
         const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
         self.query.cols = await self.getColumnsData(app, query.service_name);
         console.log(self.query.cols);
+        let colsList = self.query.cols.srv_cols;
+        colsList = colsList.filter(item => item.in_add == 1 && item.updatable != 0);
+        this.formList = colsList;
         self.query.serviceName = query.serviceName;
         self.pageBtns = self.query.cols.formButton;
         // self.pageBtns = self.pageBtns.filter(item => {
@@ -178,8 +181,36 @@ export default {
     submitForm() {
       let self = this;
       this.broadcast('iFormItem', 'on-submit');
+      let formList = this.formList;
+      formList = formList.filter(item => item.validators && item.validators.includes('required'));
       let a = this.$refs.iForms.returnFields();
-      console.log('a', a);
+      // try{
+      //   formList.forEach(item => {
+      //     if (a.data.filter(itemb => item.columns === itemb.columns).length == 0) {
+      //       uni.showToast({
+      //         icon: 'none',
+      //         title: item.label + '不能为空！',
+      //         duration: 3000
+      //       });
+      //       throw new Error(item.label + '不能为空！')
+      //     }
+      //   });
+      // }catch(e){
+      //   //TODO handle the exception
+      // }
+      let required = 0
+     for(let i=0;i<formList.length;i++){
+       let item = formList[i]
+       if (a.data.filter(itemb => item.columns === itemb.columns).length == 0) {
+         uni.showToast({
+           icon: 'none',
+           title: item.label + '不能为空！',
+           duration: 3000
+         });
+         required++
+       }
+     }
+     if(required){return}
       if (!a.valid) {
         uni.showToast({
           icon: 'none',
@@ -191,44 +222,25 @@ export default {
           title: '没有需要提交的信息'
         });
       } else {
-        uni.showModal({
-          title: '确认操作',
-          content: '是否确认提交',
-          success: function(res) {
-            if (res.confirm) {
-              console.log('------------------点击了提交按钮-------------------');
-              self.submitData(a.data);
-              // self.submint(a.data)
-              // .then(response => {
-              //   if (response.data.resultMessage === '开启成功' || response.data.resultMessage === '操作成功') {
-              //     uni.showModal({
-              //       title: '提示',
-              //       content: response.data.resultMessage + ',点击跳转到列表页',
-              //       showCancel: false,
-              //       success: res => {
-              //         if (res.confirm) {
-              //           uni.navigateBack({
-              //             delta: 1,
-              //             animationType: 'pop-out',
-              //             animationDuration: 200
-              //           });
-              //         }
-              //       }
-              //     });
-              //   }
-              // });
-            } else if (res.cancel) {
-              console.log('用户点击取消');
+          uni.showModal({
+            title: '确认操作',
+            content: '是否确认提交',
+            success: function(res) {
+              if (res.confirm) {
+                console.log('------------------点击了提交按钮-------------------');
+                self.submitData(a.data);
+              } else if (res.cancel) {
+                console.log('用户点击取消');
+              }
             }
-          }
-        });
+          });
       }
     },
     submitData(nData) {
+      let self = this;
       console.log(nData);
       this.showChild = false;
       let userInfo = uni.getStorageSync('userInfo');
-      let self = this;
       let params = [
         {
           serviceName: 'srvzhsq_pxap_add',
@@ -253,23 +265,28 @@ export default {
         if (this.queryString.menu_url.indexOf('listproc') != -1) {
           operate = 'apply';
         }
-        if (this.queryString.service_name==='srvzhsq_djhdjl_djhd_add'||this.queryString.service_name === 'srvzhsq_tenement_gzfxx_add' || this.queryString.service_name === 'srvzhsq_tenement_lzfxx_select'||this.queryString.service_name==='srvzhsq_bmfw_xmxx_add') {
+        if (
+          this.queryString.service_name === 'srvzhsq_djhdjl_djhd_add' ||
+          this.queryString.service_name === 'srvzhsq_tenement_gzfxx_add' ||
+          this.queryString.service_name === 'srvzhsq_tenement_lzfxx_select' ||
+          this.queryString.service_name === 'srvzhsq_bmfw_xmxx_add'
+        ) {
           operate = 'apply';
         }
         let url = self.$api.add + '/' + this.appName + '/' + operate + '/' + this.queryString.service_name;
         params[0].serviceName = this.queryString.service_name;
-        // let formData = self.$refs.iForms.returnFields();
-        // let formData = { data: self.$refs.iForms.fields };
+        // let formData = this.$refs.iForms.returnFields();
+        let formData = { data: nData };
 
-        // if (formData.data) {
-        //   formData = formData.data[0];
-        // }
+        if (formData.data) {
+          formData = formData.data[0];
+        }
         // if (formData.service_name) {
         //   params[0].serviceName = formData.service_name;
         //   url = self.$api.add + '/' + self.appName + '/' + operate + '/' + formData.service_name;
         // }
         self.$http.post(url, params).then(response => {
-          if (response&&response.data.resultCode==="SUCCESS") {
+          if (response && response.data.resultCode === 'SUCCESS') {
             this.showChild = true;
             uni.showModal({
               title: '提示',
@@ -285,7 +302,7 @@ export default {
                 }
               }
             });
-          }else{
+          } else {
             this.showChild = true;
             uni.showModal({
               title: '提示',
@@ -304,7 +321,8 @@ export default {
           a[item.columns] = item.column;
         });
         params[0].data.push(a);
-        self.$http.post(self.$api.startProc, params).then(response => {if (response&&response.data.resultCode==="SUCCESS") {
+        self.$http.post(self.$api.startProc, params).then(response => {
+          if (response && response.data.resultCode === 'SUCCESS') {
             this.showChild = true;
             uni.showModal({
               title: '提示',
@@ -320,7 +338,7 @@ export default {
                 }
               }
             });
-          }else{
+          } else {
             this.showChild = true;
             uni.showModal({
               title: '提示',
@@ -339,7 +357,8 @@ export default {
           a[item.columns] = item.column;
         });
         params[0].data.push(a);
-        self.$http.post(self.$api.startProc, params).then(response => {if (response&&response.data.resultCode==="SUCCESS") {
+        self.$http.post(self.$api.startProc, params).then(response => {
+          if (response && response.data.resultCode === 'SUCCESS') {
             this.showChild = true;
             uni.showModal({
               title: '提示',
@@ -355,7 +374,7 @@ export default {
                 }
               }
             });
-          }else{
+          } else {
             this.showChild = true;
             uni.showModal({
               title: '提示',
@@ -410,37 +429,6 @@ export default {
         if (response) {
           this.showChild = true;
         }
-        // if (response.data.state === 'SUCCESS' && params[0].serviceName == 'srvzhsq_pxap_add') {
-        //   uni.showModal({
-        //     title: '提示',
-        //     content: response.data.resultMessage,
-        //     showCancel: false,
-        //     success: res => {
-        //       if (res.confirm) {
-        //         uni.navigateBack({
-        //           delta: 2,
-        //           animationType: 'pop-out',
-        //           animationDuration: 200
-        //         });
-        //       }
-        //     }
-        //   });
-        // } else {
-        // uni.showModal({
-        //   title: '提示',
-        //   content: response.data.resultMessage,
-        //   showCancel: false,
-        //   success: res => {
-        //     if (res.confirm) {
-        //       uni.navigateBack({
-        //         delta: 2,
-        //         animationType: 'pop-out',
-        //         animationDuration: 200
-        //       });
-        //     }
-        //   }
-        // });
-        // }
         return response;
       } else if (this.query.type === 'apply') {
         let datas = [];
@@ -456,27 +444,6 @@ export default {
         if (response) {
           this.showChild = true;
         }
-        // if (response.data.state === 'SUCCESS') {
-        //   uni.showToast({
-        //     title: response.data.resultMessage
-        //   });
-        //   uni.navigateBack({
-        //     delta: 2,
-        //     animationType: 'pop-out',
-        //     animationDuration: 200
-        //   });
-        // } else {
-        //   uni.showToast({
-        //     title: response.data.resultMessage
-        //   });
-        //   if (response.data.resultMessage === '开启成功' || response.data.resultMessage === '操作成功') {
-        //     uni.navigateBack({
-        //       delta: 2,
-        //       animationType: 'pop-out',
-        //       animationDuration: 200
-        //     });
-        //   }
-        // }
         return response;
       } else {
         let datas = [];
@@ -493,27 +460,6 @@ export default {
           this.showChild = true;
         }
         console.log('response.data.state', response.data.state);
-        // if (response.data.state === 'SUCCESS') {
-        //   uni.showToast({
-        //     title: response.data.resultMessage
-        //   });
-        //   uni.navigateBack({
-        //     delta: 2,
-        //     animationType: 'pop-out',
-        //     animationDuration: 200
-        //   });
-        // } else {
-        //   uni.showToast({
-        //     title: response.data.resultMessage
-        //   });
-        //   if (response.data.resultMessage === '开启成功' || response.data.resultMessage === '操作成功') {
-        //     uni.navigateBack({
-        //       delta: 2,
-        //       animationType: 'pop-out',
-        //       animationDuration: 200
-        //     });
-        //   }
-        // }
         return response;
       }
     },
@@ -530,7 +476,7 @@ export default {
 .addView {
   width: 100%;
   position: relative;
-  margin-bottom: 50px;;
+  margin-bottom: 50px;
 }
 .scroll {
   height: 500px;
@@ -546,7 +492,7 @@ export default {
   }
 }
 .shenhe {
-width: 100%;
+  width: 100%;
   z-index: 99;
   position: fixed;
   bottom: 0;

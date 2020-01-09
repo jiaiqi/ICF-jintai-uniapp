@@ -5,8 +5,8 @@
 let remoteAddress = {
   ssourl: 'https://www.100xsys.cn', // 微信登陆sso 端口
   ssoAddress: 'https://sso.100xsys.cn',
-  serviceAddress: 'http://39.98.203.134:8081',
-  // serviceAddress: 'http://113.200.255.90:8101', //金台外网
+  // serviceAddress: 'http://39.98.203.134:8081',
+  serviceAddress: 'http://113.200.255.90:8101', //金台外网
   srvType: "ms", //"mono" 传统单体 || "ms" 微服务
   assetsUrl: 'http://139.129.128.155'
 }

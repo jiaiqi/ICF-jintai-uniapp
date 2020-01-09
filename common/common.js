@@ -1,87 +1,89 @@
 export default {
-  install (Vue, options) {
-	Vue.prototype.formatTime = function(time, format){
-	    var t = new Date(time);
-	    var tf = function(i){return (i < 10 ? '0' : '') + i};
-	    return format.replace(/yyyy|MM|dd|HH|mm|ss/g,function(a){
-	        switch(a){
-	            case 'yyyy':
-	                return tf(t.getFullYear());
-	                break;
-	            case 'MM':
-	                return tf(t.getMonth() + 1);
-	                break;
-	            case 'mm':
-	                return tf(t.getMinutes());
-	                break;
-	            case 'dd':
-	                return tf(t.getDate());
-	                break;
-	            case 'HH':
-	                return tf(t.getHours());
-	                break;
-	            case 'ss':
-	                return tf(t.getSeconds());
-	                break;
-	        }
-	    })
-	}
-    Vue.prototype.pageTitle = '加载中…'   // 可以自定义变量
-	
-	Vue.prototype.goWxLink = function(url,type){ // 微信路由
-		// navigateTo | redirectTo | reLaunch | switchTab | navigateBack
-			console.log("url",url)
-			switch (type){
-				case "navigateTo":
-					uni.navigateTo({
-						url:url
-					})
-					break;
-				case "redirectTo":
-					uni.redirectTo({
-						url:url
-					})
-					break;
-				case "reLaunch":
-					uni.reLaunch({
-						url:url
-					})
-					break;
-				case "switchTab":
-					uni.switchTab({
-						url:url
-					})
-					break;
-				case "navigateBack":
-					uni.navigateBack({
-						url:url
-					})
-					break;
-				default:
-				  return null
-					break;
-			}
-	},
-    Vue.prototype.selectRequestObjs = function () { // req构造
-      let selectRequestObj = {}
-      let condition = {}
-      let order = {}
-      selectRequestObj['serviceName'] = ''
-      selectRequestObj['colNames'] = ['*']
-      selectRequestObj['condition'] = []
-      condition['colName'] = ''
-      condition['ruleType'] = ''
-      condition['value'] = ''
-      selectRequestObj.condition.push(condition)
-      selectRequestObj['order'] = []
-      order['colName'] = ''
-      order['orderType'] = ''
-      selectRequestObj.order.push(order)
-      return selectRequestObj
+  install(Vue, options) {
+    Vue.prototype.formatTime = function(time, format) {
+      var t = new Date(time);
+      var tf = function(i) {
+        return (i < 10 ? '0' : '') + i
+      };
+      return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a) {
+        switch (a) {
+          case 'yyyy':
+            return tf(t.getFullYear());
+            break;
+          case 'MM':
+            return tf(t.getMonth() + 1);
+            break;
+          case 'mm':
+            return tf(t.getMinutes());
+            break;
+          case 'dd':
+            return tf(t.getDate());
+            break;
+          case 'HH':
+            return tf(t.getHours());
+            break;
+          case 'ss':
+            return tf(t.getSeconds());
+            break;
+        }
+      })
     }
-    Vue.prototype.getKeyOrValue = function (obj, ke, val, name, icon) { // 给自定义方法起个名
+    Vue.prototype.pageTitle = '加载中…' // 可以自定义变量
+
+    Vue.prototype.goWxLink = function(url, type) { // 微信路由
+        // navigateTo | redirectTo | reLaunch | switchTab | navigateBack
+        console.log("url", url)
+        switch (type) {
+          case "navigateTo":
+            uni.navigateTo({
+              url: url
+            })
+            break;
+          case "redirectTo":
+            uni.redirectTo({
+              url: url
+            })
+            break;
+          case "reLaunch":
+            uni.reLaunch({
+              url: url
+            })
+            break;
+          case "switchTab":
+            uni.switchTab({
+              url: url
+            })
+            break;
+          case "navigateBack":
+            uni.navigateBack({
+              url: url
+            })
+            break;
+          default:
+            return null
+            break;
+        }
+      },
+      Vue.prototype.selectRequestObjs = function() { // req构造
+        let selectRequestObj = {}
+        let condition = {}
+        let order = {}
+        selectRequestObj['serviceName'] = ''
+        selectRequestObj['colNames'] = ['*']
+        selectRequestObj['condition'] = []
+        condition['colName'] = ''
+        condition['ruleType'] = ''
+        condition['value'] = ''
+        selectRequestObj.condition.push(condition)
+        selectRequestObj['order'] = []
+        order['colName'] = ''
+        order['orderType'] = ''
+        selectRequestObj.order.push(order)
+        return selectRequestObj
+      }
+    Vue.prototype.getKeyOrValue = function(obj, ke, val, name, icon) { // 给自定义方法起个名
       let Obj = obj
-      let item = Obj.map(function (item) {
+      let item = Obj.map(function(item) {
         let a = {}
         a['key'] = item[ke]
         a['value'] = item[val]
@@ -96,16 +98,16 @@ export default {
       })
       return item
     }
-    Vue.prototype.menuSpliceArr = function (arr, num) { // 根据组件定义菜单分页封装
+    Vue.prototype.menuSpliceArr = function(arr, num) { // 根据组件定义菜单分页封装
       let len = arr.length
       let se = 0
       let newArr = []
       let c = Math.ceil(len / num)
-      this.spli = function (r, n) {
+      this.spli = function(r, n) {
         let a = r.slice(n * num, n * num + num)
         return a
       }
-      this.newA = function (arr, num) {
+      this.newA = function(arr, num) {
         if (se < c) {
           let l = this.spli(arr, se)
           newArr.push(l)
@@ -118,18 +120,23 @@ export default {
       this.newA(arr, num)
       return newArr
     }
-    Vue.prototype.isWeixinCient = function () { // 获取sso授权状态
+    Vue.prototype.isWeixinCient = function() { // 获取sso授权状态
       // 判断是否当前环境是微信
       let ua = navigator.userAgent.toLowerCase()
       let isWeixin = ua.indexOf('micromessenger') !== -1
-      if (isWeixin) { return true } else { return false }
+      if (isWeixin) {
+        return true
+      } else {
+        return false
+      }
     }
-    Vue.prototype.getQueryString = function (name) {
+    Vue.prototype.getQueryString = function(name) {
       var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
       var r = window.location.search.substr(1).match(reg)
-      if (r != null) return unescape(r[2]); return null
+      if (r != null) return unescape(r[2]);
+      return null
     }
-    Vue.prototype.colToLable = async function (serviceName, cols) {
+    Vue.prototype.colToLable = async function(serviceName, cols) {
       // 通知columns查询label(中文名)
       // let self = this
       let req = {
@@ -138,8 +145,7 @@ export default {
           'columns',
           'label'
         ],
-        condition: [
-          {
+        condition: [{
             'colName': 'service_name',
             'value': serviceName,
             'ruleType': 'eq'
@@ -155,37 +161,37 @@ export default {
             'ruleType': 'in'
           }
         ],
-        order: [
-          {
-            'colName': 'create_time',
-            'orderType': 'asc'
-          }
-        ]
+        order: [{
+          'colName': 'create_time',
+          'orderType': 'asc'
+        }]
       }
       let data = await this.$http.post(this.$api.select, req)
       // //console.log(data.data.data)
       return data.data.data
     }
-	Vue.prototype.getProcBasic = async function (proc_instance_no) {
-		let self = this
-		  let req = Vue.prototype.selectRequestObjs()
-		  req.serviceName = 'srvprocess_basic_cfg_select'
-		  req.colNames = ['*']
-		  req.condition = [{
-		    'colName': 'proc_instance_no',
-		    'ruleType': 'eq',
-		    'value': proc_instance_no
-		  }]
-		  let data = await self.$http.post(self.$api.select,req)
-		  return data
-	},
-    Vue.prototype.getFooterBtns = function (e) {
-      // type : "duplicate" | edit | delete | detail
-      let btns = e
-      let footerBtns = btns.filter((item) => item.permission === true && (item.button_type === 'edit' || item.button_type === 'delete' || item.button_type === 'deletedraft' || item.button_type === 'closeproc' || item.button_type === 'deleteproc' || item.button_type === 'startproc' || item.button_type === 'customize'))
-      return footerBtns
-    }
-    Vue.prototype.selectOne = async function (srv, cond,reqs) { // 查询
+    Vue.prototype.getProcBasic = async function(proc_instance_no) {
+        let self = this
+        let req = Vue.prototype.selectRequestObjs()
+        req.serviceName = 'srvprocess_basic_cfg_select'
+        req.colNames = ['*']
+        req.condition = [{
+          'colName': 'proc_instance_no',
+          'ruleType': 'eq',
+          'value': proc_instance_no
+        }]
+        let data = await self.$http.post(self.$api.select, req)
+        return data
+      },
+      Vue.prototype.getFooterBtns = function(e) {
+        // type : "duplicate" | edit | delete | detail
+        let btns = e
+        let footerBtns = btns.filter((item) => item.permission === true && (item.button_type === 'edit' || item.button_type ===
+          'delete' || item.button_type === 'deletedraft' || item.button_type === 'closeproc' || item.button_type ===
+          'deleteproc' || item.button_type === 'startproc' || item.button_type === 'customize'))
+        return footerBtns
+      }
+    Vue.prototype.selectOne = async function(srv, cond, reqs) { // 查询
       let self = this
       let req = {}
       req.serviceName = srv
@@ -193,32 +199,30 @@ export default {
       req.condition = []
       req.condition = cond
       // req.condition[1] = JSON.parse(JSON.stringify(condObj))
-      req.order = [
-        {
-          'colName': 'id',
-          'orderType': 'desc'
+      req.order = [{
+        'colName': 'id',
+        'orderType': 'desc'
+      }]
+      if (reqs) {
+        req = reqs
+
+        const response = await self.$http.post(self.$api.select, req)
+        if (response.data.data) {
+          return response.data
+        } else {
+          return '查询失败'
         }
-      ]
-	  if(reqs){
-		  req=reqs
-		  
-		  const response = await self.$http.post(self.$api.select, req)
-		  if (response.data.data) {
-		    return response.data
-		  } else {
-		    return '查询失败'
-		  }
-	  }else{
-		  
-		  const response = await self.$http.post(self.$api.select, req)
-		  if (response.data.data) {
-		    return response.data.data
-		  } else {
-		    return '查询失败'
-		  }
-	  }
+      } else {
+
+        const response = await self.$http.post(self.$api.select, req)
+        if (response.data.data) {
+          return response.data.data
+        } else {
+          return '查询失败'
+        }
+      }
     }
-    Vue.prototype.getImageUrl = async function (fileNo) {
+    Vue.prototype.getImageUrl = async function(fileNo) {
       let self = this
       let req = {}
       req.serviceName = 'srvsys_file_select'
@@ -243,7 +247,7 @@ export default {
         return '查询失败'
       }
     }
-    Vue.prototype.getDispExps = function (item, data) {  // 表达式校验
+    Vue.prototype.getDispExps = function(item, data) { // 表达式校验
       let result = true
       try {
         let dispExps = item.disp_exps
@@ -256,7 +260,7 @@ export default {
       }
       return result
     }
-    Vue.prototype.selectUserMenu = async function (cond) { // 查询菜单
+    Vue.prototype.selectUserMenu = async function(cond) { // 查询菜单
       let self = this
 
       let req = {}
@@ -275,9 +279,9 @@ export default {
         return '查询失败'
       }
     }
-    Vue.prototype.deepClone = function (obj) {
+    Vue.prototype.deepClone = function(obj) {
       // 深拷贝
-      function isObject (o) {
+      function isObject(o) {
         return (typeof o === 'object' || typeof o === 'function') && o !== null
       }
 
@@ -286,14 +290,15 @@ export default {
       }
 
       let isArray = Array.isArray(obj)
-      let newObj = isArray ? [...obj] : { ...obj }
+      let newObj = isArray ? [...obj] : { ...obj
+      }
       Reflect.ownKeys(newObj).forEach(key => {
         newObj[key] = isObject(obj[key]) ? Vue.prototype.deepClone(obj[key]) : obj[key]
       })
 
       return newObj
     }
-    Vue.prototype.deleteRow = async function (srv, cond) { // 删除数据
+    Vue.prototype.deleteRow = async function(srv, cond) { // 删除数据
       let self = this
       let reqs = []
       let req = {}
@@ -308,15 +313,17 @@ export default {
         return '删除失败'
       }
     }
-    Vue.prototype.getGridButton = function (datas, srv, conds) {
+    Vue.prototype.getGridButton = function(datas, srv, conds) {
       let self = this
       let d = datas
       let headbut = {
         buttons: [],
         menus: [],
         showMenus: false
-      }  // but type :  select | refresh | add | batch_delete | import | export | shrink | apply
-      let newData = d.filter(item => item.permission === true && (item.button_type === 'select' || item.button_type === 'add' || item.button_type === 'apply' || item.button_type === 'import' || item.button_type === 'export') && item.client_type.indexOf('APP') !== -1)
+      } // but type :  select | refresh | add | batch_delete | import | export | shrink | apply
+      let newData = d.filter(item => item.permission === true && (item.button_type === 'select' || item.button_type ===
+          'add' || item.button_type === 'apply' || item.button_type === 'import' || item.button_type === 'export') &&
+        item.client_type.indexOf('APP') !== -1)
       let butType = newData.map(item => item.button_type)
       // //console.log(headbut, newData, butType)
       // let buts = ['select', 'add']
@@ -325,7 +332,11 @@ export default {
           let b = {
             type: 'search',
             url: '',
-            cfg: {serviceName: self.listCfgs.serviceName, colType: 'select', pageType: 'selectlist'}
+            cfg: {
+              serviceName: self.listCfgs.serviceName,
+              colType: 'select',
+              pageType: 'selectlist'
+            }
           }
           headbut.buttons.push(b)
         } else if (newData[i].button_type === 'add') {
@@ -384,22 +395,23 @@ export default {
       })
       //console.log(headbut, newData, butType)
     }
-    Vue.prototype.toListDataCtr = async function (data, type, listType) { // 参数data:原始data; type:配置json
+    Vue.prototype.toListDataCtr = async function(data, type, listType) { // 参数data:原始data; type:配置json
       // 根据表格配置 构造data
       // let self = this
-      let typeCfg = type.type   // 表格类型
-      let resData = data  // 原始data
+      let typeCfg = type.type // 表格类型
+      let resData = data // 原始data
       let cols = []
       let labs = []
       let req = []
-      function colNamesArr (e) {
+
+      function colNamesArr(e) {
         // cols
         let list = e
         let arr = []
         for (let i in list) {
           if (list[i] !== '') {
             arr.push(list[i]) // 属性
-              // arr.push(obj[i]); //值
+            // arr.push(obj[i]); //值
           }
         }
         return arr.join()
@@ -413,7 +425,8 @@ export default {
         // let Obj = resData.map(function (item, index) {
         let Obj = resData.map((item, index) => {
           let columnsCfg = type.content
-          function colToL (c) {
+
+          function colToL(c) {
             // cols
             let L = labs
             let arr = L.filter(item => item.columns === c)
@@ -430,14 +443,11 @@ export default {
               label: item[columnsCfg.Comp_title_label]
             },
             content: [
-              [
-                {
-                  label: colToL(columnsCfg.Comp_subtitle),
-                  value: item[columnsCfg.Comp_subtitle]
-                }
-              ],
-              [
-                {
+              [{
+                label: colToL(columnsCfg.Comp_subtitle),
+                value: item[columnsCfg.Comp_subtitle]
+              }],
+              [{
                   label: colToL(columnsCfg.Comp_content_row_left),
                   value: item[columnsCfg.Comp_content_row_left]
                 },
@@ -466,25 +476,29 @@ export default {
       // //console.log(resData, req)
       return req
     }
-	Vue.prototype.isType = async function (e,reg,msg){
-		  let regFun = new RegExp(reg)
-		  if (reg.test(e)) {
-		    let obj = {valid: regFun.test(e)}
-		    return obj
-		  } else {
-		    let msgs = msg
-		    msgs = (msgs === '' ? cols.label + '信息有误' : msgs)
-		    let obj = {valid: regFun.test(e), msg: msgs}
-		    return obj
-		  }
-		}
-    Vue.prototype.getColValidators = async function (cols) { // 根据columns data 返回字段校验信息
+    Vue.prototype.isType = async function(e, reg, msg) {
+      let regFun = new RegExp(reg)
+      if (reg.test(e)) {
+        let obj = {
+          valid: regFun.test(e)
+        }
+        return obj
+      } else {
+        let msgs = msg
+        msgs = (msgs === '' ? cols.label + '信息有误' : msgs)
+        let obj = {
+          valid: regFun.test(e),
+          msg: msgs
+        }
+        return obj
+      }
+    }
+    Vue.prototype.getColValidators = async function(cols) { // 根据columns data 返回字段校验信息
       if (cols) {
         if (cols.validators !== null && cols.validators_message !== null) {
           let str = cols.validators
           let msg = cols.validators_message
-
-          let getStr = function (val, state, end) {
+          let getStr = function(val, state, end) {
             if (val.length > state.length + end.length) {
               let s = val.indexOf(state)
               if (s === -1) {
@@ -506,15 +520,17 @@ export default {
           let reg = /required/gi
           let msgs = getStr(msg, 'ngPattern=', ';')
           msgs = msgs === '' ? cols.label + '信息有误' : msgs
-          Validators['max'] = getStr(str, 'ngMaxlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMaxlength=', ';')) : null
-          Validators['min'] = getStr(str, 'ngMinlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMinlength=', ';')) : null
+          Validators['max'] = getStr(str, 'ngMaxlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMaxlength=',
+            ';')) : null
+          Validators['min'] = getStr(str, 'ngMinlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMinlength=',
+            ';')) : null
           Validators['reg'] = getStr(str, 'ngPattern=', ';')
           Validators['col_type'] = cols.bx_col_type
           Validators['required'] = reg.test(str)
           Validators['msg'] = msgs
-		Validators['initExpr'] = cols.init_expr
-		Validators['placeholder'] = cols.placeholder
-		console.log('common-Validators:',Validators)
+          Validators['initExpr'] = cols.init_expr
+          Validators['placeholder'] = cols.placeholder
+          console.log('common-Validators:', Validators)
           return Validators
         } else {
           let Validators = {}
@@ -526,30 +542,35 @@ export default {
           Validators['col_type'] = cols.bx_col_type
           Validators['required'] = false
           Validators['msg'] = ''
-          Validators['isType'] = function (e) {
+          Validators['isType'] = function(e) {
             let reg = new RegExp()
             if (reg.test(e)) {
-              let obj = {valid: reg.test(e)}
+              let obj = {
+                valid: reg.test(e)
+              }
               return obj
             } else {
               let msgs = ''
               msgs = ''
-              let obj = {valid: reg.test(e), msg: msgs}
+              let obj = {
+                valid: reg.test(e),
+                msg: msgs
+              }
               return obj
             }
           }
-			Validators['initExpr'] = cols.init_expr
-			Validators['placeholder'] = cols.placeholder
+          Validators['initExpr'] = cols.init_expr
+          Validators['placeholder'] = cols.placeholder
           return Validators
         }
       } else {
         return false
       }
     }
-    Vue.prototype.getValidators = function (vds, msg) { // 获取校验信息返回组件data
+    Vue.prototype.getValidators = function(vds, msg) { // 获取校验信息返回组件data
       if (vds !== null && msg !== null) {
         let str = vds
-        let getStr = function (val, state, end) {
+        let getStr = function(val, state, end) {
           if (val.length > state.length + end.length) {
             let s = val.indexOf(state)
             if (s === -1) {
@@ -569,20 +590,27 @@ export default {
         }
         let Validators = {}
         let reg = /required/gi
-        Validators['max'] = getStr(str, 'ngMaxlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMaxlength=', ';')) : null
-        Validators['min'] = getStr(str, 'ngMinlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMinlength=', ';')) : null
+        Validators['max'] = getStr(str, 'ngMaxlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMaxlength=', ';')) :
+          null
+        Validators['min'] = getStr(str, 'ngMinlength=', ';').length > 0 ? parseInt(getStr(str, 'ngMinlength=', ';')) :
+          null
         Validators['reg'] = getStr(str, 'ngPattern=', ';')
         Validators['required'] = reg.test(str)
         Validators['msg'] = getStr(msg, 'ngPattern=', ';')
-        Validators['isType'] = function (e) {
+        Validators['isType'] = function(e) {
           let reg = new RegExp(getStr(str, 'ngPattern=', ';'))
           if (reg.test(e)) {
-            let obj = {valid: reg.test(e)}
+            let obj = {
+              valid: reg.test(e)
+            }
             return obj
           } else {
             let msgs = getStr(msg, 'ngPattern=', ';')
             msgs = msgs === '' ? '信息有误' : msgs
-            let obj = {valid: reg.test(e), msg: msgs}
+            let obj = {
+              valid: reg.test(e),
+              msg: msgs
+            }
             return obj
           }
         }
@@ -591,61 +619,62 @@ export default {
         return false
       }
     }
-		Vue.prototype.getFeilds = async function(v2ColsData,key) {
-			let datas = {}
-			datas["fields"] = []
-			datas["useType"] = []
-			datas["srvType"] = []
-			let cols = v2ColsData.srv_cols
-			if(v2ColsData){
-				datas.useType = v2ColsData.use_type
-				datas.srvType = v2ColsData.srv_type
-			}
-			let pageInCode = datas.srvType === "add" ? "in_add" : datas.srvType === "update" ? "in_update" : datas.srvType === "select" ? "in_detail" : "in_list" 
-			datas.fields = cols.filter(item => item[pageInCode] === 1)
-			let itemList = datas.fields
-			for(let i =0;i<itemList.length;i++){
-				if(itemList[i].bx_col_type === 'fk'){
-				let cond = []
-				let srv = itemList[i].option_list_v2.serviceName
-				let optionV2 = await Vue.prototype.selectOne(srv,cond)
-				let data = []
-				for(let j = 0;j<optionV2.length;j++){
-					let a = {
-						"label":"",
-						"key":""
-					}
-					a.key = optionV2[j][itemList[i].option_list_v2.refed_col]
-					a.label = optionV2[j][itemList[i].option_list_v2.key_disp_col]
-					a.index = j
-					data.push(a)
-				}
-				
-				itemList[i]["_optionData"] = data
-				//console.log("aaaaitemitemitem",itemList[i])
-				itemList[i]["_optionIndex"] = null
+    Vue.prototype.getFeilds = async function(v2ColsData, key) {
+      let datas = {}
+      datas["fields"] = []
+      datas["useType"] = []
+      datas["srvType"] = []
+      let cols = v2ColsData.srv_cols
+      if (v2ColsData) {
+        datas.useType = v2ColsData.use_type
+        datas.srvType = v2ColsData.srv_type
+      }
+      let pageInCode = datas.srvType === "add" ? "in_add" : datas.srvType === "update" ? "in_update" : datas.srvType ===
+        "select" ? "in_detail" : "in_list"
+      datas.fields = cols.filter(item => item[pageInCode] === 1)
+      let itemList = datas.fields
+      for (let i = 0; i < itemList.length; i++) {
+        if (itemList[i].bx_col_type === 'fk') {
+          let cond = []
+          let srv = itemList[i].option_list_v2.serviceName
+          let optionV2 = await Vue.prototype.selectOne(srv, cond)
+          let data = []
+          for (let j = 0; j < optionV2.length; j++) {
+            let a = {
+              "label": "",
+              "key": ""
+            }
+            a.key = optionV2[j][itemList[i].option_list_v2.refed_col]
+            a.label = optionV2[j][itemList[i].option_list_v2.key_disp_col]
+            a.index = j
+            data.push(a)
+          }
 
-				}
-			}
-			
-			for(let q = 0;q<itemList.length;q++){
-				itemList[q]['_formItemValidators']=await Vue.prototype.getColValidators(itemList[q])
-				//console.log("aaaa3",itemList[q])
-			}
-			if(key){
-				let cond = [{
-					colName:key.name,
-					ruleType: 'eq',
-					value:key.value
-				}]
-				Vue.prototype.selectOne(this.srvData.serviceName,[],e)
-			}else{
-				return datas
-			}
-		}
-    Vue.prototype.getColData = async function (srv, srvType, pageType, url) { 
-		// url  请求地址
-		// 表单信息 srvType : add | update | list | detail | select
+          itemList[i]["_optionData"] = data
+          //console.log("aaaaitemitemitem",itemList[i])
+          itemList[i]["_optionIndex"] = null
+
+        }
+      }
+
+      for (let q = 0; q < itemList.length; q++) {
+        itemList[q]['_formItemValidators'] = await Vue.prototype.getColValidators(itemList[q])
+        //console.log("aaaa3",itemList[q])
+      }
+      if (key) {
+        let cond = [{
+          colName: key.name,
+          ruleType: 'eq',
+          value: key.value
+        }]
+        Vue.prototype.selectOne(this.srvData.serviceName, [], e)
+      } else {
+        return datas
+      }
+    }
+    Vue.prototype.getColData = async function(srv, srvType, pageType, url) {
+      // url  请求地址
+      // 表单信息 srvType : add | update | list | detail | select
       // use_type: detail | proclist | list | treelist | detaillist | selectlist | addchildlist | updatechildlist | procdetaillist | add | update
       let self = this
       if (srv && srvType && pageType) {
@@ -656,9 +685,9 @@ export default {
         } else {
           serviceName += srvType
         }
-				// if(srvType === "add" || srvType === "update")
-				// serviceName += 'select'
-				// serviceName += srvType
+        // if(srvType === "add" || srvType === "update")
+        // serviceName += 'select'
+        // serviceName += srvType
         let cols = self.$store.getters.getSrvCol
         let nCols = cols.filter(item => item.service_name === serviceName && item.use_type === pageType)
         //console.log('=====1', nCols)
@@ -697,41 +726,51 @@ export default {
         return false
       }
     }
-	 Vue.prototype.getUserAppMenu = async function () { // 查询app模块
-	    let promise = new Promise((resolve, reject) => {
-	    	let menureq = {"serviceName":"srvauth_user_app_menu_select","colNames":["*"]}
-	    	let s =  this.$http.post(this.$api.getUserAppMenu,menureq).then((res)=>{
-	    		return res
-	    	})
-	    	resolve(s)
-	    })
-	    promise.then((e) => {
-			console.log("获取app菜单状态：",e)
-			if(e.data.state === this.$api.byState){
-				uni.setStorageSync("appMenu",e.data.data)
-				return e.data.data
-			}else{
-				return false
-			}
-	    })
-	 }
-	 Vue.prototype.getMenus = async function (e) { // 查询user菜单
-		let url = this.$api.getMenus + e + "/select/srvsys_user_menu_select"
-	    let promise = new Promise((resolve, reject) => {
-	    	let menureq = {"serviceName":"srvsys_user_menu_select","colNames":["*"],"order":[{"colName":"seq","orderType":"asc"}]}
-	    	let s =  this.$http.post(url,menureq).then((res)=>{
-	    		return res
-	    	})
-	    	resolve(s)
-	    })
-	    promise.then((e) => {
-	 			console.log("获取app菜单状态：",e)
-	 			if(e.data.state === this.$api.byState){
-	 				uni.setStorageSync("userMenus",e.data.data)
-	 			}else{
-	 				return false
-	 			}
-	    })
-	 }
+    Vue.prototype.getUserAppMenu = async function() { // 查询app模块
+      let promise = new Promise((resolve, reject) => {
+        let menureq = {
+          "serviceName": "srvauth_user_app_menu_select",
+          "colNames": ["*"]
+        }
+        let s = this.$http.post(this.$api.getUserAppMenu, menureq).then((res) => {
+          return res
+        })
+        resolve(s)
+      })
+      promise.then((e) => {
+        console.log("获取app菜单状态：", e)
+        if (e.data.state === this.$api.byState) {
+          uni.setStorageSync("appMenu", e.data.data)
+          return e.data.data
+        } else {
+          return false
+        }
+      })
+    }
+    Vue.prototype.getMenus = async function(e) { // 查询user菜单
+      let url = this.$api.getMenus + e + "/select/srvsys_user_menu_select"
+      let promise = new Promise((resolve, reject) => {
+        let menureq = {
+          "serviceName": "srvsys_user_menu_select",
+          "colNames": ["*"],
+          "order": [{
+            "colName": "seq",
+            "orderType": "asc"
+          }]
+        }
+        let s = this.$http.post(url, menureq).then((res) => {
+          return res
+        })
+        resolve(s)
+      })
+      promise.then((e) => {
+        console.log("获取app菜单状态：", e)
+        if (e.data.state === this.$api.byState) {
+          uni.setStorageSync("userMenus", e.data.data)
+        } else {
+          return false
+        }
+      })
+    }
   }
 }

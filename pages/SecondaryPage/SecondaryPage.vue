@@ -19,8 +19,14 @@ export default {
     // 从URL获取菜单数据
     let data = [];
     if (option.data) {
-      data = JSON.parse(decodeURIComponent(option.data));
       console.log(option.data)
+      try{
+        data = JSON.parse(decodeURIComponent(option.data));
+      }catch(e){
+        console.log(e)
+        //TODO handle the exception.
+        
+      }
     } else if (option.query) {
       data = JSON.parse(decodeURIComponent(option.query));
     }else{

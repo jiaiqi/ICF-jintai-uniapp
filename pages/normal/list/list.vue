@@ -108,7 +108,11 @@
     </view>
     <view class="kapian" v-if="nodata"><view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无数据</view></view>
     <view class="xxx"></view>
-    <view class="shenhe activity" @click="topagexq(serviceNames)" v-if="title === '社区论坛' || title === '党建论坛' || title === '我为社区一献策' || title === '学习心得'">
+    <view
+      class="shenhe activity"
+      @click="topagexq(serviceNames)"
+      v-if="(title === '社区论坛' || title === '党建论坛' || title === '我为社区一献策' || title === '学习心得') && menuAudio > 0"
+    >
       待我审核
     </view>
   </view>
@@ -131,6 +135,8 @@ export default {
   },
   data() {
     return {
+      menuAudio: 0,
+      serviceNames: '',
       currentPage: 1, //当前页
       rownumber: 10, //每页条数
       totalListItem: 0, //总条数
@@ -177,6 +183,19 @@ export default {
     swipeChange(open) {
       console.log('是否左滑状态：' + open);
     },
+    getMenu(serve, app) {
+      let url = this.$api.select + '/' + app + '/select/' + serve;
+      let req = {};
+      req.serviceName = serve;
+      req.colNames = ['*'];
+      req.condition = [];
+      req.order = [];
+      req.proc_data_type = 'wait';
+      this.$http.post(url, req).then(res => {
+        this.menuAudio = res.data.data.length;
+      });
+    },
+
     topagexq(val) {
       uni.navigateTo({
         url: '../../audit/auditList?serve=' + val
@@ -193,7 +212,6 @@ export default {
               let query = this.query;
               serviceName = this.query.service_name.replace('select', 'add');
               query.service_name = serviceName;
-              console.log('----------\n', query);
               if (query.menu_no === 'bxsqlt_sqlt' || query.menu_no === 'bxzhsq_djlt') {
                 uni.navigateTo({
                   url: '../../forum/add?query=' + encodeURIComponent(JSON.stringify(query))
@@ -331,12 +349,12 @@ export default {
         if (type === 'add') {
           this.currentPage += 1;
           this.getListData(this.query).then(data => {
-            console.log(data)
-            if (data&&data.length < 10) {
+            console.log(data);
+            if (data && data.length < 10) {
               this.loadMoreStatus = 2;
-            } else if(!data){
+            } else if (!data) {
               this.loadMoreStatus = 2;
-            }else{
+            } else {
               this.loadMoreStatus = 0;
             }
             if (data && data.length > 0) {
@@ -349,11 +367,11 @@ export default {
           this.listData = [];
           this.currentPage = 1;
           this.getListData(this.query).then(data => {
-            if (data&&data.length < 10) {
+            if (data && data.length < 10) {
               this.loadMoreStatus = 2;
-            } else if(!data){
+            } else if (!data) {
               this.loadMoreStatus = 2;
-            }else{
+            } else {
               this.loadMoreStatus = 0;
             }
             if (data && data.length > 0) {
@@ -379,6 +397,11 @@ export default {
         this.query = query;
         let serviceName = query.service_name;
         this.serviceNames = query.service_name;
+        if (serviceName == 'srvzhsq_djlt_ftxx_select') {
+          this.getMenu(serviceName, 'zhdj');
+        } else if (serviceName == 'srvzhsq_forum_note_select'||serviceName==='srvzhsq_forum_note_list_num_select') {
+          this.getMenu(serviceName, 'sqfw');
+        }
         if (serviceName.includes('add')) {
           serviceName = serviceName.replace('add', 'select');
         }
@@ -393,15 +416,17 @@ export default {
           page: { pageNo: this.currentPage, rownumber: this.rownumber },
           order: [{ colName: 'create_time', orderType: 'desc' }]
         };
+        let mod;
         if (
           this.title === '党建论坛' ||
           this.title === '社区论坛' ||
           this.title === '志愿者组织' ||
           this.title === '社会组织' ||
           this.title === '学习心得' ||
-          this.title === '我为社区献一策'||
-          this.title === '党建活动记录'||
-          this.title === '创投项目'
+          this.title === '我为社区献一策' ||
+          this.title === '党建活动记录' ||
+          this.title === '创投项目' ||
+          this.title === '加入志愿者'
         ) {
           // 如果是流程列表，过滤掉未完成的
           req.condition = [{ colName: 'proc_status', value: '完成', ruleType: 'eq' }];
@@ -498,6 +523,10 @@ export default {
     onNavigationBarButtonTap(e) {
       // 监测导航栏点击事件
       console.log(e);
+      uni.pageScrollTo({
+        scrollTop: 0,
+        duration: 300
+      });
     }
   },
   onLoad(options) {

@@ -44,8 +44,6 @@
         v-model="Fileddatas.column"
         @focus="formValidators(Fileddatas.column, Fileddatas._formItemValidators)"
       ></textarea>
-
-      <!-- <edit ref="note" v-on:listenChild="show" class="note" v-if="Fileddatas.col_type === 'Note'"></edit> -->
       <input
         v-if="Fileddatas.col_type === 'int'"
         class="uni-form-item uni-column input"
@@ -229,7 +227,7 @@ export default {
       hotList: ['栏目1','栏目2','栏目3','栏目4'],	//搜索组件初始化推荐列表
       userInfo: uni.getStorageSync('userInfo'),
       index: -1,
-      picker: ['喵喵喵', '汪汪汪', '哼唧哼唧'],
+      picker: ['网络状况较差，请稍后进行选择'],
       originPicker: null,
       imgList: [],
       imgPathList: [],
@@ -625,7 +623,6 @@ export default {
           condition: [{ colName: 'proc_status', ruleType: 'eq', value: '完成' }]
         };
         this.$http.post(url, req).then(res => {
-          console.log('111111111111111111111111111111', res.data.data);
           if (res.data.data) {
             let data = res.data.data;
             let arr = data.map(item => (item.zuzhi_name ? item.zuzhi_name : item.organize_name ? item.organize_name : item.gzf_no ? item.title : item.lzf_no ? item.title : ''));
@@ -736,6 +733,7 @@ export default {
         let msgs = msg;
         msgs = msgs === '' ? '信息有误' : msgs;
         let obj = { valid: regFun.test(e), msg: msgs };
+        console.log(e,obj)
         return obj;
       }
     },
@@ -774,7 +772,7 @@ export default {
       this.handleInput(this.Fileddatas.columns, this.Fileddatas.column, this.Fileddatas._formItemValidators);
     },
     formValidators(vals, regs) {
-      // console.log('reg', vals, regs)
+      console.log('vals:', vals,'reg:', regs)
       let regVal = this.isType(vals, regs.reg, regs.msg);
       console.log(regVal, vals);
       let reg = regs;
@@ -782,23 +780,25 @@ export default {
       let val = vals === undefined ? '' : vals;
       this.formValids.valid = regVal;
       this.formValids.msg = msgs;
+      // this.dispatch('iForm', 'on-form-item-valid', a);
+      if (regs.required && regVal.valid && val.length > 0) {
+        console.log('a',regs,regVal,val)
+        this.formValids = { valid: true };
+        // return this.formValids;
+      } else if (regs.required === false && regVal.valid) {
+        this.formValids = regVal;
+        // return this.formValids;
+      } else {
+        this.formValids = { valid: false, msg: msgs };
+        // return this.formValids;
+      }
       let a = {
         columns: this.Fileddatas.columns,
         currentValue: this.Fileddatas.column,
         formValids: this.formValids
       };
       this.dispatch('iForm', 'on-form-item-valid', a);
-      if (regs.required && regVal.valid && val.length > 0) {
-        this.formValids = { valid: true };
-        return this.formValids;
-      } else if (regs.required === false && regVal.valid) {
-        this.formValids = regVal;
-        console.log('this.formValids', regVal);
-        return this.formValids;
-      } else {
-        this.formValids = { valid: false, msg: msgs };
-        return this.formValids;
-      }
+      return this.formValids;
     },
     addImageMethod() {
       console.log('添加图片');
@@ -877,7 +877,6 @@ export default {
       },
       deep: true // 是否深度监听
     },
-
     fromColData: {
       handler: function(newV, oldV) {
         let self = this;

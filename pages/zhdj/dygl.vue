@@ -73,7 +73,7 @@
 			 	return item
 			 },
 			 getdata(index){
-			 	let url = this.$api.select+'/zhdj/select/srvzhsq_dyxx_select?srvzhsq_dyxx_select'
+			 	let url = this.$api.select+'/zhdj/select/srvzhsq_dyxx_select'
 			 	let req = {};
 			 	req.serviceName = 'srvzhsq_dyxx_select';
 			 	req.colNames = ['*'];

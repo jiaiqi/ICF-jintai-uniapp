@@ -82,8 +82,8 @@ export default {
 		toNewPage() {
 			let treeData = this.treeData;
 			if (treeData) {
-				const url = treeData.app_dest_page + '?data='+ encodeURIComponent(JSON.stringify(JSON.parse(JSON.stringify(treeData))));
-        console.log("treeData",url)
+				const url = treeData.app_dest_page + '?data='+ encodeURIComponent(JSON.stringify(treeData));
+        console.log("treeData",treeData)
         // uni.redirectTo({
         //    url: url
         // });

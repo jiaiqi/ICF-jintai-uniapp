@@ -456,7 +456,7 @@ export default {
     delDiscussAgreePeople(leave_no) {
       // 删除当前登录账号对当前评论的点赞记录
       let serviceName = 'srvzhsq_leaveword_praise_delete';
-   serviceName = 'srvzhsq_leaveword_praise_praise_num_delete';
+   // serviceName = 'srvzhsq_leaveword_praise_praise_num_delete';
       if (this.appName === 'zhdj') {
         serviceName = 'srvzhsq_djlt_lyjl_praise_delete';
         serviceName = 'srvzhsq_djlt_lyjl_praise_praise_num_delete';
