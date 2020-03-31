@@ -20,7 +20,7 @@
       <view class="" v-if="xqpage.length > 0">
         <text class="titleall">热门活动</text>
         <view class="contenthot">
-          <view class="hot" v-for="(item, index) in xqpage" :key="index">
+          <view class="hot" v-for="(item, index) in xqpage" :key="index" v-if="item.proc_status=='完成'">
             <view class="phopos" @tap="detaile(item)" :style="{ backgroundImage: 'url(' + item.slt + ')' }"></view>
             <view class="textline">{{ item.hdbt }}</view>
           </view>
@@ -191,11 +191,13 @@ export default {
       req.condition = [];
       req.order = [];
       // req.proc_data_type="processed"
+	  // req.proc_data_type="wait"
       req['page'] = {
         pageNo: 1,
-        rownumber: 7
+        rownumber: 20
       };
       this.$http.post(url, req).then(res => {
+		  console.log(res)
         this.xqpage = res.data.data;
         // this.xqpage=res.data.data
         let path = this.$api.select + '/file/download?filePath=';
@@ -256,13 +258,20 @@ export default {
       } else {
         return '';
       }
-    }
+    },
+
   },
   onLoad() {
+	  this.getmessages()
     this.userInfo = uni.getStorageSync('userInfo');
     this.getMenusList();
     this.getBannerList();
     this.hotlist('srvzhsq_djhdjl_djhd_select');
+	// uni.setTabBarBadge({
+	//   index: 2,
+	//   text: '100'
+	// })
+	
   },
   onShow() {
     this.userInfo = uni.getStorageSync('userInfo');

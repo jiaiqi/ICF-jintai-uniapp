@@ -1,140 +1,173 @@
 <template>
   <view class="content_wrap">
-    <view class="px_list">
-      <view class="buttons">
+      <view class="px_list">
+        <!--  <view class="buttons">
         <view class="title_right title_btn" @tap="toAdd" v-if="showAddButton || showApplyButton"><text class="lg  cuIcon-add "></text></view>
-      </view>
-      <transition name="slide-fade">
-        <uni-swipe-action v-if="listData.length > 0 && (title == '社区论坛' || title == '数字城管' || title == '党建论坛')" class="cu-list">
-          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
-            <view class="cont">
-              <view class="list_item" @tap="toForumDetail(item)">
-                <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
-                <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
-                <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
-                <view class="item_title" v-if="item.title">{{ item.title }}</view>
+      </view> -->
+        <transition name="slide-fade">
+          <uni-swipe-action v-if="listData.length > 0 && (title == '社区论坛' || title == '数字城管' || title == '党建论坛')" class="cu-list">
+            <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+              <view class="cont">
+                <view class="list_item" @tap="toForumDetail(item)">
+                  <view class="item_title" v-if="item.note_title">{{ item.note_title }}</view>
+                  <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
+                  <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
+                  <view class="item_title" v-if="item.title">{{ item.title }}</view>
+                </view>
+                <view class="data_time">
+                  <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
+                  <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
+                </view>
               </view>
-              <view class="data_time">
-                <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
-                <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
-              </view>
-            </view>
-          </uni-swipe-action-item>
-        </uni-swipe-action>
+            </uni-swipe-action-item>
+          </uni-swipe-action>
 
-        <uni-swipe-action
-          v-if="
-            listData.length > 0 &&
-              (title == '党建培训' ||
-                title == '学习心得' ||
-                title === '培训安排' ||
-                title == '我为社区一献策' ||
-                title == '创投项目' ||
-                title == '便民信息' ||
-                title == '公租房列表' ||
-                title === '廉租房列表')
-          "
-          class="cu-list"
-        >
-          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
-            <view class="cont">
-              <view class="list_item" @tap="toDetail(item)">
-                <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
-                <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
-                <view class="item_title" v-if="item.title">{{ item.title }}</view>
-                <view class="item_title" v-if="item.xmxx_name">{{ item.xmxx_name }}</view>
-                <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
-              </view>
-              <view class="data_time">
-                <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
-                <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
-              </view>
-            </view>
-          </uni-swipe-action-item>
-        </uni-swipe-action>
-
-        <uni-swipe-action
-          v-if="
-            listData.length > 0 &&
-              (title === '社区活动' ||
-                title === '社会组织活动' ||
-                title === '活动记录' ||
-                title == '党建活动' ||
-                title == '公示公告' ||
-                title == '活动安排' ||
-                title == '党建活动记录' ||
-                title == '党建活动安排' ||
-                title == '公告公示')
-          "
-          class="cu-list"
-        >
-          <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
-            <view class="cont">
-              <view class="list_item" @tap="detaile(item)">
-                <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
-                <view class="item_title" v-if="item.hdbt">{{ item.hdbt }}</view>
-                <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
-              </view>
-              <view class="data_time">
-                <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
-                <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
-              </view>
-            </view>
-          </uni-swipe-action-item>
-        </uni-swipe-action>
-
-        <uni-swipe-action v-if="listData.length > 0 && (title == '社会组织' || title == '志愿者组织')" class="cu-list">
-          <uni-swipe-action-item
-            v-if="item.proc_status == '完成'"
-            :options="options"
-            @click="swipeOptionClick($event, item)"
-            @change="swipeChange"
-            v-for="(item, index) in listData"
-            :key="index"
+          <uni-swipe-action
+            v-if="
+              listData.length > 0 &&
+                (title == '党建培训' ||
+                  title == '学习心得' ||
+                  title === '培训安排' ||
+                  title == '我为社区一献策' ||
+                  title == '创投项目' ||
+                  title == '便民信息' ||
+                  title == '公租房列表' ||
+                  title === '廉租房列表'||
+				   title == '我的学习心得')
+            "
+            class="cu-list"
           >
-            <view class="cont">
-              <view class="list_item" @tap="details(item.proc_status, item.zuzhi_name || item.organize_name, item.zuzhi_address || item.address, item.zuzhi_jj || item.remark)">
-                <view class="item_title" v-if="item.organize_name">{{ item.organize_name }}</view>
-                <view class="item_title" v-if="item.zuzhi_name">{{ item.zuzhi_name }}</view>
+            <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+              <view class="cont">
+                <view class="list_item" @tap="toDetail(item)">
+                  <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
+                  <view class="item_title" v-if="item.pxbt">{{ item.pxbt }}</view>
+                  <view class="item_title" v-if="item.title">{{ item.title }}</view>
+                  <view class="item_title" v-if="item.xmxx_name">{{ item.xmxx_name }}</view>
+                  <view class="item_title" v-if="item.opinion_title">{{ item.opinion_title }}</view>
+                </view>
+                <view class="data_time">
+                  <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
+                  <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
+                </view>
               </view>
-              <view class="data_time">
-                <view :class="item.proc_status == '完成' ? 'colortext' : 'colortext-red'">{{ item.proc_status == '完成' ? '已审批' : '未审批' }}</view>
+            </uni-swipe-action-item>
+          </uni-swipe-action>
+
+          <uni-swipe-action
+            v-if="
+              listData.length > 0 &&
+                (title === '社区活动' ||
+                  title === '社会组织活动' ||
+                  title === '活动记录' ||
+                  title == '党建活动' ||
+                  title == '公示公告' ||
+                  title == '活动安排' ||
+                  title == '党建活动记录' ||
+                  title == '党建活动安排' ||
+                  title == '公告公示')
+            "
+            class="cu-list"
+          >
+            <uni-swipe-action-item :options="options" @click="swipeOptionClick($event, item)" @change="swipeChange" v-for="(item, index) in listData" :key="index">
+              <view class="cont">
+                <view class="list_item" @tap="detaile(item)">
+                  <view class="item_title" v-if="item.activity_title">{{ item.activity_title }}</view>
+                  <view class="item_title" v-if="item.hdbt">{{ item.hdbt }}</view>
+                  <view class="item_title" v-if="item.bt">{{ item.bt }}</view>
+                </view>
+                <view class="data_time">
+                  <view class="text-grey text-xs">{{ item.create_time.slice(0, 10) }}</view>
+                  <view class="text-grey text-xs">{{ item.create_time.slice(10) }}</view>
+                </view>
               </view>
-            </view>
-          </uni-swipe-action-item>
-        </uni-swipe-action>
-      </transition>
-      <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click.native="loadData('refresh')"></mix-load-more>
-    </view>
-    <view class="kapian" v-if="nodata"><view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无数据</view></view>
-    <view class="xxx"></view>
-    <view
+            </uni-swipe-action-item>
+          </uni-swipe-action>
+
+          <uni-swipe-action v-if="listData.length > 0 && (title == '社会组织' || title == '志愿者组织')" class="cu-list">
+            <uni-swipe-action-item
+              v-if="item.proc_status == '完成'"
+              :options="options"
+              @click="swipeOptionClick($event, item)"
+              @change="swipeChange"
+              v-for="(item, index) in listData"
+              :key="index"
+            >
+              <view class="cont">
+                <view class="list_item" @tap="details(item.proc_status, item.zuzhi_name || item.organize_name, item.zuzhi_address || item.address, item.zuzhi_jj || item.remark)">
+                  <view class="item_title" v-if="item.organize_name">{{ item.organize_name }}</view>
+                  <view class="item_title" v-if="item.zuzhi_name">{{ item.zuzhi_name }}</view>
+                </view>
+                <view class="data_time">
+                  <view :class="item.proc_status == '完成' ? 'colortext' : 'colortext-red'">{{ item.proc_status == '完成' ? '已审批' : '未审批' }}</view>
+                </view>
+              </view>
+            </uni-swipe-action-item>
+          </uni-swipe-action>
+        </transition>
+        <mix-load-more :status="loadMoreStatus" class="mix-load-more" @click.native="loadData('refresh')"></mix-load-more>
+      </view>
+      <view class="kapian" v-if="nodata"><view class="" style="color: #BEBEBE;text-align: center;line-height: 60px;">暂无数据</view></view>
+      <view class="xxx"></view>
+      <!-- <view
       class="shenhe activity"
       @click="topagexq(serviceNames)"
       v-if="(title === '社区论坛' || title === '党建论坛' || title === '我为社区一献策' || title === '学习心得') && menuAudio > 0"
     >
       待我审核
-    </view>
+    </view> -->
+      <!-- <uni-fab
+      v-if="showFab"
+      ref="fab"
+      :pattern="fabPattern"
+      :content="fabContent"
+      :horizontal="fabHorizontal"
+      :vertical="fabVertical"
+      :direction="fabDdirection"
+      @trigger="trigger"
+    /> -->
+    <!-- <movable-area style="position:absolute;bottom:0; 700upx;height:200upx;margin-right: 50upx;">
+      <movable-view :x="x" :y="y" direction="all" @change="onChange" style="width: 100upx;height: 100upx;"> -->
+        <uni-fab
+          v-if="showFab"
+          ref="fab"
+          :pattern="fabPattern"
+          :content="fabContent"
+          :horizontal="fabHorizontal"
+          :vertical="fabVertical"
+          :direction="fabDdirection"
+          @trigger="trigger"
+        />
+   <!--   </movable-view>
+    </movable-area> -->
   </view>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import uniFab from '@/components/uni-fab/uni-fab.vue';
 import mixLoadMore from '@/components/mix-load-more/mix-load-more';
-import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+// import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import uniIcons from '@/components/uni-icons/uni-icons.vue';
 import uniSwipeAction from '@/components/uni-swipe-action/uni-swipe-action.vue';
 import uniSwipeActionItem from '@/components/uni-swipe-action-item/uni-swipe-action-item.vue';
 export default {
   components: {
     mixLoadMore,
-    uniLoadMore,
+    // uniLoadMore,
     uniIcons,
     uniSwipeAction,
-    uniSwipeActionItem
+    uniSwipeActionItem,
+    uniFab
   },
   data() {
     return {
+      x: 0,
+      y: 0,
+      old: {
+        x: 0,
+        y: 0
+      },
       menuAudio: 0,
       serviceNames: '',
       currentPage: 1, //当前页
@@ -142,18 +175,44 @@ export default {
       totalListItem: 0, //总条数
       options: [
         //左滑选项
-        {
-          text: '取消',
-          style: {
-            backgroundColor: '#007aff'
-          }
-        },
+        // {
+        //   text: '取消',
+        //   style: {
+        //     backgroundColor: '#007aff'
+        //   }
+        // },
         {
           text: '删除',
           style: {
             backgroundColor: '#dd524d'
           }
         }
+      ],
+      showFab: false, //是否显示悬浮按钮
+      fabVertical: 'bottom',
+      fabHorizontal: 'right',
+      fabDdirection: 'horizontal',
+      fabPattern: {
+        color: '#e54d42',
+        backgroundColor: '#fff',
+        selectedColor: '#e54d42',
+        buttonColor: '#e54d42'
+      },
+      fabContent: [
+        {
+          iconPath: '/static/img/add.png',
+          selectedIconPath: '/static/img/add.png',
+          text: '发表',
+          type: 'add',
+          active: false
+        },
+        {
+          iconPath: '/static/img/audit.png',
+          selectedIconPath: '/static/img/audit.png',
+          text: '审核',
+          type: 'audit',
+          active: false
+        },		
       ],
       title: '',
       loadMoreStatus: 1, // 0加载前，1加载中，2没有更多了
@@ -173,17 +232,73 @@ export default {
     };
   },
   methods: {
+    onChange: function(e) {
+      this.old.x = e.detail.x;
+      this.old.y = e.detail.y;
+    },
+    trigger(e) {
+      console.log(e);
+      this.fabContent[e.index].active = !e.item.active;
+      if (e.item.type === 'add') {
+        this.toAdd();
+      } else if (e.item.type === 'audit') {
+        this.topagexq(this.serviceNames);
+      } else if(e.item.type === 'mine') {
+		  this.toMineArticle()
+	  }
+      // uni.showModal({
+      //   title: '提示',
+      //   content: `您${this.fabContent[e.index].active ? '选中了' : '取消了'}${e.item.text}`,
+      //   success: function(res) {
+      //     if (res.confirm) {
+      //       console.log('用户点击确定');
+      //     } else if (res.cancel) {
+      //       console.log('用户点击取消');
+      //     }
+      //   }
+      // });
+    },
+    switchBtn(hor, ver) {
+      if (hor === 0) {
+        this.fabdirection = this.direction === 'horizontal' ? 'vertical' : 'horizontal';
+        // this.directionStr = this.direction === 'horizontal' ? '垂直' : '水平';
+      } else {
+        this.fabHorizontal = hor;
+        this.fabVertical = ver;
+      }
+      this.$forceUpdate();
+    },
     swipeOptionClick(e, item) {
       //点击左滑选项
       console.log('当前点击的是第' + e.index + '个按钮，点击内容是' + e.content.text);
       if (e.content.text === '删除') {
         this.deleteItem(item);
-      }
+      } else if(e.content.text === '修改'){
+		  let initServe = this.serviceNames
+		  let initServeArr = initServe.split('_')
+		  initServeArr[initServeArr.length - 1] = 'update'
+		  let serviceName = initServeArr.join('_')
+		  let params = {
+		    "type": "update",
+		    "condition": [{
+		      "colName": "id",
+		      "ruleType": "in",
+		      "value": item.id
+		    }],
+		    "serviceName": serviceName,
+		    "defaultVal": null,
+		    "app":this.query.app_name
+		  }
+		  uni.navigateTo({
+		    url: "../update/update?params=" + JSON.stringify(params)
+		  })
+	  }
     },
     swipeChange(open) {
       console.log('是否左滑状态：' + open);
     },
     getMenu(serve, app) {
+		let self = this
       let url = this.$api.select + '/' + app + '/select/' + serve;
       let req = {};
       req.serviceName = serve;
@@ -191,43 +306,211 @@ export default {
       req.condition = [];
       req.order = [];
       req.proc_data_type = 'wait';
+	  console.log('getMenu-------------- ')
       this.$http.post(url, req).then(res => {
+		  console.log(res)
         this.menuAudio = res.data.data.length;
-      });
-    },
-
+		debugger
+        // if ((this.title === '社区论坛' || this.title === '党建论坛' || this.title === '我为社区一献策' || this.title === '学习心得') && this.menuAudio > 0) {
+			if((self.title === '社区论坛' || self.title === '党建论坛') && self.menuAudio > 0 ){
+				self.showFab = true;
+				if (self.showAddButton || self.showApplyButton) {
+				  self.fabContent = [
+				    {
+				      iconPath: '/static/img/add.png',
+				      selectedIconPath: '/static/img/add.png',
+				      text: '发表',
+				      type: 'add',
+				      active: false
+				    },
+				    {
+				      iconPath: '/static/img/audit.png',
+				      selectedIconPath: '/static/img/audit.png',
+				      text: '审核',
+				      type: 'audit',
+				      active: false
+				    },
+					 //  {
+						// iconPath: '/static/img/audit.png',
+						// selectedIconPath: '/static/img/audit.png',
+						// text: '我的',
+						// type: 'mine',
+						// active: false
+					 //  }
+				  ];
+				}else {
+				  self.fabContent = [
+				    {
+				      iconPath: '/static/img/audit.png',
+				      selectedIconPath: '/static/img/audit.png',
+				      text: '审核',
+				      type: 'audit',
+				      active: false
+				    }
+				  ];
+				}
+			}else if((self.title === '我为社区一献策' || self.title === '学习心得') && self.menuAudio > 0){
+				self.showFab = true;
+				if (self.showAddButton || self.showApplyButton) {
+				  self.fabContent = [
+				    {
+				      iconPath: '/static/img/add.png',
+				      selectedIconPath: '/static/img/add.png',
+				      text: '发表',
+				      type: 'add',
+				      active: false
+				    },
+				    {
+				      iconPath: '/static/img/audit.png',
+				      selectedIconPath: '/static/img/audit.png',
+				      text: '审核',
+				      type: 'audit',
+				      active: false
+				    }
+				  ];
+				} else {
+				  self.fabContent = [
+				    {
+				      iconPath: '/static/img/audit.png',
+				      selectedIconPath: '/static/img/audit.png',
+				      text: '审核',
+				      type: 'audit',
+				      active: false
+				    }
+				  ];
+				}
+			}else if(self.title === '数字城管'&& self.menuAudio > 0){
+				console.log(self.showAddButton , self.showApplyButton,"************************************************")
+				self.showFab = true;
+					self.fabContent = [
+					{
+					  iconPath: '/static/img/add.png',
+					  selectedIconPath: '/static/img/add.png',
+					  text: '随手拍',
+					  type: 'add',
+					  active: false
+					},
+					{
+					  iconPath: '/static/img/audit.png',
+					  selectedIconPath: '/static/img/audit.png',
+					  text: '审核',
+					  type: 'audit',
+					  active: false
+					}
+					 ];
+					
+					
+			}else if (self.showAddButton || self.showApplyButton) {
+			  self.showFab = true;
+			  self.fabContent = [
+				{
+				  iconPath: '/static/img/add.png',
+				  selectedIconPath: '/static/img/add.png',
+				  text: '发表',
+				  type: 'add',
+				  active: false
+				}
+			  ];
+			}else if(self.title === '数字城管'){
+			 self.showFab = true;
+			self.fabContent = [
+			  {
+			    iconPath: '/static/img/add.png',
+			    selectedIconPath: '/static/img/add.png',
+			    text: '随手拍',
+			    type: 'add',
+			    active: false
+			  }
+			];
+		}else if(self.title === '党建活动记录'){
+			debugger
+				console.log(self.showAddButton , self.showApplyButton,"************************************************")
+				self.showFab = true;
+					self.fabContent = [
+					{
+					  iconPath: '/static/img/add.png',
+					  selectedIconPath: '/static/img/add.png',
+					  text: '发表',
+					  type: 'add',
+					  active: false
+					},
+					{
+					  iconPath: '/static/img/audit.png',
+					  selectedIconPath: '/static/img/audit.png',
+					  text: '审核',
+					  type: 'audit',
+					  active: false
+					},
+				 ];										
+			} else {
+			  self.showFab = false;
+			}
+		  });
+		},
     topagexq(val) {
       uni.navigateTo({
         url: '../../audit/auditList?serve=' + val
       });
     },
     toAdd(e) {
-      uni.showModal({
-        title: '提示',
-        content: this.title === '社区论坛' ? '点击确定跳转到发帖页面' : this.title === '党建论坛' ? '点击确定跳转到发帖页面' : '点击确定跳转到新增页面',
-        success: res => {
-          if (res.confirm) {
-            let serviceName = '';
-            if (this.query.service_name && this.query.service_name.includes('select')) {
-              let query = this.query;
-              serviceName = this.query.service_name.replace('select', 'add');
-              query.service_name = serviceName;
-              if (query.menu_no === 'bxsqlt_sqlt' || query.menu_no === 'bxzhsq_djlt') {
-                uni.navigateTo({
-                  url: '../../forum/add?query=' + encodeURIComponent(JSON.stringify(query))
-                });
-              } else {
-                uni.navigateTo({
-                  url: '../add/add?query=' + encodeURIComponent(JSON.stringify(query))
-                });
-              }
-            }
-          } else if (res.cancel) {
-            return;
-          }
+      let serviceName = '';
+      if (this.query.service_name && this.query.service_name.includes('select')) {
+        let query = this.query;
+        serviceName = this.query.service_name.replace('select', 'add');
+        query.service_name = serviceName;
+        if (query.menu_no === 'bxsqlt_sqlt' || query.menu_no === 'bxzhsq_djlt') {
+          uni.navigateTo({
+            url: '../../forum/add?query=' + encodeURIComponent(JSON.stringify(query))
+          });
+        } else {
+          uni.navigateTo({
+            url: '../add/add?query=' + encodeURIComponent(JSON.stringify(query))
+          });
         }
-      });
+      }
+      // uni.showModal({
+      //   title: '提示',
+      //   content: this.title === '社区论坛' ? '点击确定跳转到发帖页面' : this.title === '党建论坛' ? '点击确定跳转到发帖页面' : '点击确定跳转到新增页面',
+      //   success: res => {
+      //     if (res.confirm) {
+      //       let serviceName = '';
+      //       if (this.query.service_name && this.query.service_name.includes('select')) {
+      //         let query = this.query;
+      //         serviceName = this.query.service_name.replace('select', 'add');
+      //         query.service_name = serviceName;
+      //         if (query.menu_no === 'bxsqlt_sqlt' || query.menu_no === 'bxzhsq_djlt') {
+      //           uni.navigateTo({
+      //             url: '../../forum/add?query=' + encodeURIComponent(JSON.stringify(query))
+      //           });
+      //         } else {
+      //           uni.navigateTo({
+      //             url: '../add/add?query=' + encodeURIComponent(JSON.stringify(query))
+      //           });
+      //         }
+      //       }
+      //     } else if (res.cancel) {
+      //       return;
+      //     }
+      //   }
+      // });
     },
+	/** 查询我发表得帖子*/
+	toMineArticle(){		
+		// let user_no = uni.getStorageSync('userInfo').user_no
+		let query = this.query
+		let serviceName = query.service_name
+		let appName = null
+		if(this.title === '社区论坛'){
+			appName = 'sqfw'
+			
+		}else if(this.title === '党建论坛'){
+			appName = 'zhdj'
+		}
+		uni.navigateTo({
+		  url: '../../forum/mine?serve=' + encodeURIComponent(serviceName) + '&app=' + encodeURIComponent(appName)
+		});	
+			
+	},
     details(statenum, names, dress, session) {
       console.error('执行存世了');
       uni.setStorage({
@@ -397,9 +680,9 @@ export default {
         this.query = query;
         let serviceName = query.service_name;
         this.serviceNames = query.service_name;
-        if (serviceName == 'srvzhsq_djlt_ftxx_select') {
+        if (serviceName == 'srvzhsq_djlt_ftxx_select' || serviceName == 'srvzhsq_djhdjl_djhd_select') {
           this.getMenu(serviceName, 'zhdj');
-        } else if (serviceName == 'srvzhsq_forum_note_select'||serviceName==='srvzhsq_forum_note_list_num_select') {
+        } else if (serviceName == 'srvzhsq_forum_note_select' || serviceName === 'srvzhsq_forum_note_list_num_select'||serviceName ==="srvzhsq_bmfw_ssp_select") {
           this.getMenu(serviceName, 'sqfw');
         }
         if (serviceName.includes('add')) {
@@ -435,6 +718,10 @@ export default {
         if (this.title === '党建活动安排') {
           req['proc_data_type'] = 'processed';
         }
+		// if (this.title === '社区论坛') {
+		// 	let obj = {}
+		//   req['proc_data_type'] = 'processed';
+		// }
         let res = await this.$http.post(url, req);
         uni.stopPullDownRefresh();
         if (res.data.data && res.data.data.length > 0) {
@@ -464,6 +751,7 @@ export default {
       }
     },
     initPages(options) {
+		let self = this
       let query = {};
       if (options.query || options.data) {
         query = JSON.parse(options.query ? options.query : options.data ? options.data : []);
@@ -476,8 +764,19 @@ export default {
         query.app_name = app;
         console.log('app', app, query.menu_url);
         this.query = query;
+		if(query.label=='我的学习心得'){
+			// options
+			let stys = {
+			  text: '修改',
+			  style: {
+			    backgroundColor: '#007aff'
+			  }
+			}
+			this.options.push(stys)
+		}
         this.app = app;
         this.title = query.label;
+		console.log(query.label,'--------------')
         // this.getListData(query);
         // this.loadData('refresh');
         let type = 'list';
@@ -487,21 +786,21 @@ export default {
         this.loadData('refresh');
         this.getColumnsData(app, query.service_name, type)
           .then(cols => {
-            console.log('cols', cols);
-            this.columnData = cols;
+            console.log('cols----------', cols);
+            self.columnData = cols;
             if (cols.gridButton) {
               cols.gridButton.map(btn => {
                 if (btn.permission == true && btn.button_type === 'add') {
-                  this.showAddButton = true;
-                  this.addButtonText = btn.button_name;
+                  self.showAddButton = true;
+                  self.addButtonText = btn.button_name;
                 }
                 if (btn.permission == true && btn.button_type === 'batch_delete') {
-                  this.showDeleteButton = true;
-                  this.deleteButtonText = btn.button_name;
+                  self.showDeleteButton = true;
+                  self.deleteButtonText = btn.button_name;
                 }
                 if (btn.permission == true && btn.button_type === 'apply') {
-                  this.showApplyButton = true;
-                  this.applyButtonText = btn.button_name;
+                  self.showApplyButton = true;
+                  self.applyButtonText = btn.button_name;
                 }
               });
             }
@@ -536,6 +835,10 @@ export default {
 </script>
 
 <style lang="scss">
+  .movable-view{
+    width: 100%;
+    height: 100%;
+  }
 .content_wrap {
   width: 100%;
   height: 100%;

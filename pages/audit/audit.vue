@@ -6,7 +6,7 @@
         {{ datalist.zuzhi_name || datalist.organize_name 
 		|| datalist.activity_title 
 		|| datalist.note_title || datalist.opinion_title 
-		|| datalist.bt||datalist.registe||datalist.member_name}}
+		|| datalist.bt||datalist.registe||datalist.member_name||datalist.title}}
       </text>
     </view>
     <view class="allbox">
@@ -108,6 +108,10 @@ export default {
 	  }else if(val=="srvzhsq_zyz_member_select"){
 			//加入这志愿者	
 			authority="volunteer_org_ process_"
+		}else if(val=="srvzhsq_bmfw_ssp_select"){
+			//随手拍
+			authority="bmfw_ssp_0"
+			num=1
 		}
       let url = this.$api.select + '/'+appsdat+'/process/approval';
       let req = [

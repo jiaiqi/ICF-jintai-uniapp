@@ -4,8 +4,8 @@
 		<phone-directory  v-if="!listBoole"   :phones="phones" @paramClick="paramClick"></phone-directory>
 		
 		<view class="loadinga" v-else>
-			<input disabled="false" class="phone-main-input" type="text" placeholder="请输入要搜索的联系人"/>
-			<view class="titles">党组织通讯录</view>
+			<input disabled="false" class="phone-main-input" type="text" placeholder="请输入要搜索的社区"/>
+			<view class="titles"></view>
 				<view class="" style="color: #BEBEBE;text-align: center;margin-top:8px">
 					<image style="height: 25px;width: 25px;" src="../../static/img/loading.gif" mode=""></image>
 					<view class="">	数据加载中</view>
@@ -24,7 +24,7 @@
 		data() {
 			return {
 				phones:{
-					"党组织通讯录": []
+					"社区通讯录": []
 				},
 				listBoole:true
 			
@@ -48,9 +48,9 @@
 				console.log(e)
 			},
 			getdata(){
-				let url = this.$api.select+'/zhdj/select/srvzhsq_dzzjg_select?srvzhsq_dzzjg_select'
+				let url = this.$api.select+'/sqfw/select/srvzhsq_information_select?srvzhsq_information_select'
 					let req = {};
-					req.serviceName = "srvzhsq_dzzjg_select";
+					req.serviceName = "srvzhsq_information_select";
 					req.colNames = ["*"];
 					req.condition = [];
 					req.order=[]
@@ -60,10 +60,10 @@
 						let listserve = (res.data.data)
 						var arrList=[]
 						for( var i=0; i<listserve.length ; i++){
-							arrList.push({"id":listserve[i].id,"spell":listserve[i].create_user,"name":listserve[i].zjmc,"phoneNumber":listserve[i].zjdh})
+							arrList.push({"id":listserve[i].id,"spell":listserve[i].create_user,"name":listserve[i].sqname,"phoneNumber":listserve[i].sqphone})
 						}
 						
-						this.phones.党组织通讯录= this.sortByKey(arrList,"id")
+						this.phones.社区通讯录= this.sortByKey(arrList,"id")
 					})
 				},
 				sortByKey(array,key){

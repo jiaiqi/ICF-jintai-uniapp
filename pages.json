@@ -87,13 +87,19 @@
           "bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消)
         }
       }
-    }, {
+    }, { 
       "path": "pages/message/message",
       "style": {
-        "navigationBarTitleText": "消息"
+        "navigationBarTitleText": "消息",
+		"enablePullDownRefresh": true
       }
     },
-
+	{ 
+      "path": "pages/message/listxq",
+      "style": {
+		"enablePullDownRefresh": true
+      }
+    },
     {
       "path": "pages/zhdj/gggs",
       "style": {
@@ -233,6 +239,13 @@
       }
 
     },
+	{
+	  "path": "pages/shzz/zzbg",
+	  "style": {
+	    "navigationBarTitleText": "组织变更"
+	  }
+	
+	},
 
     {
       "path": "pages/phones/phones",
@@ -258,6 +271,18 @@
         "navigationBarTitleText": "新增"
       }
     },
+	{
+	  "path": "pages/normal/update/update",
+	  "style": {
+	    "navigationBarTitleText": "编辑"
+	  }
+	},
+	{
+	  "path": "pages/normal/update/updateEditor",
+	  "style": {
+	    "navigationBarTitleText": "富文本编辑"
+	  }
+	},
     {
       "path": "pages/bmfw/selectInfo/selectInfo",
       "style": {
@@ -276,7 +301,7 @@
     }, {
       "path": "pages/forum/forum",
       "style": {
-        "navigationBarTitleText": "社区论坛",
+        "navigationBarTitleText": "社区论坛",		
         "app-plus": {
           "animationType": "fade-in",
           "animationDuration": 300
@@ -289,6 +314,17 @@
       "path": "pages/forum/add",
       "style": {
         "navigationBarTitleText": "发帖",
+        "app-plus": {
+          "animationType": "fade-in",
+          "animationDuration": 300
+        }
+      }
+    }, {
+      "path": "pages/forum/mine",
+      "style": {
+        "navigationBarTitleText": "我的发帖",
+		"enablePullDownRefresh": true,
+		"onReachBottomDistance": 20,
         "app-plus": {
           "animationType": "fade-in",
           "animationDuration": 300
@@ -405,7 +441,7 @@
       },
       {
         "pagePath": "pages/CommunityServices/CommunityServices",
-        "text": "社区服务",
+        "text": "服务",
         "iconPath": "static/img/home.png",
         "selectedIconPath": "static/img/home_active.png"
       },

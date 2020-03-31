@@ -15,7 +15,7 @@
       <view class="" v-if="xqpage.length > 0">
         <text class="titleall">热门活动</text>
         <view class="contenthot">
-          <view class="hot" v-for="(item, index) in xqpage" :key="index">
+          <view class="hot" v-for="(item, index) in xqpage" v-if="item.proc_status=='完成'" :key="index">
             <view class="phopos" @tap="detaile(item)" :style="{ backgroundImage: 'url(' + item.activity_img + ')' }"></view>
             <view class="textline">{{ item.activity_title }}</view>
           </view>
@@ -119,6 +119,9 @@ export default {
               menu.children = [];
               menu.label = menu.menu_name;
               menu.value = menu.menu_no;
+              if(menu.menu_no==="my_new_info"){
+                menu.menu_url = '/vpages/index.html#/list/srvzhsq_xxtz_select?menuapp=sqfw'
+              }
               if (menu.client_type && menu.client_type.includes('APP')) {
                 if (menu.parent_no) {
                   children.push(menu);
@@ -239,7 +242,7 @@ export default {
       // req.proc_data_type="processed"
       req['page'] = {
         pageNo: 1,
-        rownumber: 7
+        rownumber: 10
       };
       this.$http
         .post(url, req)

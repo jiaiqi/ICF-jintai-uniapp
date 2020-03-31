@@ -6,7 +6,7 @@
 			class="search-input" 
 			type="text" 
 			focus  
-			placeholder="请输入要搜索的联系人"
+			placeholder="请输入要搜索的社区"
 			/>
 		</view>
 		<view class="search-main" v-if="keyword">

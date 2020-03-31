@@ -9,7 +9,6 @@
 		</view>
 	</view>
 </template>
-
 <script>
 </script>
 
@@ -28,5 +27,6 @@
 	}
 	.label{
 		width: 25%;
+		
 	}
 </style>

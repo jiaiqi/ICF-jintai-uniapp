@@ -5,10 +5,11 @@
 let remoteAddress = {
   ssourl: 'https://www.100xsys.cn', // 微信登陆sso 端口
   ssoAddress: 'https://sso.100xsys.cn',
+  serviceAddress: 'http://192.168.0.195:8101',
   // serviceAddress: 'http://39.98.203.134:8081',
-  serviceAddress: 'http://113.200.255.90:8101', //金台外网
+  // serviceAddress: 'http://113.200.255.90:8090', //金台外网
   srvType: "ms", //"mono" 传统单体 || "ms" 微服务
-  assetsUrl: 'http://139.129.128.155'
+  // assetsUrl: 'http://139.129.128.155'
 }
 
 let ENV = {
@@ -20,6 +21,7 @@ let ENV = {
   bindLogin: 'bind_login', // 授权成功,请登录绑定账号
   authorizedLoginSuccess: 'authorized_login_success', // 授权成功,可以直接请求业务数据
   ssoAuthor: remoteAddress.ssoAddress + '/wx/authorize', // sso授权地址
+  srvHost: remoteAddress.serviceAddress,
   // ssoAuthorurl: remoteAddress.ssoAddress + '/wx/authorizeurl', // sso授权地址
   savewxuser: remoteAddress.ssoAddress + '/wx/savewxuser', // sso保存微信用户
   untied: remoteAddress.ssoAddress + '/wx/untied', // 微信解绑 http://Ip:port/wx/untied
@@ -47,7 +49,7 @@ let ENV = {
   // add: remoteAddress.serviceAddress + '/bxsys/operate', // 新增
   add: remoteAddress.serviceAddress, // 新增
 
-  update: remoteAddress.serviceAddress + '/bxsys/operate', // 修改
+  update: remoteAddress.serviceAddress, // 修改
   delete: remoteAddress.serviceAddress + '/bxsys/operate', // 删除
   saveDraft: remoteAddress.serviceAddress + '/bxsys/saveDraft', // 保存草稿
   getLoginTicket: remoteAddress.ssoAddress + '/wx/getLoginTicket', // 获取登录sso凭证

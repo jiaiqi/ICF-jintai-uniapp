@@ -1,5 +1,5 @@
 <template>
-  <view class="detail_wrap">
+  <view class="detail_wrap" v-if="detail">
     <view v-if="detail.xmxx_name">
       <!-- 创投项目 -->
       <view class="title">{{ detail.xmxx_name }}</view>
@@ -35,7 +35,7 @@
         <!-- <view class="content" v-html="detail.sxmxx_js" v-if="detail.sxmxx_js"></view> -->
       </view>
     </view>
-    <view class="content-wrap">
+    <view v-else class="content-wrap">
       <!-- 数字城管 -->
 
       <view class="title" v-if="detail.title">{{ detail.title }}</view>

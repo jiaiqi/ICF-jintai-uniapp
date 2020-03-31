@@ -12,7 +12,7 @@
 						<view class="nametitle" style="">
 						{{item.zuzhi_name||item.organize_name
 						||item.activity_title||item.note_title||
-						item.opinion_title||item.bt||item.registe||item.member_name}}</view>
+						item.opinion_title||item.bt||item.registe||item.member_name||item.title}}</view>
 						<text>状态:{{item.proc_status}}</text>
 					</view>
 					<view class="but"  @click="audio(item)">
@@ -176,6 +176,10 @@
 				}else if(this.servenameat=="srvzhsq_activity_registe_select"){
 					uni.navigateTo({
 						url: '../sqfw/bmym?no=' +encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))
+					});
+				}else if(this.servenameat=='srvzhsq_bmfw_ssp_select'){
+					uni.navigateTo({
+						url: '../shzz/zzbg?item='+encodeURIComponent(JSON.stringify(item).replace(/%/g, '%25'))+"&type=xq"
 					});
 				}
 			}

@@ -1,0 +1,205 @@
+
+* {
+    box-sizing:border-box
+}
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, menu, nav, section, time, mark, audio, video, details, summary {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+html,body {
+    height:100%;
+    margin: 0;
+    padding: 0;
+}
+a {
+    color:#4d4d4d;
+    border:none;
+    text-decoration:none;
+}
+
+
+.m-preview-layer {
+    position: fixed;
+    z-index: 2999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.m-preview {
+    position: absolute;
+    z-index: 3000;
+    width: 400px;
+    height: 600px;
+}
+@media screen and (max-height: 740px) {
+    .m-preview-close {
+    position: fixed;
+    z-index: 3000;
+    right: 50%;
+    top: 10px;
+    margin-right: -312px;
+}
+}
+.m-preview-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 30px;
+    color: #fff;
+    font-weight: 100;
+    text-align: center;
+    background-color: #2f2f2f;
+    border-radius: 100%;
+    font-family: SimSun;
+    overflow: hidden;
+}
+.m-preview-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 352px;
+    height: 736px;
+}
+.m-preview-main .bg {
+    position: absolute;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: url(m_preview.png) no-repeat;
+    background-size: 100%;
+}
+.m-preview-main .in {
+    position: absolute;
+    z-index: 3005;
+    left: 16px;
+    top: 85px;
+    width: 320px;
+    height: 566px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+/*内容区域*/
+.page {
+    position: relative;
+    z-index: 1;
+    width:100%;
+    height:100%;
+    overflow-y: auto;
+    background-color: #fff;
+}
+.page-container {
+    padding: 22px 18px;
+    color: #222;
+    overflow-y: auto;
+}
+.header {
+    margin-bottom: 30px;
+}
+.header .title {
+    line-height: 30px;
+    font-size: 22px;
+    color: #333333;
+    font-weight: bold;
+    word-break: break-all;
+}
+.header .desc {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    line-height: 18px;
+    margin-top: 18px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+.header .logo {
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+}
+.header .author {
+    display: block;
+    margin-left: 3px;
+    color: #7F7F7F;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.header .date {
+    position: relative;
+    margin-left: 18px;
+    color: #B2B2B2;
+    font-size: 13px;
+}
+.header .date:before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 1px;
+    height: 12px;
+    background: #D8D8D8;
+}
+.article img {
+    display:block;
+    clear: both;
+    max-width: 100%;
+    margin: 0 auto;
+}
+.article h2 {
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    word-break: break-all;
+}
+.article h3 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    line-height: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    word-break: break-all;
+}
+.article > p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    line-height: 28px;
+    font-size: 16px;
+    text-align: justify;
+    word-break: break-all;
+}
+.article >p.imagenote {
+    padding-bottom:6px;
+    font-size:14px;
+    height:22px;
+    line-height:22px;
+    color:#8a939e;
+    text-align:center
+}
+
+.article a {
+    color: #4065A0;
+}
+.img-mod {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+}

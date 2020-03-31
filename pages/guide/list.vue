@@ -14,7 +14,7 @@
                 </view>
             </swiper-item>
         </swiper>
-        <view class="swiper-to-home" @click="launchApp"><text class="swiper-to-home-text">跳过</text></view>
+        <view class="swiper-to-home" @click="launchApp"><text class="swiper-to-home-text">跳过{{indexdata}}</text></view>
     </view>
 </template>
 
@@ -35,6 +35,7 @@ export default {
                     src: '../../static/img/guide03.jpg'
                 }
             ],
+			indexdata:8,
             autoPlay: false,
             currIndex: 0,
             screenWidth: SystemInfo.screenWidth
@@ -65,7 +66,18 @@ export default {
                 }
             });
         }
-    }
+    },
+	onLoad() {
+		let that = this
+	var time =setInterval(()=>{
+			that.indexdata--
+			console.log(that.indexdata)
+		},1000)
+		setTimeout(()=>{
+			that.launchApp()
+			clearInterval(time);
+		},8000)
+	}
 };
 </script>
 <style scoped>

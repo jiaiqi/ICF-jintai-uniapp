@@ -2,7 +2,7 @@
 	<view class="phone-main" style="width: 100vw;" :style="{height: winHeight + 'px'}">
 		<view class="phone-main-search">
 			<navigator :url="'phone-search?phones=' + phonesEscape" hover-class="none">
-				<input disabled="false" class="phone-main-input" type="text" placeholder="请输入要搜索的联系人"/>
+				<input disabled="false" class="phone-main-input" type="text" placeholder="请输入要搜索的社区"/>
 			</navigator>
 		</view>
 		<view class="phoneDirectory">

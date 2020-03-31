@@ -257,6 +257,11 @@ export default {
         if (this.foreignKey.length > 0) {
           a[this.foreignKey[0].colName] = this.foreignKey[0].value;
         }
+		if(this.queryString.label === '志愿者信息变更'){
+			a['user_no'] = userInfo.user_no
+		}else if(this.queryString.label === '数字城管'){
+			a['action_user'] = userInfo.user_no
+		}
         params[0].data.push(a);
         let operate = 'operate';
         if (this.queryString.label === '党建活动记录') {
@@ -269,7 +274,8 @@ export default {
           this.queryString.service_name === 'srvzhsq_djhdjl_djhd_add' ||
           this.queryString.service_name === 'srvzhsq_tenement_gzfxx_add' ||
           this.queryString.service_name === 'srvzhsq_tenement_lzfxx_select' ||
-          this.queryString.service_name === 'srvzhsq_bmfw_xmxx_add'
+          this.queryString.service_name === 'srvzhsq_bmfw_xmxx_add'||
+		    this.queryString.service_name ==='srvzhsq_bmfw_ssp_add'
         ) {
           operate = 'apply';
         }
@@ -410,6 +416,9 @@ export default {
         if (this.queryString.label === '党建活动记录') {
           operate = 'apply';
         }
+		if (this.queryString.label === '数字城管') {
+		  operate = 'apply';
+		}
         if (this.queryString.menu_url.indexOf('listproc') != -1) {
           operate = 'apply';
         }
