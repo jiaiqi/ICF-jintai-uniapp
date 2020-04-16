@@ -9,11 +9,15 @@
             <cmd-avatar :src="userInfo.head_img_path?userInfo.head_img_path:''"></cmd-avatar>
           </cmd-cel-item>
           <cmd-cel-item title="ID" :addon="userInfo&&userInfo.user_no?userInfo.user_no:''" arrow></cmd-cel-item>
-          <cmd-cel-item title="邮箱" :addon="userInfo&&userInfo.email?userInfo.email:' - '" arrow></cmd-cel-item>
+		 <cmd-cel-item title="积分" :addon="integras=='null'?'0':integras" ></cmd-cel-item>
+		 <cmd-cel-item title="我的审核" @click="audit" arrow></cmd-cel-item>
+		  <cmd-cel-item title="签到" @click="signIn()" arrow></cmd-cel-item>
           <cmd-cel-item title="姓名" :addon="userInfo&&userInfo.real_name?userInfo.real_name:' - '" arrow></cmd-cel-item>
           <cmd-cel-item title="联系方式" :addon="userInfo&&userInfo.mobile?userInfo.mobile:' - '" arrow></cmd-cel-item>
           <cmd-cel-item title="证件号码" :addon="userInfo&&userInfo.id_card?userInfo.id_card:' '" arrow></cmd-cel-item>
-          <cmd-cel-item title="我的地址" addon="---" arrow></cmd-cel-item>
+          <!-- <cmd-cel-item title="推送测试" @click="tuis()" arrow></cmd-cel-item> -->
+		   <!-- <cmd-cel-item title="定时后台推送" @click="tuis2()" arrow></cmd-cel-item> -->
+		    <!-- <cmd-cel-item title="推送" @click="tuis3()" arrow></cmd-cel-item> -->
           <cmd-cel-item title="修改资料" @click="fnClick('modifyInfo')" arrow></cmd-cel-item>
           <cmd-cel-item title="修改密码" @click="fnClick('modify')" arrow></cmd-cel-item>
           <button class="btn-logout" @click="logout">退出登录</button>
@@ -42,11 +46,13 @@
 
     data() {
       return {
-        userInfo:{}
+        userInfo:{},
+		integras:'0'
       };
     },
 
     mounted() {
+		this.integra()
       this.userInfo = uni.getStorageSync('userInfo')
       uni.setNavigationBarTitle({
         title:"个人信息"
@@ -61,6 +67,65 @@
     //   this.userInfo = uni.getStorageSync('userInfo')
     // },
     methods:{
+		tuis(){
+			var info = plus.push.getClientInfo();
+			console.log( JSON.stringify( info ) );
+			 /* 5+  push 消息推送*/  
+			plus.push.createMessage("这是方法的消息测试");
+			plus.push.addEventListener("click", function(msg) {  
+				console.log("click:"+JSON.stringify(msg));  
+				console.log(msg.payload);  
+				console.log(JSON.stringify(msg));  
+			}, false);  
+		},
+		tuis2(){
+			var info = plus.push.getClientInfo();
+			console.log( JSON.stringify( info ) );
+			 /* 5+  push 消息推送*/  
+			 
+			 setTimeout(()=>{
+				 plus.push.createMessage("这是延时后台消息测试");
+			 },6000)
+			plus.push.addEventListener("click", function(msg) {  
+				console.log("click:"+JSON.stringify(msg));  
+				console.log(msg.payload);  
+				console.log(JSON.stringify(msg));  
+			}, false);  
+		},
+		tuis3(){
+			var info = plus.push.getClientInfo();
+			console.log( JSON.stringify( info ) );
+			 /* 5+  push 消息推送*/  
+			     
+			 plus.push.createMessage("测试消息", {cover:false,when:new Date()});
+			
+		},
+		 integra(){
+			 let url = this.$api.select+ '/sqfw/select/srvzhsq_reg_score_select';
+			 let req = {
+			 	colNames: ['*'],
+			 	condition: [
+					
+			 	],
+			 	serviceName: 'srvzhsq_reg_score_select'
+			 };
+			 this.$http.post(url, req).then(res => {
+				 console.log(res,"@@@@@@@@@@@@@@@@@@@@@@")
+				 this.integras = JSON.stringify(res.data.data[0].score)
+			 })
+		 },
+		 
+		signIn(){
+			uni.navigateTo({
+				url:'../signIn/signIn'
+			})
+		},
+		audit(){
+			let val = "srvsso_process_todo_select"
+			uni.navigateTo({
+			  url: '../auditAll/auditAllList'
+			});
+		},
       toLogin() {
         console.log("跳转到登录")
         uni.navigateTo({
@@ -125,6 +190,7 @@
 <style>
   .wrap{
     width: 100%;
+	overflow-y: scroll;
     }
   .btn-logout {
     margin-top: 100upx;

@@ -2,7 +2,8 @@
 	<view class="content">
 		<view class="Choice" v-for="(item,index) in datalist"  :key="index"  @click="navto(item)">
 			<view class="box-content" style="">
-				<image class="img" src="../../static/img/lz.png" mode=""></image><text class="texsr">{{item.title}}</text>
+				<!-- <image class="img" src="../../static/img/lz.png" mode=""></image> -->
+        <text class="texsr">{{item.title}}</text>
 			</view>
 		</view>
 	</view>

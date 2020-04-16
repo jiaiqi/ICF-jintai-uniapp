@@ -12,20 +12,23 @@
 			</view>
 			<input type="text" :disabled="disabled"  :value="datalist.type||datalist.pxlx" placeholder="请输入内容" />
 		</view>
-		<view class="content-box">
+		<view class="content-box" style="margin-bottom: 30upx;">
 			<view class="content-width">
 				<text class="texts" style="color: red;"></text><text class="texts">发布时间</text>
 			</view>
 			<input type="text" :disabled="disabled"  :value="datalist.modify_time" placeholder="请输入内容" />
 		</view>
 		<view class="" style="padding: 0 20upx;" v-if="disabled">
-			<text style="line-height: 50px;font-size: 16px;">内容</text>
-			<textarea  v-html="datalist.content?datalist.content:'暂无'" class="serse" placeholder="" />
-		</view>
-			<!-- <bxform ref="bxForm" :pageType="type" :BxformType="type" :fields="fields"></bxform> -->
+			<view class="serse">
+				<view class="serses">
+					<image v-if="contentImg"  :src="contentImg" mode="aspectFill"></image>
+				</view>
+				<textarea  v-html="datalist.content?datalist.content:'暂无'" class="serse" placeholder="" />
+			</view>
+	 </view>
 		
-		<!-- <image src="" mode=""></image> -->
-		<!-- <bx-editor :field="'data'" ref="bxEditor" @fieldData-value-changed="editorValueChange"></bx-editor> -->
+		
+		
 	</view>
 </template>
 
@@ -38,7 +41,10 @@
 		data(){
 			return{
 				datalist:{},
-				disabled:false
+				listdatas:{},
+				contentImg:'',
+				disabled:false,
+				xmmxxdata:false
 			}
 		},
 		onLoad(options) {
@@ -49,11 +55,12 @@
 				titles='随手拍详情'
 				this.disabled=true
 			}else{
-				titles='修改学习心得'
+				titles='修改学习心得' 
 			}
 			uni.setNavigationBarTitle({
 				title:titles
 			})
+			this.getphoto(dataitem.img)
 			if(dataitem.nr){
 				try {
 				  dataitem.nr = JSON.parse(JSON.stringify(dataitem.nr.replace(/\<img/gi, '<img width=100% height=100% style="width:100%"')));
@@ -81,7 +88,7 @@
 			  this.$emit('on-value-change', e);
 			},
 			async getphoto(item) {
-			  // let path = this.$api.select + '/file/download?filePath=';
+				let path = this.$api.select + '/file/download?filePath=';
 			    let url = this.$api.select + '/file/select/srvfile_attachment_select';
 			    let req = {
 			      colNames: ['*'],
@@ -98,7 +105,7 @@
 			    };
 			
 			    let resppo = await this.$http.post(url, req);
-			   
+				this.contentImg = (path+resppo.data.data[0].fileurl) 
 			},
 			
 			
@@ -158,9 +165,9 @@
 		height: auto !important;
 		padding:20upx;
 		background: #fff !important;
+		width: 100%;
 	}
-	/* .cailiao{
-		font-size: 15px;
-		line-height: 190upx;
-	} */
+	.serses{
+		text-align: center;
+	}
 </style>

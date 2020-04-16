@@ -50,6 +50,12 @@
         "navigationBarTitleText": "忘记密码"
       }
     },
+	{
+	  "path": "pages/signIn/signIn",
+	  "style": {
+	    "navigationBarTitleText": "签到"
+	  }
+	},
     {
       "path": "pages/user/person",
       "style": {
@@ -113,6 +119,11 @@
         "navigationBarTitleText": "列表"
       }
     },
+	{
+	  "path": "pages/shzz/xmmxx",
+	  "style": {
+	  }
+	},
     // {
     //   "path": "pages/sqfw/sqfw",
     //   "style": {
@@ -123,8 +134,7 @@
     {
       "path": "pages/sqfw/dsf",
       "style": {
-        "navigationBarTitleText": "服务",
-        "navigationBarBackgroundColor": "#FB6A6A"
+        "navigationBarTitleText": "服务"
       }
     },
     {
@@ -133,6 +143,19 @@
         "navigationBarTitleText": "审核"
       }
     },
+	{
+	  "path": "pages/auditAll/auditAllList",
+	  "style": {
+	    "navigationBarTitleText": "我的审核",
+		"enablePullDownRefresh": true
+	  }
+	},
+	{
+	  "path": "pages/auditAll/auditall",
+	  "style": {
+	    "navigationBarTitleText": "待审核"
+	  }
+	},
     {
       "path": "pages/audit/auditList",
       "style": {
@@ -242,7 +265,7 @@
 	{
 	  "path": "pages/shzz/zzbg",
 	  "style": {
-	    "navigationBarTitleText": "组织变更"
+	   
 	  }
 	
 	},
@@ -301,7 +324,7 @@
     }, {
       "path": "pages/forum/forum",
       "style": {
-        "navigationBarTitleText": "社区论坛",		
+        "navigationBarTitleText": "论坛",		
         "app-plus": {
           "animationType": "fade-in",
           "animationDuration": 300
@@ -435,16 +458,11 @@
     "backgroundColor": "#ffffff",
     "list": [{
         "pagePath": "pages/SmartCity/smartcity",
-        "text": "智慧党建",
+        "text": "首页",
         "iconPath": "static/img/appicon/zhdj0.png",
         "selectedIconPath": "static/img/appicon/zhdj1.png"
       },
-      {
-        "pagePath": "pages/CommunityServices/CommunityServices",
-        "text": "服务",
-        "iconPath": "static/img/home.png",
-        "selectedIconPath": "static/img/home_active.png"
-      },
+     
       {
         "pagePath": "pages/message/message",
         "text": "消息",

@@ -1165,12 +1165,12 @@ export default {
 		this.$http.post(url, req).then(res => {
 			if(res.data.data.length>0&&res.data.data.length<10){
 				uni.setTabBarBadge({
-				  index: 2,
+				  index: 1,
 				  text: String(res.data.data.length)
 				})
 			}else if(res.data.data.length==10){
 				uni.setTabBarBadge({
-				  index: 2,
+				  index: 1,
 				  text: '···'
 				})
 			}

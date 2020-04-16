@@ -29,6 +29,13 @@
       </text>
       <input type="text" focus clearable v-model="regInfo.real_name" placeholder="请输入姓名" />
     </view>
+	<view class="cu-form-group margin-top">
+	  <text class="title">
+	    <text class="required">*</text>
+	    身份证号：
+	  </text>
+	  <input type="text" focus clearable v-model="regInfo.id_card" placeholder="请输入姓名" />
+	</view>
     <view class="cu-form-group margin-top">
       <text class="title">
         <text class="required"></text>
@@ -136,6 +143,8 @@ export default {
         gender: '',
         mobile: '',
         email: '',
+		id_card:'',
+		user_type: "外部员工",
         // nick_name: '',
         // photo_url: '',
         // address: '',
@@ -242,7 +251,8 @@ export default {
         mobile: /^1[3456789]\d{9}$/, //手机号
         email: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/, // 邮箱
         pwd: /^[\w_-]{6,16}$/, //密码
-        user_no: /^[0-9a-zA-Z_]{1,}$/ //账号
+        user_no: /^[0-9a-zA-Z_]{1,}$/, //账号
+        id_card:  /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/ //身份证号
       };
       if (data.user_no.length < 5) {
         uni.showToast({
@@ -265,6 +275,13 @@ export default {
         });
         return;
       }
+	  if(!regExp.id_card.test(data.id_card)){
+		  uni.showToast({
+		    icon: 'none',
+		    title: '身份证格式有误'
+		  });
+		  return;
+	  }
       if (/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(data.email) != true) {
         uni.showToast({
           icon: 'none',

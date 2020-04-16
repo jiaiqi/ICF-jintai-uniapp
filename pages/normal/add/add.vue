@@ -42,7 +42,7 @@ export default {
       pageBtns: [],
       foreignKey: [],
       houseInfo: {},
-      appName: 'zhdj',
+      appName: 'sqfw',
       // foreignKey: this.$route.query.foreignKey,
       spServename: '',
       menuAudio: 0
@@ -50,14 +50,18 @@ export default {
   },
   mixins: [Emitter],
   onLoad: function(option) {
+    // debugger
     let query = '';
     if (option.query) {
-      query = JSON.parse(option.query);
+      query = JSON.parse(decodeURIComponent(option.query));
       if (query.label == '加入社会组织') {
         this.spServename = 'srvzhsq_organizie_member_select';
         this.getMenu(this.spServename);
       } else if (query.label == '加入志愿者') {
         this.spServename = 'srvzhsq_zyz_member_select';
+        this.getMenu(this.spServename);
+      } else if (query.title == '社区献策') {
+        this.spServename = 'srvzhsq_forum_opinion_select';
         this.getMenu(this.spServename);
       }
       console.log('query', query);
@@ -127,8 +131,18 @@ export default {
             if (res.data.data) {
               let cols = res.data.data.srv_cols;
               self.query.cols = res.data.data;
+              console.log(self.query.cols, ',,,,,,,,,,,,,,,,,,,,,,,,,,');
               let colsList = self.query.cols.srv_cols;
-              colsList = colsList.filter(item => item.in_add == 1 && item.updatable != 0);
+              colsList = colsList.filter(item => item.in_add == 1);
+              // colsList = colsList.filter(item => item.in_add == 1 && item.updatable != 0);
+              // colsList.forEach(col=>{
+              //   if(col.columns==='sq_name'&&col.init_expr=="top.user.real_name"){
+              //     let userInfo = uni.getStorageSync('userInfo')
+              //     if(userInfo.real_name){
+              //       col["column"] = userInfo.real_name
+              //     }
+              //   }
+              // })
               this.formList = colsList;
               self.pageBtns = res.data.data.formButton;
               // self.pageBtns = res.data.data.formButton.filter(item => item.permission === true);
@@ -147,9 +161,17 @@ export default {
         }
         const app = query.menu_url.match(/menuapp=(\S*)/)[1].split('&')[0];
         self.query.cols = await self.getColumnsData(app, query.service_name);
-        console.log(self.query.cols);
         let colsList = self.query.cols.srv_cols;
-        colsList = colsList.filter(item => item.in_add == 1 && item.updatable != 0);
+        colsList = colsList.filter(item => item.in_add == 1);
+        console.log(colsList, ',,,,,,,,,,,,,,,,,,,,,,,,,,');
+        // colsList.forEach(col=>{
+        //   if(col.columns==='sq_name'&&col.init_expr=="top.user.real_name"){
+        //     let userInfo = uni.getStorageSync('userInfo')
+        //     if(userInfo.real_name){
+        //       col["column"] = userInfo.real_name
+        //     }
+        //   }
+        // })
         this.formList = colsList;
         self.query.serviceName = query.serviceName;
         self.pageBtns = self.query.cols.formButton;
@@ -184,6 +206,7 @@ export default {
       let formList = this.formList;
       formList = formList.filter(item => item.validators && item.validators.includes('required'));
       let a = this.$refs.iForms.returnFields();
+      console.log('aaaaaaaaaaaaaaaaa', a);
       // try{
       //   formList.forEach(item => {
       //     if (a.data.filter(itemb => item.columns === itemb.columns).length == 0) {
@@ -198,42 +221,44 @@ export default {
       // }catch(e){
       //   //TODO handle the exception
       // }
-      let required = 0
-     for(let i=0;i<formList.length;i++){
-       let item = formList[i]
-       if (a.data.filter(itemb => item.columns === itemb.columns).length == 0) {
-         uni.showToast({
-           icon: 'none',
-           title: item.label + '不能为空！',
-           duration: 3000
-         });
-         required++
-       }
-     }
-     if(required){return}
+      let required = 0;
+      for (let i = 0; i < formList.length; i++) {
+        let item = formList[i];
+        if (a.data.filter(itemb => item.columns === itemb.columns).length == 0) {
+          uni.showToast({
+            icon: 'none',
+            title: item.label + '不能为空！',
+            duration: 3000
+          });
+          required++;
+        }
+      }
+      if (required) {
+        return;
+      }
       if (!a.valid) {
-        uni.showToast({
-          icon: 'none',
-          title: '信息有误'
-        });
+        // uni.showToast({
+        //   icon: 'none',
+        //   title: '信息有误'
+        // });
       } else if (a.data.length === 0) {
         uni.showToast({
           icon: 'none',
           title: '没有需要提交的信息'
         });
       } else {
-          uni.showModal({
-            title: '确认操作',
-            content: '是否确认提交',
-            success: function(res) {
-              if (res.confirm) {
-                console.log('------------------点击了提交按钮-------------------');
-                self.submitData(a.data);
-              } else if (res.cancel) {
-                console.log('用户点击取消');
-              }
+        uni.showModal({
+          title: '确认操作',
+          content: '是否确认提交',
+          success: function(res) {
+            if (res.confirm) {
+              console.log('------------------点击了提交按钮-------------------');
+              self.submitData(a.data);
+            } else if (res.cancel) {
+              console.log('用户点击取消');
             }
-          });
+          }
+        });
       }
     },
     submitData(nData) {
@@ -257,36 +282,37 @@ export default {
         if (this.foreignKey.length > 0) {
           a[this.foreignKey[0].colName] = this.foreignKey[0].value;
         }
-		if(this.queryString.label === '志愿者信息变更'){
-			a['user_no'] = userInfo.user_no
-		}else if(this.queryString.label === '数字城管'){
-			a['action_user'] = userInfo.user_no
-		}
+        if (this.queryString.label === '志愿者信息变更') {
+          a['user_no'] = userInfo.user_no;
+        } else if (this.queryString.label === '数字城管') {
+          a['action_user'] = userInfo.user_no;
+        }
         params[0].data.push(a);
         let operate = 'operate';
-        if (this.queryString.label === '党建活动记录') {
-          operate = 'apply';
-        }
-        if (this.queryString.menu_url.indexOf('listproc') != -1) {
-          operate = 'apply';
-        }
         if (
+          this.queryString.label === '党建活动记录' ||
           this.queryString.service_name === 'srvzhsq_djhdjl_djhd_add' ||
           this.queryString.service_name === 'srvzhsq_tenement_gzfxx_add' ||
           this.queryString.service_name === 'srvzhsq_tenement_lzfxx_select' ||
-          this.queryString.service_name === 'srvzhsq_bmfw_xmxx_add'||
-		    this.queryString.service_name ==='srvzhsq_bmfw_ssp_add'
+          this.queryString.service_name === 'srvzhsq_bmfw_xmxx_add' ||
+          this.queryString.service_name === 'srvzhsq_bmfw_ssp_add' ||
+          this.queryString.serviceName === 'srvzhsq_forum_opinion_add'
         ) {
           operate = 'apply';
         }
-        let url = self.$api.add + '/' + this.appName + '/' + operate + '/' + this.queryString.service_name;
-        params[0].serviceName = this.queryString.service_name;
-        // let formData = this.$refs.iForms.returnFields();
-        let formData = { data: nData };
-
-        if (formData.data) {
-          formData = formData.data[0];
+        if (this.queryString.menu_url && this.queryString.menu_url.indexOf('listproc') != -1) {
+          operate = 'apply';
         }
+        let url = self.$api.add + '/' + this.appName + '/' + operate + '/'
+        url += this.queryString.service_name ? this.queryString.service_name : this.queryString.serviceName;
+        console.log(url)
+        params[0].serviceName = this.queryString.service_name ? this.queryString.service_name : this.queryString.serviceName;
+        // let formData = this.$refs.iForms.returnFields();
+        // let formData = { data: nData };
+
+        // if (formData.data) {
+        //   formData = formData.data[0];
+        // }
         // if (formData.service_name) {
         //   params[0].serviceName = formData.service_name;
         //   url = self.$api.add + '/' + self.appName + '/' + operate + '/' + formData.service_name;
@@ -416,9 +442,9 @@ export default {
         if (this.queryString.label === '党建活动记录') {
           operate = 'apply';
         }
-		if (this.queryString.label === '数字城管') {
-		  operate = 'apply';
-		}
+        if (this.queryString.label === '数字城管') {
+          operate = 'apply';
+        }
         if (this.queryString.menu_url.indexOf('listproc') != -1) {
           operate = 'apply';
         }

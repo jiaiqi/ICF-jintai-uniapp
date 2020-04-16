@@ -55,16 +55,40 @@ export default {
   },
   methods: {
     getMenusList() {
-      let url = this.$api.select + '/zhdj/select/srvsys_user_menu_select';
-      let req = {
-        serviceName: 'srvsys_user_menu_select',
-        colNames: ['*'],
-        order: [{ colName: 'seq', orderType: 'asc' }],
-        condition: [{ colName: 'client_type', ruleType: 'like', value: 'APP' }]
-      };
+    let url = this.$api.select + '/' + 'auth' + '/select/srvauth_app_menu_select';
+    let req = {
+      serviceName: 'srvauth_app_menu_select',
+      colNames: ['*'],
+	
+        "condition": [
+              {
+                  "colName": "apps",
+                  "ruleType": "in",
+                  "value": "zhdj,sqfw"
+              },
+              {
+                  "colName": "client_type",
+                  "ruleType": "eq",
+                  "value": "APP"
+              },
+			  {
+				  "colName": "is_view",
+				  "ruleType": "eq",
+				  "value": "是"
+			   }
+			   
+          ],
+		  "order":[
+		  		 {
+		  		     "colName": "seq",
+		  		     "orderType": "asc" 
+		  		  }
+		  ],
+    };
       this.$http
         .post(url, req)
         .then(res => {
+			console.log(res.data.data,'********************')
           if (res.data.data) {
             console.log(res.data.data);
             let menuData = res.data.data;
@@ -115,6 +139,15 @@ export default {
         url: './smartcity'
       });
     },
+	menuNull(i){
+		console.log(i,'------------------------')
+		uni.showToast({
+			title: "敬请期待！",
+			icon: "none",
+			mask: true,
+			duration: 3000
+		})
+	},
     onPullDownRefresh() {
       let _self = this;
       setTimeout(function() {
@@ -133,54 +166,51 @@ export default {
     // 获取轮播图路径
     getBannerList() {
       // 获取轮播图编号
-      let url = this.$api.select + '/zhdj/select/srvzhsq_djhdjl_djhd_select';
+      let url = this.$api.select + '/sqfw/select/srvzhsq_banner_app_select';
       let req = {};
-      req.serviceName = 'srvzhsq_djhdjl_djhd_select';
+      req.serviceName = 'srvzhsq_banner_app_select';
       req.colNames = ['*'];
-      req.condition = [];
-      req.order = [];
-      req['page'] = {
-        pageNo: 1,
-        rownumber: 10
-      };
       this.$http.post(url, req).then(res => {
-        // console.log(res);
-        let picUrlCode = [];
-        if (res.data.data && res.data.data instanceof Array) {
-          res.data.data.map(item => {
-            if (item.lbt) {
-              picUrlCode.push(item.lbt); // 将获取到的轮播图编号放入picUrlCode中
-            }
-          });
-        }
-        // console.log('picUrlCode:', picUrlCode);
-        if (picUrlCode && picUrlCode instanceof Array) {
-          // 通过轮播图编号获取轮播图文件路径
-          picUrlCode.map(item => {
-            let path = this.$api.select + '/file/download?filePath=';
-            let url = this.$api.select + '/file/select/srvfile_attachment_select';
-            console.log('ggggggggggggggg', item);
-            let req = {
-              colNames: ['*'],
-              condition: [
-                {
-                  colName: 'file_no',
-                  ruleType: 'eq',
-                  value: item // 轮播图编号
-                }
-              ],
-              order: null,
-              page: null,
-              serviceName: 'srvfile_attachment_select'
-            };
-            this.$http.post(url, req).then(res => {
-              let picUrlList = [];
-              this.swiperLists.push({ img: path + res.data.data[0].fileurl });
-              this.swperboole = false;
-            });
-          });
-        }
+		 let picUrlCode = [];
+		 if (res.data.data && res.data.data instanceof Array) {
+		   res.data.data.map(item => {
+		     if (item.banner_img) {
+		       picUrlCode.push(item.banner_img); // 将获取到的轮播图编号放入picUrlCode中
+		     }
+		   });
+		 }
+		 if (picUrlCode && picUrlCode instanceof Array) {
+		   // 通过轮播图编号获取轮播图文件路径
+		   picUrlCode.map(item => {
+			   console.log(item)
+		     let path = this.$api.select + '/file/download?filePath=';
+		     let url = this.$api.select + '/file/select/srvfile_attachment_select';
+		     let req = {
+		       colNames: ['*'],
+		       condition: [
+		         {
+		           colName: 'file_no',
+		           ruleType: 'eq',
+		           value: item // 轮播图编号
+		         }
+		       ],
+		       order: null,
+		       page: null,
+		       serviceName: 'srvfile_attachment_select'
+		     };
+		     this.$http.post(url, req).then(res => {
+		       let bannerimg = (res.data.data);
+		       let picUrlList = [];
+			   for(let i in bannerimg){
+				    this.swiperLists.push({ img: path + bannerimg[i].fileurl });
+			   }
+		       this.swperboole = false;
+		       console.log('picUrlList:', picUrlList);
+		     });
+		   });
+		 }
       });
+	  
     },
     //活动列表
     hotlist(serve) {

@@ -9,7 +9,7 @@
       <input type="idcard" v-model="idCard" placeholder="请输入身份证号" class="text"/>
     </view>
     <view class="bottom">
-      <button type="primary" @click.native="searchInfo">搜索</button>
+      <button type="primary" @click="searchInfo">搜索</button>
       <!-- <button type="warn" @click.native="resetForm">重置</button> -->
     </view>
   </view>

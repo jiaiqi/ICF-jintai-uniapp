@@ -48,6 +48,8 @@ var dateUtils = {
 		}
 		return humanize || '刚刚';
 	},
+
+  
 	format: function (dateStr) {
 		var date = this.parse(dateStr)
 		var diff = Date.now() - date.getTime();

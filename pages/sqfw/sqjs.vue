@@ -3,7 +3,7 @@
     <view class="" style="padding: 10px;"><text style="font-size: 17px;font-weight: 600; border-left: 2px solid red;padding: 5px;">社区列表</text></view>
     <!-- <uni-top></uni-top> -->
 
-    <view class="" v-if="loadingView">
+    <view class="" v-if="loadingView && !listhome">
       <view class="" v-for="i in 7">
         <!-- @click="navxq(item.sqname,index,item.sqphone,item.sqaddress)" -->
         <view class="content-box">

@@ -8,26 +8,24 @@ import flyioh from 'flyio' // 引入flyio 其他h5 使用
 import store from '@/store/index.js' // 引入vuex 管理数据状态
 // import config from '@/common/config' // flyio 请求公共配置
 import uniNavBar from "@/components/uni-nav-bar/uni-nav-bar.vue"
-
+import {deepCopy} from '@/common/deepCopy.js'
 //loading  gif
-import Loading from '@/components/loading/loading.vue'
+// import Loading from '@/components/loading/loading.vue'
 
 let fly = new flyio
-Vue.component("Loading",Loading)
+// Vue.component("Loading",Loading)
 Vue.config.productionTip = false
 
 Vue.prototype.$api = api // api挂载到vue的proto对象上原型属性
 Vue.prototype.$store = store
 Vue.prototype.$http = fly // 小程序请求
 Vue.prototype.$httph = flyioh // 公众号请求
-
+Vue.prototype.deepCopy = deepCopy
 Vue.component('page-head', uniNavBar)
 
 Vue.use(common)
 
 App.mpType = 'app'
-
-
 
 const app = new Vue({
   store,

@@ -34,10 +34,10 @@
                   <view class="uni-uploader__input-box"><view class="uni-uploader__input" @tap="chooseImage"></view></view>
                 </view>
               </view>
-              <view class="uni-uploader-head">
+              <!--   <view class="uni-uploader-head">
                 <view class="uni-uploader-title">最多可选择9张图片</view>
                 <view class="uni-uploader-info">{{ imageList.length }}/9</view>
-              </view>
+              </view> -->
             </view>
           </view>
         </view>
@@ -50,6 +50,7 @@
 <script>
 var sourceType = [['camera'], ['album'], ['camera', 'album']];
 var sizeType = [['compressed'], ['original'], ['compressed', 'original']];
+import { dateUtils } from '../../common/util.js';
 export default {
   name: 'addArticle',
   data() {
@@ -208,11 +209,11 @@ export default {
     },
     getCategory() {
       // 查找论坛栏目列表
-      let serviceName  = 'srvzhsq_forum_column_select'
-      if(this.appName!='sqfw'){
-        serviceName = 'srvzhsq_djlt_ltlm_select'
+      let serviceName = 'srvzhsq_forum_column_select';
+      if (this.appName != 'sqfw') {
+        serviceName = 'srvzhsq_djlt_ltlm_select';
       }
-      let url = this.$api.select + '/'+this.appName+'/select/' +  serviceName;
+      let url = this.$api.select + '/' + this.appName + '/select/' + serviceName;
       let req = {
         serviceName: serviceName,
         colNames: ['*'],
@@ -233,14 +234,14 @@ export default {
         .then(datas => {
           if (datas) {
             console.log(datas);
-            this.columnsList = datas.map(col=>{
-              if(col.column_title){
-                return col.column_title
+            this.columnsList = datas.map(col => {
+              if (col.column_title) {
+                return col.column_title;
               }
-             if(col.mc){
-                return col.mc
-             }
-            })
+              if (col.mc) {
+                return col.mc;
+              }
+            });
             this.categoryList = columnsList;
             this.multiArray = [parentsList, columnsList];
           }
@@ -287,7 +288,7 @@ export default {
     submitData() {
       let selectList = this.selectList;
       let classify = this.classify[this.index1] ? this.classify[this.index1] : '默认';
-      let column = this.multiArray[1][this.multiIndex[1]]; //根据column_title查找column_no
+      let column = this.multiArray[1][this.multiIndex[1]] ? this.multiArray[1][this.multiIndex[1]] : this.columnsList[this.index2] ? this.columnsList[this.index2] : ''; //根据column_title查找column_no
       let type = '';
       selectList.map(item => {
         if (item.label === classify) {
@@ -318,9 +319,13 @@ export default {
           note_title: this.pageTitle,
           note_type: type,
           note_column: column,
+          // release_time:new Date().toISOString().slice(0,10)+' '+new Date().toISOString().slice(11,19),//减了8小时
+          release_time: new Date().toLocaleDateString().replace(/\//g, '-') + ' ' + new Date().toTimeString().slice(0, 8), //当前时间
+          release_user: uni.getStorageSync('userInfo') ? uni.getStorageSync('userInfo').user_no : '',
           content: textareaVal,
           images: img
         };
+        debugger;
       } else if (this.appName === 'zhdj') {
         serviceName = 'srvzhsq_djlt_ftxx_add';
         content = {
@@ -371,11 +376,12 @@ export default {
       console.log(query);
       if (query) {
         this.query = query;
-        if (query.menu_no === 'bxsqlt_sqlt') {
-          this.appName = 'sqfw';
-        } else if (query.menu_no === 'bxzhsq_djlt') {
-          this.appName = 'zhdj';
-        }
+        this.appName = query.appType;
+        // if (query.menu_no === 'bxsqlt_sqlt') {
+        //   this.appName = 'sqfw';
+        // } else if (query.menu_no === 'bxzhsq_djlt') {
+        //   this.appName = 'zhdj';
+        // }
       }
     }
     this.getColumns();

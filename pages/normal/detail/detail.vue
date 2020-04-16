@@ -48,7 +48,7 @@
         <view class="subtitle1">发布时间：{{ detail.create_time }}</view>
       </div>
       <view class="content" ref="richText" id="richText" v-html="richText"></view>
-      <view class="showParise" v-if="showParise">
+      <view class="showParise" v-if="showParise===true">
         <image :src="isparise" v-if="hasParise" class="parise-img"></image>
         <image :src="notParise" v-if="!hasParise" class="parise-img"></image>
       </view>
@@ -137,10 +137,10 @@ export default {
     }
   },
   onLoad(options) {
-    let query = JSON.parse(options.query);
-    console.log(query);
+    let query = JSON.parse(decodeURIComponent(options.query));
+    console.log('------',options);
     this.detail = query;
-    if (options.showParise) {
+    if (options.showParise == 'true') {
       this.showParise = options.showParise;
     }
   },

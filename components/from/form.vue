@@ -34,7 +34,7 @@ export default {
     this.getCols(this.pathQuery.cols.srv_cols, this.pageType);
     this.$on('on-form-blur', event => {
       let a = this.fields;
-      this.fields = a.map(item => {
+      this.fields = a.map((item,index) => {
         if (item.columns === event.columns) {
           item.column = event.currentValue;
           return item;
@@ -130,9 +130,24 @@ export default {
       // console.log('props', co, pageType)
       self.cols = JSON.parse(JSON.stringify(co));
       let arr = self.cols.filter(item => {
+        if((item.columns==='sq_name'||item.columns==='member_name')&&item.init_expr=="top.user.real_name"){
+          let userInfo = uni.getStorageSync('userInfo')
+          if(userInfo.real_name){
+            item["column"] = userInfo.real_name
+          }
+        }
+        if(item.init_expr==="user.user_no"){
+          let userInfo = uni.getStorageSync('userInfo')
+          if(userInfo.user_no){
+            item["column"] = userInfo.user_no
+          }
+        }
         if (pageType === 'add') {
-          if (item.in_add === 1 && item.updatable !== 0) {
+          if (item.in_add === 1) {
             // item['_formItemValidators'] = self.getColValidators(item)
+            if(item.updatable === 0&&item.init_expr==="user.user_no"){
+              
+            }
             return item;
           }else if(item.updatable === 0 &&item.columns==='hdlb'){
             return item;
@@ -194,7 +209,7 @@ export default {
       let valids = [];
       fieldValid = self.fields;
       for (let i = 0; i < fieldValid.length; i++) {
-        if (fieldValid[i]._valid.valid !== true && fieldValid[i]._valid.valid !== undefined) {
+        if (((fieldValid[i]._valid.valid !== true && fieldValid[i]._valid.valid !== undefined)||(typeof fieldValid[i]._valid==='boolean'&&fieldValid[i]._valid !== true))&&fieldValid[i]._formItemValidators&&fieldValid[i]._formItemValidators.required===true) {
           valids.push(fieldValid[i]._valid);
         }
       }
@@ -203,7 +218,8 @@ export default {
       let fids = [];
       for (let j = 0; j < newData.length; j++) {
         for (let i = 0; i < olddata.length; i++) {
-          if (newData[j].columns === olddata[i].columns && newData[j].column !== olddata[i].column) {
+          // if (newData[j].columns === olddata[i].columns && newData[j].column !== olddata[i].column) {
+          if (newData[j].columns === olddata[i].columns) {
             fids.push(newData[j]);
           } else {
           }
@@ -219,6 +235,16 @@ export default {
       if (this.pathQuery.cols.srv_cols !== 'undefined') {
         this.getCols(this.pathQuery.cols.srv_cols, this.pageType);
       }
+      this.fields.forEach((item,index)=>{
+        item['column'] = ""
+        if(item.columns==='sq_name'&&item.init_expr=="top.user.real_name"){
+          let userInfo = uni.getStorageSync('userInfo')
+          if(userInfo.real_name){
+            item["column"] = userInfo.real_name
+            this.$set(this.fields,index,item)
+          }
+        }
+      })
       console.log(this.fields);
     },
     async onValidatorsFun() {
@@ -244,7 +270,7 @@ export default {
     cols: {
       handler: function(val, oldval) {
         let self = this;
-        this.broadcast('iFormItem', 'on-submit');
+        // this.broadcast('iFormItem', 'on-submit');
         this.fields = JSON.parse(JSON.stringify(this.cols));
         console.log('更新fields');
         this.fields = this.fields.map(item => {

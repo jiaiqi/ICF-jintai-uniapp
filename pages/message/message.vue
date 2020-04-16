@@ -7,7 +7,7 @@
 		<view class="content-box" style="" v-if="list.length>0">
 			<view @click="pagexq(item.info_id,item.id)" class="wrap-headlist" v-for="(item,index) in list" :key="index">
 				<view class="ontcontent" style="position: relative;padding-left: 3px;">
-					<image class="head-img"  :src="item.info_status=='已读'?messageyimg:messagewimg  " mode=""></image>
+					<image class="head-img"  :src="item.info_status=='已读'?'../../static/img/yidu.png':'../../static/img/weidu.png'  " mode=""></image>
 				</view>
 				<view class="twocontent">
 					<view class="">
@@ -43,6 +43,7 @@
 			return {
 				tabs: ['未读消息', '已读消息', '全部消息'],
 				defaultIndex: 0,
+				TabCur: 0,
 				emialalllist: [],
 				wlist: [],
 				ylist: [],
@@ -53,8 +54,8 @@
 				indexs: -1,
 				status_page:"未提示",
 				valno:true,
-				messageyimg:messageyimg,
-				messagewimg:messagewimg
+				messageyimg:require('@/static/img/yidu.png'),
+				messagewimg:require('@/static/img/weidu.png')
 				
 			}
 		},

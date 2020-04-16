@@ -24,16 +24,19 @@ export default {
         data = JSON.parse(decodeURIComponent(option.data));
       }catch(e){
         console.log(e)
-        //TODO handle the exception.
         
       }
     } else if (option.query) {
-      data = JSON.parse(decodeURIComponent(option.query));
+		try{
+		 data = JSON.parse(decodeURIComponent(option.query));
+		}catch(e){
+		  console.log(e)
+		  
+		}
     }else{
       console.log( JSON.stringify(option))
     }
     this.treeData = data;
-    console.log( data.label)
     uni.setNavigationBarTitle({
       title: data.label
     });

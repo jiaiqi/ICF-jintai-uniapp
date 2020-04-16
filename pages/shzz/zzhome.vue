@@ -237,6 +237,7 @@ export default {
 	onLoad(option){
 			let listdatas  = (JSON.parse(decodeURIComponent(option.data||option.query)))
       this.query = listdatas
+	  console.log("社会组织=====",listdatas)
 	  this.getColumnsData('sqfw',listdatas.service_name).then(data=>{
 		  console.log(data)
 		  if(data){

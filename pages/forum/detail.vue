@@ -19,6 +19,7 @@
       <!-- 标题 -->
       <div class="title_view">
         <text class="title_text bold_text" v-if="query.note_title">{{ query.note_title }}</text>
+        <text class="title_text bold_text" v-if="query.opinion_title">{{ query.opinion_title }}</text>
         <text class="title_text bold_text" v-if="query.bt">{{ query.bt }}</text>
         <text class="title_text bold_text" v-if="query.title">{{ query.title }}</text>
         <!-- <span class="time_date">时间：{{ query.create_time }}</span> -->
@@ -51,7 +52,8 @@
         </div>
       </div>
       <!-- 回复 -->
-      <div class="little_title"><text>网友留言</text></div>
+      <div class="little_title" v-if="query.opinion_no"><text>回复</text></div>
+      <div class="little_title" v-else><text>网友留言</text></div>
       <div class="reply_view">
         <div style="color: #9E9E9E;" class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无评论</div>
         <div class="discuss_item" v-for="(item, index) in PostLeaveMeaasgeList" :key="index">
@@ -61,7 +63,7 @@
           <div class="text_box">
             <div class="user_info_box">
               <div class="user_info">{{ item.create_user }}</div>
-              <div class="agree" v-if="!query.ssp_no">
+              <div class="agree" v-if="!query.ssp_no&&!query.opinion_no">
                 <!-- 留言点赞 -->
                 <image :src="item.agree_icon" style="width: 16px;height: 16px;" @click="addAgree(item, item.praise_num, item.id)"></image>
                 <uni-badge :text="item.praise_num ? item.praise_num : '0'" type="error" v-if="item.praise_num <= 99"></uni-badge>
@@ -73,7 +75,7 @@
             <div class="content_box" v-html="item.nr" v-if="item.nr"></div>
             <div class="time_date_box">
               <div class="time_date">{{ item.create_time }}</div>
-              <div class="settings_icon" v-if="item.create_user === userInfo.user_no && !commentUserPhoto[item.create_user]">
+              <div class="settings_icon" v-if="item.create_user === userInfo.user_no && !commentUserPhoto[item.create_user]&&!query.opinion_no">
                 <image src="../../static/img/shanchu.png" style="width: 16px;height: 16px;" @click="deleteItem(item.id)"></image>
               </div>
             </div>
@@ -83,10 +85,11 @@
     </view>
     <div class="tool_bar" v-if="pbox">
       <textarea class="huifu" v-model="remark" placeholder="想对Ta说点什么..." />
-      <button type="primary" class="huifu_btn" @click="writeBack">留言</button>
+      <button type="primary" class="huifu_btn" @click="writeBack" v-if="query.opinion_no">回复</button>
+      <button type="primary" class="huifu_btn" @click="writeBack" v-else>留言</button>
       <!-- <input type="textarea" v-model="remark" class="huifu" placeholder="想对Ta说点什么..." /> -->
       <!-- 主贴点赞 -->
-      <div class="main_agree">
+      <div class="main_agree" v-if="!query.opinion_no">
         <div class="agree">
           <image :src="agree_icon" style="width: 16px;height: 16px;" @click="addMainAgree(query, query.praise_num)"></image>
           <uni-badge type="error" :text="query.praise_num ? query.praise_num : '0'"></uni-badge>
@@ -144,6 +147,9 @@ export default {
         this.serviceName = 'srvzhsq_forum_note_select';
         if (option.no.includes('BX-SSP')) {
           this.serviceName = 'srvzhsq_bmfw_ssp_select';
+        }
+        if(option.no.includes('BX-YJ')){
+          this.serviceName = 'srvzhsq_forum_opinion_select';
         }
       }
       this.note_no = option.no;
@@ -215,7 +221,9 @@ export default {
       } else {
         if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
           colName = 'ssp_no';
-        } else {
+        } else if(this.serviceName === 'srvzhsq_forum_opinion_select'){
+          colName = 'opinion_no'
+        }else {
           colName = 'note_no';
         }
       }
@@ -251,7 +259,7 @@ export default {
         colName = 'ssp_no';
         serviceName = 'srvzhsq_bmfw_ssppraise_select';
       }
-      let url = this.$api.select + '/sqfw/select/' + serviceName;
+      let url = this.$api.select + '/'+this.appName+'/select/' + serviceName;
       let req = { serviceName: serviceName, colNames: ['*'], condition: [{ colName: colName, ruleType: 'like', value: note_no }] };
       this.$http.post(url, req).then(res => {
         if (res.data.data) {
@@ -334,9 +342,9 @@ export default {
               msg['agreePeople'] = arr;
               if (arr.indexOf(userInfo.user_no) != -1) {
                 msg['agree_icon'] = '../../static/img/agreea.png';
-                // this.agree_status = true
+                this.agree_status = true
               } else {
-                // this.agree_status = false
+                this.agree_status = false
                 msg['agree_icon'] = '../../static/img/agreeb.png';
               }
             }
@@ -378,11 +386,11 @@ export default {
     delAgreePeople() {
       // 在点赞信息表中删除此账号对此贴的点赞信息
       let serviceName = 'srvzhsq_forum_praise_delete';
-    serviceName = 'srvzhsq_forum_praise_praise_num_delete';
+    // serviceName = 'srvzhsq_forum_praise_praise_num_delete';
       let colName = 'note_no';
       if (this.appName == 'zhdj') {
         serviceName = 'srvzhsq_djlt_ftxx_praise_delete';
-        serviceName = 'srvzhsq_djlt_ftxx_praise_praise_num_delete'
+        // serviceName = 'srvzhsq_djlt_ftxx_praise_praise_num_delete'
         colName = 'ftno';
       }
       if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
@@ -459,7 +467,7 @@ export default {
    // serviceName = 'srvzhsq_leaveword_praise_praise_num_delete';
       if (this.appName === 'zhdj') {
         serviceName = 'srvzhsq_djlt_lyjl_praise_delete';
-        serviceName = 'srvzhsq_djlt_lyjl_praise_praise_num_delete';
+        // serviceName = 'srvzhsq_djlt_lyjl_praise_praise_num_delete';
       }
       let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let userInfo = uni.getStorageSync('userInfo');
@@ -577,9 +585,12 @@ export default {
         colName = 'ftno';
       }
       if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
-        console.log('a');
         colName = 'ssp_no';
         leaveServiceName = 'srvzhsq_bmfw_ssply_select';
+      }
+      if (this.serviceName === 'srvzhsq_forum_opinion_select') {
+        colName = 'opinion_no';
+        leaveServiceName = 'srvzhsq_forum_opinion_comment_select';
       }
       let url = this.$api.select + '/' + this.appName + '/select/' + leaveServiceName;
       let req = {
@@ -643,6 +654,9 @@ export default {
       if (this.query.ssp_no) {
         serviceName = 'srvzhsq_bmfw_ssply_add';
       }
+      if (this.serviceName === 'srvzhsq_forum_opinion_select') {
+        serviceName = 'srvzhsq_forum_opinion_comment_add';
+      }
       let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
       let req = [
         {
@@ -691,6 +705,15 @@ export default {
             serviceName: 'srvzhsq_bmfw_ssply_add',
             condition: [],
             data: [{ ssp_no: this.query.ssp_no, title: '随手拍留言', content: this.remark, top_state: '未置顶', ssply_user: this.userInfo.user_no }]
+          }
+        ];
+      }
+      if (serviceName === 'srvzhsq_forum_opinion_comment_add') {
+        req = [
+          {
+            serviceName: 'srvzhsq_forum_opinion_comment_add',
+            condition: [],
+            data: [{ opinion_no: this.query.opinion_no, content: this.remark, comment_user: this.userInfo.user_no,comment_time:this.getDateTime() }]
           }
         ];
       }
@@ -802,6 +825,9 @@ export default {
         serviceName = 'srvzhsq_djlt_lyjl_praise_select';
         colName = 'ftno';
       }
+      if (this.serviceName === 'srvzhsq_forum_opinion_select') {
+        
+      }
       let url = this.$api.select + '/' + this.appName + '/select/' + serviceName;
       let req = {
         serviceName: serviceName,
@@ -866,15 +892,16 @@ export default {
       });
     },
     getDateTime() {
-      let date = new Date();
-      let h = date.getHours();
-      let m = date.getMinutes();
-      let s = date.getSeconds();
-      let yy = date.getFullYear();
-      let mm = date.getMonth() + 1;
-      let dd = date.getDay();
-      console.log(yy + '-' + mm + '-' + dd + ' ' + h + ':' + m + ':' + s);
-      return yy + '-' + mm + '-' + dd + ' ' + h + ':' + m + ':' + s;
+     return new Date().toLocaleDateString().replace(/\//g, '-') + ' ' + new Date().toTimeString().slice(0, 8)
+      // let date = new Date();
+      // let h = date.getHours();
+      // let m = date.getMinutes();
+      // let s = date.getSeconds();
+      // let yy = date.getFullYear();
+      // let mm = date.getMonth() + 1;
+      // let dd = date.getDay();
+      // console.log(yy + '-' + mm + '-' + dd + ' ' + h + ':' + m + ':' + s);
+      // return yy + '-' + mm + '-' + dd + ' ' + h + ':' + m + ':' + s;
     }
   }
 };
@@ -1089,9 +1116,11 @@ export default {
   padding: 0 20upx;
   .huifu {
     border-radius: 30upx;
-    height: 40upx;
-    line-height: 40upx;
+    height: 60upx;
+    line-height: 60upx;
     width: 60%;
+    max-width: 80%;
+    // margin-right: 50upx;
     text-indent: 1rem;
     font-size: 26upx;
     border: 1px solid #e0e0e0;

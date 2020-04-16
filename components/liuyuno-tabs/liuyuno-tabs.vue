@@ -1,13 +1,12 @@
 <template>
-	<view class="tab-box" id="tab-box" v-if="tabList.length > 0">
+	<view class="tab-box" id="tab-box" v-if="tabData.length > 0">
 		<view class="horizontal">
-			<scroll-view :scroll-x="true" style="white-space: nowrap; display: flex;justify-content: space-between;" scroll-with-animation :scroll-left="slider.scrollLeft">
-				<view class="" style="display: flex;justify-content: space-between;">
-					<block v-for="(item, index) in tabList" :key="index" >
-					<view class="item" :class="{ active: activeIndex === index }" :id="'tab_'+index" @click="tabClick(index)">{{ item.text || item }}</view>
-					</block>
+			<scroll-view scroll-x class="bg-white nav">
+				<view class="flex text-center">
+					<view class="cu-item flex-sub" :class="index==TabCur?'text-orange cur':''" v-for="(item,index) in tabData" :key="index" @tap="tabSelect($event,index)" :data-id="index">
+						{{item}}
+					</view>
 				</view>
-				<view class="underline" :style="'transform:translateX(' + slider.left + 'px);width:' + slider.width + 'px'"></view>
 			</scroll-view>
 		</view>
 	</view>
@@ -47,6 +46,7 @@
 					width: 0,
 					scrollLeft: 0
 				},
+				TabCur:0,
 				activeIndex: 0
 			};
 		},
@@ -54,27 +54,21 @@
 			tabData(value) {
 				this.tabList = value;
 				setTimeout(() => {
-					this.updateTabWidth();
+					// this.updateTabWidth();
 				}, 0);
 			},
 		},
 		mounted() {
-			this.tabList = this.tabData;
-			this.activeIndex = this.defaultIndex;
 			
-			setTimeout(() => {
-				
-				const query = uni.createSelectorQuery().in(this);
-				query.select('.tab-box').boundingClientRect((res) => {
-					this.box = res;
-					this.updateTabWidth();
-				}).exec();
-				
-			}, 0);
+			
 			
 		},
 		methods: {
-			
+			tabSelect(e,i){
+				this.TabCur = e.currentTarget.dataset.id;
+				this.$emit('tabClick', i)
+				
+			},
 			tabClick(index) {
 				this.activeIndex = index;
 				this.tabToIndex(index);
@@ -82,8 +76,11 @@
 			},
 			
 			tabToIndex(index) {
+				uni.showModal({
+					title:"导航",
+					content:JSON.stringify(this.tabListSlider)
+				})
 				let _slider = this.tabListSlider[index];
-
 				this.slider = {
 					left: _slider.left + this.underLinePadding,
 					width: _slider.width - this.underLinePadding * 2,
@@ -93,26 +90,34 @@
 			
 			updateTabWidth(index = 0) {
 				let data = this.tabList;
-				
+				let self = this
 				if (data.length == 0) return false;
 				
 				const query = uni.createSelectorQuery().in(this);
 				
 				query.select('#tab_' + index).boundingClientRect((res) => {
 					let _prev_slider = this.tabListSlider[index - 1];
-					this.tabListSlider[index] = {
+					// uni.showModal({
+					// 	title:"ces12334555",
+					// 	content:JSON.stringify(res)
+					// })
+					// uni.showModal({
+					// 	title:"ce",
+					// 	content:JSON.stringify(this.box)
+					// })
+					self.tabListSlider[index] = {
 						left: res.left - this.box.left,
 						width: res.width,
 						scrollLeft: res.left - this.box.left - (_prev_slider ? _prev_slider.width : 0),
 					}
-
-					if (this.activeIndex == index) {
-						this.tabToIndex(this.activeIndex);
+					
+					if (self.activeIndex == index) {
+						self.tabToIndex(self.activeIndex);
 					}
 
 					index++;
 					if (data.length > index) {
-						this.updateTabWidth(index);
+						self.updateTabWidth(index);
 					}
 				}).exec();
 			}

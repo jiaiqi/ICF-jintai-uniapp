@@ -7,9 +7,10 @@
         </swiper-item>
       </swiper>
     </uni-swiper-dot>
+	<view v-if="query.label === '社区论坛'" class="">		
     <view class="px_list">
       <view class="list_title">
-        <view class="title_left">社区论坛</view>
+        <view class="title_left">{{query.label}}</view>
         <view class="title_right" @tap="toAdd(selectList[1])"><button class="title_btn">发帖</button></view>
       </view>
       <view class="loadAnimation" v-if="selectList[1].resDatas.length <= 1 && showAnimation">
@@ -31,7 +32,9 @@
         <view class="bottom_right" @tap="toMore('sqlt')">更多</view>
       </view>
     </view>
-    <view class="px_list">
+	
+	
+    <view  class="px_list">
       <view class="list_title">
         <view class="title_left">社区献策</view>
         <view class="title_right" @tap="toAdd(selectList[2])"><button class="title_btn">献策</button></view>
@@ -58,6 +61,33 @@
         </view>
       </transition>
     </view>
+	</view>
+	<view v-else>
+		<view class="px_list">
+		  <view class="list_title">
+		    <view class="title_left">{{query.label}}</view>
+		    <view class="title_right" @tap="toAdd(selectList[1])"><button class="title_btn">发帖</button></view>
+		  </view>
+		  <view class="loadAnimation" v-if="selectList[1].resDatas.length <= 1 && showAnimation">
+		    <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
+		    <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
+		    <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
+		    <view class="loadAnimItem"><view class="loadAnimContent"></view></view>
+		  </view>
+		  <transition name="slide-fade">
+		    <view class="list_content" v-if="selectList[1].resDatas.length > 0">
+		      <view class="list_item" v-for="item in selectList[1].resDatas" :key="item.id" @tap="toForumDetail(item)">
+		        <view class="item_title">{{ item.bt }}</view>
+		        <view class="item_date">{{ item.create_time.slice(0, 10) }}</view>
+		      </view>
+		    </view>
+		  </transition>
+		  <view class="list_bottom" v-if="selectList[1].resDatas.length >= 3">
+		    <image src="../../static/img/moreList.png" style="width: 40upx;height: 40upx;"></image>
+		    <view class="bottom_right" @tap="toMore('djlt')">更多</view>
+		  </view>
+		</view>
+	</view>
   </view>
 </template>
 
@@ -70,6 +100,7 @@ export default {
     return {
       picUrlList: [],
       showAnimation: true,
+	  query:{},
       dotsStyles: {
         border: 'rgba(255,255,255,.7)',
         selectedBorder: 'rgba(255,255,255,.5)',
@@ -89,6 +120,7 @@ export default {
           serviceName: 'srvzhsq_forum_note_add', // 社区发帖列表
           selectServiceName: 'srvzhsq_forum_note_select',
           title: '社区发帖',
+		  label:"社区论坛",
           appType: 'sqfw',
           pageType: 'select',
           resDatas: []
@@ -114,6 +146,7 @@ export default {
       } else if (e.serviceName === 'srvzhsq_forum_opinion_add') {
         uni.navigateTo({
           url: '../normal/add/add?query=' + encodeURIComponent(JSON.stringify(e))
+		  // url: './add?query=' + encodeURIComponent(JSON.stringify(e))
         });
       }
     },
@@ -122,21 +155,55 @@ export default {
       this.current = e.detail.current;
     },
     toDetail(item) {
-      uni.navigateTo({
-        url: '../normal/detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
-      });
+      if(item.opinion_no){
+        uni.navigateTo({
+          url: '/pages/forum/detail?no=' +  item.opinion_no
+        });
+      }
+     
+      // uni.navigateTo({
+      //   url: '../normal/detail/detail?query=' + encodeURIComponent(JSON.stringify(item))
+      // });
     },
     toForumDetail(item) {
       console.log(JSON.stringify(item));
+	  let no = null
+	  if(this.query.label === '社区论坛'){
+		  no = item.note_no
+	  }else{
+		  no = item.ftno
+	  }
       uni.navigateTo({
         // url: 'detail?query=' + encodeURIComponent(JSON.stringify(item))
-        url: 'detail?no=' + item.note_no
+        url: 'detail?no=' + no
       });
     },
     toMore(to) {
-      uni.navigateTo({
-        url: '../normal/list/list?to=' + to
-      });
+      // uni.navigateTo({
+      //   url: '../normal/list/list?to=' + to
+      // });
+	  let query = this.query.children
+	  let sendQuery = null
+	  if(to === 'sqlt'){
+		query.forEach(item=>{
+			if(item.label === '社区论坛'){
+				sendQuery = item
+			}
+		})
+	  }
+	  if(to === 'sqxc'){
+	  		query.forEach(item=>{
+	  			if(item.label === '我为社区献一策'){
+	  				sendQuery = item
+	  			}
+	  		})
+	  }
+	  if(to === 'djlt'){
+	  		sendQuery = this.query
+	  }
+	  uni.navigateTo({
+	  	url: '../normal/list/list?query='+encodeURIComponent(JSON.stringify(sendQuery))
+	  });
     },
     getBannerList() {
       // 获取轮播图路径
@@ -187,18 +254,40 @@ export default {
     },
     // 查询论坛帖子列表
     getPxList() {
-      let url = this.$api.select + '/' + this.selectList[1].appType + '/select/' + this.selectList[1].selectServiceName;
+		
+      let url = null
+	  let serviceName = null
+	  if(this.query.label === "社区论坛"){
+		  url = this.$api.select + '/' + this.selectList[1].appType + '/select/' + this.selectList[1].selectServiceName;
+		  serviceName = this.selectList[1].selectServiceName
+	  }else{
+		  url = this.$api.select + '/' + this.query.app + '/select/' + this.query.service_name;
+		  serviceName = this.query.service_name
+	  }
       let req = {};
-      req.serviceName = this.selectList[1].selectServiceName;
+      req.serviceName = serviceName;
       req.colNames = ['*'];
-      req.condition = [];
+      req.condition = [{colName: "proc_status", ruleType: "in", value: "完成"}];
       req.order = [{ colName: 'create_time', orderType: 'desc' }];
       // req.proc_data_type = 'myall';
       req['page'] = {
         pageNo: 1,
         rownumber: 4
       };
+	 //  uni.showModal({
+	 //  	title:"测试req",
+		// content:JSON.stringify(req)
+	 //  })
+	  
+	 //  uni.showModal({
+	 //  	title:"测试url",
+	 //  		content:JSON.stringify(url)
+	 //  })
       this.$http.post(url, req).then(res => {
+		 //  uni.showModal({
+		 //  	title:"测试",
+			// content:JSON.stringify(res)
+		 //  })
         this.selectList[1].resDatas = res.data.data;
         if (res.data.data) {
           this.showAnimation = false;
@@ -227,10 +316,14 @@ export default {
       });
     }
   },
-  onLoad() {
+  onLoad(option) {
+	 this.query = JSON.parse(option.data?decodeURIComponent(option.data):decodeURIComponent(option.query))
+	  console.log("论坛------",this.query)
     this.getBannerList();
     this.getPxList();
-    this.getXdList();
+	if(this.query.label === '社区论坛'){
+			this.getXdList();
+	}
   }
 };
 </script>

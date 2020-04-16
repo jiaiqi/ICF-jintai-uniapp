@@ -254,6 +254,10 @@ export default {
 			this.activity_noxq=detailslist.activity_no
 			this.modify_time=detailslist.modify_time
 	  }
+    let userInfo = uni.getStorageSync('userInfo')
+    if(userInfo&&userInfo.real_name){
+      this.baominvalue=userInfo.real_name
+    }
     this.getdata();
     let that = this;
     uni.getStorage({

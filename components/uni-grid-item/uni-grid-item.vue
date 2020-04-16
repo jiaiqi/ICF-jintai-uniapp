@@ -81,7 +81,8 @@ export default {
 		},
 		toNewPage() {
 			let treeData = this.treeData;
-			if (treeData) {
+			console.log(treeData)
+			if (treeData.children.length>0) {
 				const url = treeData.app_dest_page + '?data='+ encodeURIComponent(JSON.stringify(treeData));
         console.log("treeData",treeData)
         // uni.redirectTo({
@@ -90,12 +91,14 @@ export default {
 				uni.navigateTo({
 					url: url
 				});
-			} else {
-				uni.showModal({
-					title: '提示',
-					content: '此功能暂未完善',
-					showCancel: false
-				});
+				console.log('-------8-8-8-8-8-8-8-8')
+			} else{
+				uni.showToast({
+					title: "敬请期待！",
+					icon: "none",
+					mask: true,
+					duration: 3000
+				})
 			}
 		},
 		getImagePath(imgId) {

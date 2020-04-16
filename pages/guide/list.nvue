@@ -4,12 +4,12 @@
             <swiper-item class="flex1" v-for="(img, index) in imageList" :key="index">
                 <view class="flex1" @click="launchAppIndex">
                     <!-- #ifndef APP-PLUS -->
-                    <image class="flex1" style="height: 100vh;" mode="aspectFill" :style="{ width: screenWidth+ 'px' }" :src="img.src" />
+                    <image class="flex1" style="height: 100%;width: 100%;" mode="aspectFill"  :src="img.src" />
 
                     <!-- #endif -->
 
                     <!-- #ifdef APP-PLUS -->
-                    <image class="flex1" resize="contain" :src="img.src" />
+                    <image class="flex1" style="width: 100%;height: 100%;" :src="img.src" />
                     <!-- #endif -->
                 </view>
             </swiper-item>
@@ -37,7 +37,7 @@ export default {
             ],
             autoPlay: false,
             currIndex: 0,
-			indexdata:8,
+			indexdata:5,
             screenWidth: SystemInfo.screenWidth
         };
     },
@@ -76,7 +76,7 @@ export default {
 		setTimeout(()=>{
 			that.launchApp()
 			clearInterval(time);
-		},8000)
+		},5000)
 	}
 };
 </script>

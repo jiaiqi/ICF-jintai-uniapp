@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<view class="content">
 			<view class="box" v-if="boxBooler">
 				<image class="img" :src="img" mode=""></image>
@@ -30,7 +30,6 @@
 			time(){
 					this.timer = setInterval(() => {
 						this.numberi++
-						console.log(this.numberi)
 						if(this.numberi==14){
 							this.numberi=0
 							clearInterval(this.timer)
@@ -73,3 +72,4 @@
 		margin: auto;
 	}
 </style>
+ -->

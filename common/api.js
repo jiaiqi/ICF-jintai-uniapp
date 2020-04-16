@@ -7,7 +7,7 @@ let remoteAddress = {
   ssoAddress: 'https://sso.100xsys.cn',
   serviceAddress: 'http://192.168.0.195:8101',
   // serviceAddress: 'http://39.98.203.134:8081',
-  // serviceAddress: 'http://113.200.255.90:8090', //金台外网
+  // serviceAddress: 'http://113.200.255.90:8101', //金台外网
   srvType: "ms", //"mono" 传统单体 || "ms" 微服务
   // assetsUrl: 'http://139.129.128.155'
 }

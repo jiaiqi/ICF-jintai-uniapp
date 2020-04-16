@@ -1,5 +1,6 @@
 <template>
-  <view class="content" :style="{ backgroundImage: 'url(' + imageURL + ')' }">
+  <view class="content"
+>
     <view class="titlehuany">
       欢迎来到智慧社区，
       <text @tap="visitorAccess">游客访问</text>
@@ -29,8 +30,8 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 import mInput from '../../components/m-input.vue';
-
-export default {
+import loginimg  from '../../static/img/logins.png'
+export default { 
   components: {
     mInput
   },
@@ -38,7 +39,7 @@ export default {
     return {
       providerList: [],
       hasProvider: false,
-      imageURL: require('@/static/img/logins.png'),
+      imageURL: require('../../static/img/logins.png'),
       account: {
         name: '',
         password: ''
@@ -487,7 +488,7 @@ export default {
   line-height: 80upx;
 }
 .content {
-  /* background-image: url(../../static/img/logins.png); */
+  background-image: url(../../static/img/logins.png);
   height: 100vh;
   width: 100%;
   background-size: cover;

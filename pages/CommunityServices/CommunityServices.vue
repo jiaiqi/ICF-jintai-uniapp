@@ -49,64 +49,64 @@ export default {
     };
   },
   methods: {
-    getMenusList(app = 'sqfw') {
-      let url = this.$api.select + '/' + app + '/select/srvsys_user_menu_select';
+    getMenusList(app = 'auth') {
+      let url = this.$api.select + '/' + app + '/select/srvauth_app_menu_select';
       let req = {
-        serviceName: 'srvsys_user_menu_select',
+        serviceName: 'srvauth_app_menu_select',
         colNames: ['*'],
-        order: [{ colName: 'seq', orderType: 'asc' }],
-        group: [
-          {
-            colName: 'service_name',
-            type: 'by'
-          },
-          {
-            colName: 'menu_url',
-            type: 'by'
-          },
-          // {
-          //   colName: 'icon',
-          //   type: 'by'
-          // },
-          {
-            colName: 'is_leaf',
-            type: 'by'
-          },
-          {
-            colName: 'app_icon',
-            type: 'by'
-          },
-          {
-            colName: 'app_dest_page',
-            type: 'by'
-          },
-          {
-            colName: 'client_type',
-            type: 'by'
-          },
-          {
-            colName: 'seq',
-            type: 'by'
-          }
-          ,
-          {
-            colName: 'parent_no',
-            type: 'by'
-          },
-          {
-            colName: 'app_temp_col_map',
-            type: 'by'
-          },
-          {
-            colName: 'menu_name',
-            type: 'by'
-          },
-          {
-            colName: 'menu_no',
-            type: 'by'
-          }
-        ],
-        condition: [{ colName: 'client_type', ruleType: 'like', value: 'APP' }]
+        // order: [{ colName: 'seq', orderType: 'asc' }],
+        // group: [
+        //   {
+        //     colName: 'service_name',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'menu_url',
+        //     type: 'by'
+        //   },
+        //   // {
+        //   //   colName: 'icon',
+        //   //   type: 'by'
+        //   // },
+        //   {
+        //     colName: 'is_leaf',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'app_icon',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'app_dest_page',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'client_type',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'seq',
+        //     type: 'by'
+        //   }
+        //   ,
+        //   {
+        //     colName: 'parent_no',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'app_temp_col_map',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'menu_name',
+        //     type: 'by'
+        //   },
+        //   {
+        //     colName: 'menu_no',
+        //     type: 'by'
+        //   }
+        // ],
+        condition: [{ colName: 'apps', ruleType: 'in', value: 'zhdj,sqfw' }]
       };
       this.$http
         .post(url, req)

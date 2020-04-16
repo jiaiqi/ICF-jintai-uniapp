@@ -3,24 +3,12 @@
     <view class="allbox">
       <text class="title">名称：</text>
       <text v-if="datalist" style="font-weight: 600;font-size: 15px;">
-        {{
-          datalist.zuzhi_name ||
-            datalist.organize_name ||
-            datalist.activity_title ||
-            datalist.note_title ||
-            datalist.opinion_title ||
-            datalist.bt ||
-            datalist.registe ||
-            datalist.member_name ||
-            datalist.title ||
-            datalist.xmxx_name ||
-            datalist.pxbt
-        }}
+       {{datalist.proc_name}}
       </text>
     </view>
     <view class="allbox">
       <text class="title">状态：</text>
-      <text v-if="datalist" style="font-weight: 600;font-size: 15px;">{{ datalist.proc_status }}</text>
+      <text v-if="datalist" style="font-weight: 600;font-size: 15px;">{{datalist.step_name}}</text>
     </view>
     <view class="" style="display: flex;">
       <text class="title">意见：</text>
@@ -41,7 +29,7 @@
       <text class="title">回复：</text>
       <textarea v-model="explain" class="select" placeholder="请输入" />
     </view>
-    <view class="btn" @click="submit(datalist.servename)">提 交</view>
+    <view class="btn" @click="submit">提 交</view>
   </view>
 </template>
 
@@ -49,6 +37,7 @@
 export default {
   data() {
     return {
+		
       dataStatus: [],
       statusBtn: [],
       datalist: [],
@@ -56,101 +45,63 @@ export default {
       explain: '', //说明
       start: false,
       tiBoolle: false,
-      timer: null
+      timer: null,
+	  returnStepNo:null,
+	  detailValue:""
     };
   },
   methods: {
-    // getmenu(){
-    // 	let url = 'http://39.98.203.134:8081/sqfw/select/srvprocess_basic_cfg_select';
-    // 	let req = {};
-    // 	req.serviceName = 'srvprocess_basic_cfg_select';
-    // 	req.colNames = ['*'];
-    // 	req.condition = [{"colName":"proc_instance_no","ruleType":"eq","value":"20191207104508096100"}];
-
-    // 	this.$http.post(url, req).then(res => {
-    // 		console.log(res)
-    // 		// this.dataStatus=res.data
-    // 		// this.statusBtn=res.data.proCharData[1].approval_options
-    // 	})
-    // },
     change(e) {
+		this.detailValue = e.detail.value
       if (e.detail.value == 'return') {
         this.start = true;
+		this.getStepNum()
       } else {
         this.start = false;
       }
       this.passadit = e.detail.value;
     },
-    submit(val) {
+	async getStepNum(){				
+		let req = {
+		  serviceName:"srvprocess_basic_cfg_select",
+		  condition:[{
+			  colName:"proc_instance_no",
+			  ruleType:"eq",
+			  value:this.datalist.proc_instance_no
+		  }],
+		  }
+		  let url = this.$api.select + '/' + this.datalist.appno + '/select/' + req.serviceName;
+		  let res = await this.$http.post(url,req)
+		  debugger
+		  this.returnStepNo = res.data.proHanleData.return_options[0].value
+		 // this.$http.post(url, req).then(res => {
+			//   this.returnStepNo = res.data.proHanleData.return_options[0].value
+		 // })
+	  
+	},
+    submit() {
+		let datalist = this.datalist
       let authority = '';
       let num = 0;
-      let appsdat = 'sqfw';
-      if (val == 'srvzhsq_zyz_zuzhi_select') {
-        //志愿者
-        authority = 'volunteer_org_ process_';
-      } else if (val == 'srvzhsq_social_organizie_select') {
-        //社会组hi
-        authority = 'T_ORGANIZE_';
-      } else if (val == 'srvzhsq_activity_arrange_select') {
-        //活动安排
-        authority = 'community_services0';
-        num = 1;
-      } else if (val == 'srvzhsq_forum_note_list_num_select'||val==='srvzhsq_forum_note_select') {
-        //社区论坛
-        authority = 'T_FORUM_NOTE_';
-      } else if (val == 'srvzhsq_djlt_ftxx_select'||val==='srvzhsq_xxxd_select'||val==='srvzhsq_pxap_select') {
-        authority = 'zhsq_ltft_0';
-        num = 1;
-        appsdat = 'zhdj';
-      } else if (val == 'srvzhsq_forum_opinion_select') {
-        //社区献策
-        authority = 'T_FORUM_OPINION_';
-        num = 1;
-      } else if (val == 'srvzhsq_activity_registe_select') {
-        //活动报名
-        num = 1;
-        authority = 'community_services0';
-      } else if (val == 'srvzhsq_organizie_member_select') {
-        //加入社会组织
-        num = 1;
-        authority = 'T_ORGANIZE_MEMBER_0';
-      } else if (val == 'srvzhsq_zyz_member_select') {
-        //加入这志愿者
-        authority = 'volunteer_org_ process_';
-      } else if (val == 'srvzhsq_bmfw_ssp_select') {
-        //随手拍
-        authority = 'bmfw_ssp_0';
-        num = 1;
-      } else if (val == 'srvzhsq_bmfw_xmxx_select') {
-        //创投项目
-        authority = 'volunteer_org_ process_';
-        num = 0;
-      }
-      let url = this.$api.select + '/' + appsdat + '/process/approval';
-      let req = [
-        {
-          proc_instance_no: this.datalist.proc_instance_no,
-          step_no: authority + (num + 1),
-          data: [{ remark: this.explain, proc_result: this.passadit, key: this.passadit, file_no: '', child_data_list: [], step_no: authority + num }]
-        }
-      ];
-      if ((val === 'srvzhsq_xxxd_select'||val==='srvzhsq_pxap_select') && this.passadit === 'pass') {
-        req = [
-          {
-            proc_instance_no: this.datalist.proc_instance_no,
-            step_no: 'xxfb_sh',
-            data: [{ remark: this.explain, proc_result: this.passadit, key: this.passadit, file_no: '', child_data_list: [] }]
-          }
-        ];
-      } else if((val === 'srvzhsq_xxxd_select'||val==='srvzhsq_pxap_select') && this.passadit === 'return') {
-        req = [
-          {
-            proc_instance_no: this.datalist.proc_instance_no,
-            step_no: 'xxfb_sh',
-            data: [{ remark:  this.explain, proc_result: 'return', key: 'return', file_no: '', step_no: 'xxfb_sq', child_data_list: [] }]
-          }
-        ];
-      }
+      let appsdat = datalist.appno;
+	  let req = [{
+		  serviceName:"approval",
+		  proc_instance_no:datalist.proc_instance_no,
+		  step_no:datalist.step_no,
+		  data:[
+				{
+					key: this.detailValue,
+					proc_result: this.detailValue,
+					remark:this.explain
+					// step_no:""
+				},
+			]
+	  }]
+	  if(this.start){
+		  req[0].data[0]["step_no"] = this.returnStepNo
+	  }
+      let url = this.$api.select + '/' +appsdat + '/process/'+req[0].serviceName;
+	  
       console.log(req);
       let that = this;
       uni.showModal({
@@ -205,7 +156,7 @@ export default {
                   setTimeout(() => {
                     uni.hideLoading();
                     uni.navigateBack({
-                      delta: 2
+                      delta: 1
                     });
                     // uni.redirectTo({
                     //     url: './auditList?serve='+that.datalist.servename
