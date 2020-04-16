@@ -31,7 +31,7 @@
       <div v-if="query.nr" class="content_view" v-html="JSON.parse(JSON.stringify(query.nr).replace(/\<img/gi, '<img width=100% height=100% '))"></div>
 
       <!-- 官方答复 -->
-      <div class="little_title" v-if="query.ssp_no"><text>官方答复</text></div>
+ <!--     <div class="little_title" v-if="query.ssp_no"><text>官方答复</text></div>
       <div class="reply_view" v-if="query.ssp_no">
         <div class="discuss_item" v-for="(item, index) in replyList" :key="index">
           <image :src="commentUserPhoto[item.create_user]" v-if="commentUserPhoto[item.create_user]" class="touxiang"></image>
@@ -41,18 +41,14 @@
               <div class="user_info">{{ item.create_user }}</div>
             </div>
             <div class="content_box" v-html="item.content" v-if="item.content"></div>
-            <!-- <div class="content_box" v-html="item.nr" v-if="item.nr"></div> -->
             <div class="time_date_box">
               <div class="time_date">{{ item.create_time }}</div>
-              <!-- <div class="settings_icon" v-if="item.create_user === userInfo.user_no">
-                <image src="../../static/img/shanchu.png" style="width: 16px;height: 16px;" @click="deleteItem(item.id)"></image>
-              </div> -->
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- 回复 -->
-      <div class="little_title" v-if="query.opinion_no"><text>回复</text></div>
+      <div class="little_title" v-if="query.opinion_no||query.ssp_no"><text>回复</text></div>
       <div class="little_title" v-else><text>网友留言</text></div>
       <div class="reply_view">
         <div style="color: #9E9E9E;" class="noddata" v-if="PostLeaveMeaasgeList && PostLeaveMeaasgeList.length <= 0">暂无评论</div>
@@ -394,7 +390,7 @@ export default {
         colName = 'ftno';
       }
       if (this.serviceName === 'srvzhsq_bmfw_ssp_select') {
-        serviceName = 'srvzhsq_bmfw_ssppraise_add';
+        serviceName = 'srvzhsq_bmfw_ssppraise_delete';
         colName = 'ssp_no';
       }
       let url = this.$api.select + '/' + this.appName + '/operate/' + serviceName;
