@@ -16,6 +16,6 @@
     "mpvue-picker": "^2.1.6"
   },
   "devDependencies": {
-    "webpack": "^4.41.2"
+    "webpack": "^5.75.0"
   }
 }
